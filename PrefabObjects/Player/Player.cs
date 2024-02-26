@@ -1,16 +1,30 @@
 using Godot;
 using System;
 using System.Diagnostics;
-using System.Reflection.PortableExecutable;
 
 public partial class Player : CharacterBody3D
 {
 	public const float JUMPVELOCITY = 4.5f;
 	public float moveSpeed = 100.0f;
+	Area3D playerRange = default;
+	bool inRange = false;
 	
-
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+	
+	private void OnPlayerRangeEntered(Node3D body) {
+		Debug.Print("Object "+body.Name+" entered");
+		
+	}
+
+	private void OnPlayerRangeExited(Node3D body) {
+		Debug.Print("Object "+body.Name+" exited");
+		
+	}
+
+	public override void _Ready() {
+		playerRange = GetNode<Area3D>("PlayerRange");
+	}
 
 	public override void _PhysicsProcess(double delta) {
 		// Koska double tyylistä delta ei voi käyttää suoraan laskennassa, luodaan deltaF jonka avulla ei tarvitse aina castata deltaa floatiksi
@@ -32,9 +46,9 @@ public partial class Player : CharacterBody3D
 
 		// Otetaan input
 		// Input.GetVector() ottaa 4 syöttöarvoa ja luo niistä vectorin. Käytetään Project Settings -> Input Map nimiä
-		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveDown", "MoveUp");
+		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveBackwards", "MoveForwards");
 
-		// Lukitaan hiiri ja poistetaan sen näyttäminen
+		// Lukitaan hiiri ja piilotetaan se
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		
 		// Muutetaan input suunta vektoriksi
@@ -48,12 +62,10 @@ public partial class Player : CharacterBody3D
 			tempVelocity.Z = direction.Z * moveSpeed * deltaF;
 		}
 		else {
-			// slows to a stop
-			//tempVelocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-			//tempVelocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
 			tempVelocity.X = direction.X * 0;
 			tempVelocity.Z = direction.Z * 0;
 		}
+
 		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
 		Velocity = tempVelocity;
 		// MoveAndSlide on Godotin oma funktio joka hoitaa collisionit ja liikkeen
