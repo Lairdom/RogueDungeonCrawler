@@ -35,7 +35,7 @@ public partial class Player : CharacterBody3D
 		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveDown", "MoveUp");
 
 		// Lukitaan hiiri ja poistetaan sen näyttäminen
-		//Input.MouseMode = Input.MouseModeEnum.Captured;
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 		
 		// Muutetaan input suunta vektoriksi
 		// Huomaa: 3D maailmassa Y-vektori on ylöspäin ja X ja Z vektorit luovat Y ja X suunnan. Kameran paikka ja pelaajan rotaatio vaikeuttavat asioita

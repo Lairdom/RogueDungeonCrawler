@@ -37,7 +37,13 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="Camera" type="Camera3D" parent="CamRoot/Horizontal/Vertical"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -2.5, 0, 0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.5, 0, 0)
+
+[node name="CollisionDetection" type="RayCast3D" parent="CamRoot/Horizontal/Vertical"]
+target_position = Vector3(-1.5, 0, 0)
+
+[node name="CameraPos" type="Node3D" parent="CamRoot/Horizontal/Vertical"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

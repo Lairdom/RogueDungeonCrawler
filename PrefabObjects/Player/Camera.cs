@@ -9,6 +9,9 @@ public partial class Camera : Node3D
 	Node3D H = default;
 	Node3D V = default;
 	Node3D player = default;
+	RayCast3D cameraCollider = default;
+	Camera3D cam = default;
+	Node3D camPos = default;
 	public bool lookMode = false;
 
 	// Otetaan vastaan inputEvent. _Input on Godotin sisäänrakennettu funktio
@@ -22,9 +25,9 @@ public partial class Camera : Node3D
 
 			//Estetään kameran pyöriminen jos menee yli 90 tai -90 astetta
 			if (camRotV <= -90 && mouse.Relative.Y > 0)
-				Debug.Print("Reached max");
+				return;
 			else if (camRotV >= 90 && mouse.Relative.Y < 0)
-				Debug.Print("Reached min");
+				return;
 			else
 				camRotV += -mouse.Relative.Y;
 		}
@@ -34,10 +37,19 @@ public partial class Camera : Node3D
 		player = GetParent<Node3D>();
 		H = GetNode<Node3D>("Horizontal");
 		V = GetNode<Node3D>("Horizontal/Vertical");
-		
+		cameraCollider = GetNode<RayCast3D>("Horizontal/Vertical/CollisionDetection");
+		cam = GetNode<Camera3D>("Horizontal/Vertical/Camera");
+		camPos = GetNode<Node3D>("Horizontal/Vertical/CameraPos");
 	}
 
 	public override void _Process(double delta) {
+		// Kameran Collision Detection
+		if (cameraCollider.IsColliding()) {
+			Vector3 collisionPoint = cameraCollider.GetCollisionPoint();
+			cam.GlobalPosition = cam.GlobalPosition.Lerp(collisionPoint, 1f);
+		}
+		else
+			cam.GlobalPosition = camPos.GlobalPosition;
 		// Pyöritetään pelaajaa tai kameraa
 		player.RotationDegrees = new Vector3(0,camRotH, 0);
 		//H.RotationDegrees = new Vector3(0, camRotH, 0);
