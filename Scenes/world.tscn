@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://vedxskexn6fl"]
 
-[ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_k2g8r"]
+[ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_o5hkg"]
 size = Vector3(5, 0.1, 5)
@@ -45,5 +45,5 @@ mesh = SubResource("BoxMesh_dwqo6")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Box"]
 shape = SubResource("BoxShape3D_j2vjd")
 
-[node name="Player" parent="." instance=ExtResource("1_k2g8r")]
+[node name="Player" parent="." instance=ExtResource("1_oeyq3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496034, 0)
