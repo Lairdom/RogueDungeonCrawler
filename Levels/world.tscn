@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://vedxskexn6fl"]
+
+[ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_k2g8r"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_o5hkg"]
+size = Vector3(5, 0.1, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5i1w3"]
+size = Vector3(5, 0.1, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dwqo6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j2vjd"]
+
+[node name="World" type="Node3D"]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="Mesh" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_o5hkg")
+
+[node name="Collider" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_5i1w3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.949404, 0.0856966, -0.302141, 0.314059, -0.259062, 0.913375, 0, -0.962052, -0.272868, 10.9827, 4.95369, -5.46173)
+shadow_enabled = true
+
+[node name="Box" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.962325, -1.50779)
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+inertia = Vector3(0, 200, 0)
+metadata/_edit_group_ = true
+
+[node name="Mesh" type="MeshInstance3D" parent="Box"]
+mesh = SubResource("BoxMesh_dwqo6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Box"]
+shape = SubResource("BoxShape3D_j2vjd")
+
+[node name="Player" parent="." instance=ExtResource("1_k2g8r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496034, 0)

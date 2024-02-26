@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://i1qlsccl6rnj"]
+
+[ext_resource type="Script" path="res://PrefabObjects/Player/Player.cs" id="1_4qqyh"]
+[ext_resource type="Script" path="res://PrefabObjects/Player/Camera.cs" id="2_spow2"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cemur"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kvs2j"]
+radius = 0.3
+
+[sub_resource type="Animation" id="Animation_ui76d"]
+resource_name = "new_animation"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bmghm"]
+_data = {
+"new_animation": SubResource("Animation_ui76d")
+}
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_4qqyh")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_cemur")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_kvs2j")
+
+[node name="CamRoot" type="Node3D" parent="."]
+script = ExtResource("2_spow2")
+
+[node name="Horizontal" type="Node3D" parent="CamRoot"]
+unique_name_in_owner = true
+
+[node name="Vertical" type="Node3D" parent="CamRoot/Horizontal"]
+unique_name_in_owner = true
+
+[node name="Camera" type="Camera3D" parent="CamRoot/Horizontal/Vertical"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -2.5, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_bmghm")
+}
