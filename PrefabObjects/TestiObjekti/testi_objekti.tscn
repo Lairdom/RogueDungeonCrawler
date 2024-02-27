@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dicpti0sp50km"]
+
+[ext_resource type="Script" path="res://Scripts/Examine.cs" id="1_6fdy2"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_bet6i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lbmdm"]
+
+[node name="TestiObjekti" type="StaticBody3D"]
+collision_layer = 9
+collision_mask = 7
+script = ExtResource("1_6fdy2")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_bet6i")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_lbmdm")
