@@ -1,16 +1,24 @@
 using Godot;
+using Godot.Collections;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 
 public partial class Player : CharacterBody3D
 {
-	public const float JUMPVELOCITY = 4.5f;
-	public float moveSpeed = 100.0f;
+	[Export]public float moveSpeed = 100.0f;
+	[Export]public float attackDuration = 3.0f;
+	const float JUMPVELOCITY = 4.5f;
 	Area3D playerRange = default;
-	bool objectInRange = false;
 	bool examine = false;
 	Node3D target = default;
+	int objectsInRange = 0;
+	string[] stance = {"Slashing", "Piercing", "Bludgeoning"};
+	int stanceIndex = 0;
+	bool shieldIsUp = false;
+	bool attacking = false;
+	float attackTimer = 0f;
 		
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -19,25 +27,8 @@ public partial class Player : CharacterBody3D
 	private void OnPlayerRangeEntered(Node3D body) {
 		//Debug.Print("Object "+body.Name+" entered.");
 		if (body.HasMethod("OnActivate")) {
-			objectInRange = true;
+			objectsInRange++;
 			target = body;
-		}
-		
-		// Jos objekti on RigidBody3D tyyppiä
-		if (body is RigidBody3D) {
-			RigidBody3D rb = (RigidBody3D)body;
-			// Tarkastetaan CollisionLayerin kautta onko kyseessä vihollinen
-			if (rb.CollisionLayer == 4) {
-				Debug.Print("Enemy detected");
-			}
-		}
-		// Jos objekti on StaticBody3D tyyppiä
-		else if (body is StaticBody3D) {
-			StaticBody3D sb = (StaticBody3D)body;
-			// Tarkastetaan CollisionLayerin kautta on kyseessä objekti jota voidaan käsitellä (interactable)
-			if (sb.CollisionLayer == 9) {
-				Debug.Print("Interactable object detected");
-			}
 		}
 	}
 
@@ -45,7 +36,7 @@ public partial class Player : CharacterBody3D
 	private void OnPlayerRangeExited(Node3D body) {
 		//Debug.Print("Object "+body.Name+" exited");
 		if (body.HasMethod("OnActivate")) {
-			objectInRange = false;
+			objectsInRange--;
 			target = null;
 		}
 	}
@@ -55,9 +46,9 @@ public partial class Player : CharacterBody3D
 		playerRange = GetNode<Area3D>("PlayerRange");
 	}
 
-	public override void _PhysicsProcess(double delta) {
-		// Koska double tyylistä deltaa ei voi käyttää suoraan laskennassa, luodaan deltaF jonka avulla ei tarvitse aina castata deltaa floatiksi
-		float deltaF = (float) delta;
+	public override void _PhysicsProcess(double dDelta) {
+		// Koska double tyylistä deltaa ei voi käyttää suoraan laskennassa, luodaan delta jonka avulla ei tarvitse aina castata deltaa floatiksi
+		float delta = (float) dDelta;
 		
 		// Velocity on CharacterBody3D ominaisuus jota voidaan käyttää mutta sitä ei voi muokata komponentteina vaan se on aina Vektori
 		// Siksi käytetään tilapäistä Vector3 muuttujaa koodissa ja asetetaan lopuksi se muuttuja Velocityn arvoksi
@@ -65,27 +56,77 @@ public partial class Player : CharacterBody3D
 
 		// Lisätään painovoima jos ei olla kosketuksissa maahan. Maa saadaan siitä missä kulmassa collaidataan
 		if (!IsOnFloor())
-			tempVelocity.Y -= gravity * deltaF;
+			tempVelocity.Y -= gravity * delta;
 
-		// Jump
+		// Attack ('LeftClick')
+		// Painettaessa nappia tehdään hyökkäys. Hyökkäyksen kesto riippuu aseesta ja hyökkäystyypistä
+		if (Input.IsActionJustPressed("Attack") && IsOnFloor() && !shieldIsUp && !attacking) {
+			attacking = true;
+			if (stanceIndex == 0) {
+				Debug.Print("Slashing Attack!");
+				attackDuration = 2f;
+			}
+			else if (stanceIndex == 1) {
+				Debug.Print("Poking Attack!");
+				attackDuration = 1.5f;
+			}
+			else if (stanceIndex == 2) {
+				Debug.Print("Smashing Attack!");
+				attackDuration = 2f;
+			}
+		}
+
+		// Odotetaan että edellinen hyökkäys on tehty
+		if (attacking && attackTimer < attackDuration) {
+			attackTimer+=delta;
+		}
+		else if (attacking && attackTimer >= attackDuration) {
+			attacking = false;
+			attackTimer = 0;
+		}
+
+		// Block ('RightClick')
+		// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
+		if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
+			Debug.Print("Shield is up");
+			shieldIsUp = true;
+		}
+		else if (Input.IsActionJustReleased("Block") && !attacking) {
+			Debug.Print("Shield is down");
+			shieldIsUp = false;
+		}
+		
+
+		// StanceChange ('Q')
+		// Nappia painamalla voidaan vaihtaa stancea. Napin painallus muuttaa indexiä. Käydään läpi stance niminen string array jossa eri stancen nimet.
+		if (Input.IsActionJustPressed("StanceChange")) {
+			Debug.Print("Changed Stance");
+			if (stanceIndex < 2)
+				stanceIndex++;
+			else
+				stanceIndex = 0;
+			
+			Debug.Print("Current Stance: "+stance[stanceIndex]);
+		}
+
+		// Jump (Space)
 		// Input.IsActionPressed() jos nappia painaa tai se on pohjassa antaa true
 		// Input.IsActionJustPressed() jos nappia painaa, pohjassa pitäminen ei tee mitään otetaan true vain kerran
-		if (Input.IsActionJustPressed("Jump") && IsOnFloor())
+		if (Input.IsActionJustPressed("Jump") && IsOnFloor() && !attacking)
 			tempVelocity.Y = JUMPVELOCITY;
 
-		// Interact
-		if (Input.IsActionJustPressed("Examine") && objectInRange && target != null) {
+		// Interact ('E')
+		if (Input.IsActionJustPressed("Examine") && objectsInRange > 0 && target != null && !shieldIsUp) {
 			Debug.Print("Called method: OnActivate");
 			target.CallDeferred("OnActivate");
 		}
 		
-
-		// Otetaan input
+		// Movement ('W'A'S'D')
 		// Input.GetVector() ottaa 4 syöttöarvoa ja luo niistä vectorin. Käytetään Project Settings -> Input Map nimiä
 		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveBackwards", "MoveForwards");
 
 		// Lukitaan hiiri ja piilotetaan se
-		Input.MouseMode = Input.MouseModeEnum.Captured;
+		//Input.MouseMode = Input.MouseModeEnum.Captured;
 		
 		// Muutetaan input suunta vektoriksi
 		// Huomaa: 3D maailmassa Y-vektori on ylöspäin ja X ja Z vektorit luovat Y ja X suunnan. Kameran paikka ja pelaajan rotaatio vaikeuttavat asioita
@@ -94,8 +135,8 @@ public partial class Player : CharacterBody3D
 
 		// Toteutetaan liike, jos direction on 0 niin pysäytetään pelaaja
 		if (direction != Vector3.Zero) {
-			tempVelocity.X = direction.X * moveSpeed * deltaF;
-			tempVelocity.Z = direction.Z * moveSpeed * deltaF;
+			tempVelocity.X = direction.X * moveSpeed * delta;
+			tempVelocity.Z = direction.Z * moveSpeed * delta;
 		}
 		else {
 			tempVelocity.X = direction.X * 0;
