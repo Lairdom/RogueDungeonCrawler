@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://i1qlsccl6rnj"]
+[gd_scene load_steps=9 format=3 uid="uid://i1qlsccl6rnj"]
 
 [ext_resource type="Script" path="res://PrefabObjects/Player/Player.cs" id="1_4qqyh"]
 [ext_resource type="Script" path="res://PrefabObjects/Player/Camera.cs" id="2_spow2"]
+[ext_resource type="PackedScene" uid="uid://0h6kklgk342d" path="res://3DObjects/ukkeli.tscn" id="3_625oo"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_cemur"]
 radius = 0.3
@@ -27,6 +28,7 @@ collision_mask = 13
 script = ExtResource("1_4qqyh")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("SphereMesh_cemur")
 
 [node name="Collider" type="CollisionShape3D" parent="."]
@@ -63,6 +65,9 @@ shape = SubResource("BoxShape3D_2n0p7")
 libraries = {
 "": SubResource("AnimationLibrary_bmghm")
 }
+
+[node name="ukkeli" parent="." instance=ExtResource("3_625oo")]
+transform = Transform3D(-2.18557e-09, 0, -0.05, 0, 0.05, 0, 0.05, 0, -2.18557e-09, 0, -0.307247, 0)
 
 [connection signal="body_entered" from="PlayerRange" to="." method="OnPlayerRangeEntered"]
 [connection signal="body_exited" from="PlayerRange" to="." method="OnPlayerRangeExited"]
