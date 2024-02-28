@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://dk4thlonya37j"]
+
+[ext_resource type="Script" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.cs" id="1_sifar"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m1k0d"]
+albedo_color = Color(0.192157, 0, 0, 1)
+roughness = 0.6
+
+[sub_resource type="SphereMesh" id="SphereMesh_w1fp4"]
+material = SubResource("StandardMaterial3D_m1k0d")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8n7nv"]
+
+[node name="Enemy-Orb" type="CharacterBody3D"]
+script = ExtResource("1_sifar")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_w1fp4")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_8n7nv")
