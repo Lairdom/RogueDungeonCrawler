@@ -18,6 +18,10 @@ config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 
 project/assembly_name="G-Omatesti"
 
+[filesystem]
+
+import/fbx/enabled=false
+
 [input]
 
 MoveLeft={
