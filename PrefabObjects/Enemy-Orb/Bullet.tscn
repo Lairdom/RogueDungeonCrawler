@@ -11,7 +11,9 @@ rings = 8
 [sub_resource type="SphereShape3D" id="SphereShape3D_56ct8"]
 radius = 0.1
 
-[node name="Bullet" type="AnimatableBody3D"]
+[node name="Bullet" type="Area3D"]
+collision_layer = 20
+collision_mask = 11
 script = ExtResource("1_xpv2q")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
@@ -19,3 +21,5 @@ mesh = SubResource("SphereMesh_5waoh")
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_56ct8")
+
+[connection signal="body_entered" from="." to="." method="OnHit"]
