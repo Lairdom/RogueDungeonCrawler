@@ -19,6 +19,8 @@ public partial class Player : CharacterBody3D
 	bool shieldIsUp = false;
 	bool attacking = false;
 	float attackTimer = 0f;
+	Node3D ukkeli = default;
+	AnimationPlayer anim = default;
 		
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -44,6 +46,10 @@ public partial class Player : CharacterBody3D
 	public override void _Ready() {
 		//globalpath: GetNode<Area3D>("/root/World/Player/PlayerRange");
 		playerRange = GetNode<Area3D>("PlayerRange");
+		// AnimationPlayeriin viittaus onnistuu monella tapaa. Jos ne on tämän koodin lapsia niin ei tarvitse koko polkua
+		ukkeli = GetNode<Node3D>("ukkeli");
+		//anim = ukkeli.GetChild<AnimationPlayer>(1);  //toimii kans
+		anim = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
 	}
 
 	public override void _PhysicsProcess(double dDelta) {
@@ -64,14 +70,17 @@ public partial class Player : CharacterBody3D
 			attacking = true;
 			if (stanceIndex == 0) {
 				Debug.Print("Slashing Attack!");
+				anim.Play("MiekkaSlash");
 				attackDuration = 2f;
 			}
 			else if (stanceIndex == 1) {
 				Debug.Print("Poking Attack!");
+				anim.Play("MiekkaStab");
 				attackDuration = 1.5f;
 			}
 			else if (stanceIndex == 2) {
 				Debug.Print("Smashing Attack!");
+				anim.Play("MiekkaBash");
 				attackDuration = 2f;
 			}
 		}
