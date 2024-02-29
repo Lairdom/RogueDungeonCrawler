@@ -19,6 +19,8 @@ public partial class Player : CharacterBody3D
 	bool shieldIsUp = false;
 	bool attacking = false;
 	float attackTimer = 0f;
+	//Animaatiokoodi: ilmoitan uudesta muuttujasta ege
+	private AnimationPlayer _animPlayer;
 		
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -44,6 +46,8 @@ public partial class Player : CharacterBody3D
 	public override void _Ready() {
 		//globalpath: GetNode<Area3D>("/root/World/Player/PlayerRange");
 		playerRange = GetNode<Area3D>("PlayerRange");
+		//Animaatiokoodi: yritän löytää ukkelin animationPlayerin
+		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
 	}
 
 	public override void _PhysicsProcess(double dDelta) {
@@ -64,15 +68,18 @@ public partial class Player : CharacterBody3D
 			attacking = true;
 			if (stanceIndex == 0) {
 				Debug.Print("Slashing Attack!");
-				attackDuration = 2f;
+				attackDuration = 1f;
+				_animPlayer.Play("miekkaSlash");
 			}
 			else if (stanceIndex == 1) {
 				Debug.Print("Poking Attack!");
-				attackDuration = 1.5f;
+				attackDuration = 1f;
+				_animPlayer.Play("miekkaStab");
 			}
 			else if (stanceIndex == 2) {
 				Debug.Print("Smashing Attack!");
-				attackDuration = 2f;
+				attackDuration = 1f;
+				_animPlayer.Play("miekkaBash");
 			}
 		}
 
@@ -137,6 +144,7 @@ public partial class Player : CharacterBody3D
 		if (direction != Vector3.Zero) {
 			tempVelocity.X = direction.X * moveSpeed * delta;
 			tempVelocity.Z = direction.Z * moveSpeed * delta;
+			_animPlayer.Play("walkMiekkaKilpi");
 		}
 		else {
 			tempVelocity.X = direction.X * 0;
