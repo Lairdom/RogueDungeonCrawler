@@ -63,7 +63,8 @@ size = Vector3(0.2, 5, 30)
 [node name="World" type="Node3D"]
 
 [node name="Starting_room" type="Node3D" parent="."]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 1.31574, 0, -0.0940259)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.94876, 0, -0.325517)
+metadata/_edit_lock_ = true
 
 [node name="Floor" type="StaticBody3D" parent="Starting_room"]
 metadata/_edit_group_ = true
@@ -148,7 +149,7 @@ shape = SubResource("BoxShape3D_8vdwo")
 mesh = SubResource("BoxMesh_s11lg")
 
 [node name="ActionRoom" type="Node3D" parent="."]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -3.93181, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.12108, 0, 0)
 
 [node name="Floor" type="StaticBody3D" parent="ActionRoom"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.38706, 0, 0)
