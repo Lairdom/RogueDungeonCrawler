@@ -2,8 +2,11 @@
 
 [ext_resource type="Script" path="res://Scripts/StartHelpExitMenu.cs" id="1_tb8y0"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("start", "help", "exit")]
 script = ExtResource("1_tb8y0")
+start = NodePath("Control/start")
+help = NodePath("Control/help")
+exit = NodePath("Control/exit")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
