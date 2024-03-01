@@ -1,38 +1,68 @@
-[gd_scene load_steps=2 format=3 uid="uid://b0pyrweh4exuw"]
+[gd_scene load_steps=11 format=3 uid="uid://b0pyrweh4exuw"]
 
 [ext_resource type="Script" path="res://Scripts/StartHelpExitMenu.cs" id="1_tb8y0"]
+[ext_resource type="Texture2D" uid="uid://s8peuog0k0mg" path="res://Images/Start (1).png" id="2_51d70"]
+[ext_resource type="Texture2D" uid="uid://hf77wktud47b" path="res://Images/Start (3).png" id="3_d7bum"]
+[ext_resource type="Texture2D" uid="uid://bbd01v8quf24o" path="res://Images/Start (2).png" id="4_l8xpu"]
+[ext_resource type="Texture2D" uid="uid://34578kec3o3y" path="res://Images/Help (2).png" id="5_n7anu"]
+[ext_resource type="Texture2D" uid="uid://swho7w4cnyfu" path="res://Images/Help (1).png" id="6_lhhfx"]
+[ext_resource type="Texture2D" uid="uid://dgofei1gjv76g" path="res://Images/Help (3).png" id="7_6it80"]
+[ext_resource type="Texture2D" uid="uid://du8b04g4mb0kk" path="res://Images/Exit (1).png" id="8_jly06"]
+[ext_resource type="Texture2D" uid="uid://r0kf0knudokw" path="res://Images/Exit (3).png" id="9_qopwx"]
+[ext_resource type="Texture2D" uid="uid://dwb2l81po5q1v" path="res://Images/Exit (2).png" id="10_0ol3k"]
 
 [node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("start", "help", "exit")]
 script = ExtResource("1_tb8y0")
 start = NodePath("Control/start")
-help = NodePath("Control/help")
-exit = NodePath("Control/exit")
+help = NodePath("")
+exit = NodePath("")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="start" type="Button" parent="Control"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "Start"
+[node name="start" type="TextureButton" parent="Control"]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 154.0
+offset_right = 1952.0
+offset_bottom = 685.0
+scale = Vector2(0.176043, 0.176043)
+texture_normal = ExtResource("2_51d70")
+texture_pressed = ExtResource("3_d7bum")
+texture_hover = ExtResource("4_l8xpu")
+stretch_mode = 4
 
-[node name="help" type="Button" parent="Control"]
-layout_mode = 0
-offset_left = 1.0
-offset_top = 54.0
-offset_right = 45.0
-offset_bottom = 85.0
-text = "Help"
+[node name="help" type="TextureButton" parent="Control"]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 283.0
+offset_right = 1952.0
+offset_bottom = 814.0
+scale = Vector2(0.175914, 0.175914)
+texture_normal = ExtResource("5_n7anu")
+texture_pressed = ExtResource("6_lhhfx")
+texture_hover = ExtResource("7_6it80")
+stretch_mode = 4
 
-[node name="exit" type="Button" parent="Control"]
-layout_mode = 0
-offset_top = 107.0
-offset_right = 37.0
-offset_bottom = 138.0
-text = "Exit"
+[node name="exit" type="TextureButton" parent="Control"]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 412.0
+offset_right = 1952.0
+offset_bottom = 943.0
+scale = Vector2(0.17598, 0.17598)
+texture_normal = ExtResource("8_jly06")
+texture_pressed = ExtResource("9_qopwx")
+texture_hover = ExtResource("10_0ol3k")
+stretch_mode = 4
+
+[connection signal="button_up" from="Control/start" to="." method="OnStartPressed"]
+[connection signal="button_up" from="Control/help" to="." method="OnHelpPressed"]
+[connection signal="button_up" from="Control/exit" to="." method="OnExitPressed"]

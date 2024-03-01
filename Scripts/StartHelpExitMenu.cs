@@ -5,9 +5,9 @@ public partial class StartHelpExitMenu : CanvasLayer {
 
 	[ExportGroup("Buttons")]
 	[ExportSubgroup("Button Set")]
-	[Export] public Button start;
-	[Export] public Button help;
-	[Export] public Button exit;
+	[Export] public TextureButton start;
+	[Export] public TextureButton help;
+	[Export] public TextureButton exit;
 
 	public override void _Ready() {
 		start.Connect("pressed", new Callable(this, nameof(OnStartPressed)));
