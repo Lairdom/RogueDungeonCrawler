@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 public partial class Player : CharacterBody3D
 {
-	[Export]public float moveSpeed = 100.0f;
+	[Export]public float moveSpeed = 75.0f;
 	[Export]public float attackDuration = 3.0f;
 	const float JUMPVELOCITY = 4.5f;
 	Area3D playerRange = default;
@@ -19,8 +19,11 @@ public partial class Player : CharacterBody3D
 	bool shieldIsUp = false;
 	bool attacking = false;
 	float attackTimer = 0f;
+	Node3D ukkeli = default;
 	//Animaatiokoodi: ilmoitan uudesta muuttujasta ege
 	private AnimationPlayer _animPlayer;
+	string[] weaponType = {"Sword", "Spear", "Mace"};
+	int curWeaponType = 0;					// currentWeaponType index. Indexiä vaihtamalla valitaan weaponType listasta asetyyppi
 		
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -43,11 +46,44 @@ public partial class Player : CharacterBody3D
 		}
 	}
 
+	// Vaihdetaan ase
+	public void ChangeWeapon(int index) {
+		// Viittaukset eri aseiden mesh
+		MeshInstance3D sword = ukkeli.GetNode<MeshInstance3D>("Armature/Skeleton3D/Miekka");
+		MeshInstance3D spear = ukkeli.GetNode<MeshInstance3D>("Armature/Skeleton3D/keihäs");
+		MeshInstance3D mace = ukkeli.GetNode<MeshInstance3D>("Armature/Skeleton3D/Nuija");
+		switch (index) {
+			case 0:
+				// Sword
+				Debug.Print("Current Weapon is Sword");
+				sword.Show();
+				spear.Hide();
+				mace.Hide();
+				break;
+			case 1:
+				// Spear
+				Debug.Print("Current Weapon is Spear");
+				sword.Hide();
+				spear.Show();
+				mace.Hide();
+				break;
+			case 2:
+				// Mace
+				Debug.Print("Current Weapon is Mace");
+				sword.Hide();
+				spear.Hide();
+				mace.Show();
+				break;
+		}
+	}
+
 	public override void _Ready() {
 		//globalpath: GetNode<Area3D>("/root/World/Player/PlayerRange");
 		playerRange = GetNode<Area3D>("PlayerRange");
+		ukkeli = GetNode<Node3D>("ukkeli");
 		//Animaatiokoodi: yritän löytää ukkelin animationPlayerin
 		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
+		ChangeWeapon(curWeaponType);
 	}
 
 	public override void _PhysicsProcess(double dDelta) {
@@ -67,17 +103,17 @@ public partial class Player : CharacterBody3D
 		if (Input.IsActionJustPressed("Attack") && IsOnFloor() && !shieldIsUp && !attacking) {
 			attacking = true;
 			if (stanceIndex == 0) {
-				Debug.Print("Slashing Attack!");
+				//Debug.Print("Slashing Attack!");
 				attackDuration = 1f;
 				_animPlayer.Play("miekkaSlash");
 			}
 			else if (stanceIndex == 1) {
-				Debug.Print("Poking Attack!");
+				//Debug.Print("Poking Attack!");
 				attackDuration = 1f;
 				_animPlayer.Play("miekkaStab");
 			}
 			else if (stanceIndex == 2) {
-				Debug.Print("Smashing Attack!");
+				//Debug.Print("Smashing Attack!");
 				attackDuration = 1f;
 				_animPlayer.Play("miekkaBash");
 			}
@@ -141,7 +177,7 @@ public partial class Player : CharacterBody3D
 		direction = direction.Normalized();		// Asetetaan vectorin suuruudeksi 1
 
 		// Toteutetaan liike, jos direction on 0 niin pysäytetään pelaaja
-		if (direction != Vector3.Zero) {
+		if (direction != Vector3.Zero && !attacking) {
 			tempVelocity.X = direction.X * moveSpeed * delta;
 			tempVelocity.Z = direction.Z * moveSpeed * delta;
 			_animPlayer.Play("walkMiekkaKilpi");
@@ -149,6 +185,8 @@ public partial class Player : CharacterBody3D
 		else {
 			tempVelocity.X = direction.X * 0;
 			tempVelocity.Z = direction.Z * 0;
+			if (!attacking && !shieldIsUp)				
+				_animPlayer.Stop(true);					// Väliaikainen ratkaisu. Kun Idle animaatiot saadaan pistetään idle päälle tässä
 		}
 
 		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
