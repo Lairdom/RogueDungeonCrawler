@@ -11,6 +11,7 @@ public partial class Player : CharacterBody3D
 	[Export]public float attackDuration = 3.0f;
 	const float JUMPVELOCITY = 4.5f;
 	Area3D playerRange = default;
+	StaticBody3D playerShield = default;
 	bool examine = false;
 	Node3D target = default;
 	int objectsInRange = 0;
@@ -44,6 +45,11 @@ public partial class Player : CharacterBody3D
 			objectsInRange--;
 			target = null;
 		}
+	}
+
+	private void OnShieldColliderEntered(Node3D body) {
+		Debug.Print(body.Name+" hit shield.");
+		body.Free();
 	}
 
 	// Vaihdetaan ase
@@ -81,6 +87,8 @@ public partial class Player : CharacterBody3D
 		//globalpath: GetNode<Area3D>("/root/World/Player/PlayerRange");
 		playerRange = GetNode<Area3D>("PlayerRange");
 		ukkeli = GetNode<Node3D>("ukkeli");
+		playerShield = GetNode<StaticBody3D>("ShieldCollider");
+		playerShield.Hide();
 		//Animaatiokoodi: yritän löytää ukkelin animationPlayerin
 		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
 		ChangeWeapon(curWeaponType);
@@ -139,6 +147,10 @@ public partial class Player : CharacterBody3D
 			shieldIsUp = false;
 		}
 		
+		if (shieldIsUp)
+			playerShield.CollisionLayer = 32;
+		else
+			playerShield.CollisionLayer = 0;
 
 		// StanceChange ('Q')
 		// Nappia painamalla voidaan vaihtaa stancea. Napin painallus muuttaa indexiä. Käydään läpi stance niminen string array jossa eri stancen nimet.

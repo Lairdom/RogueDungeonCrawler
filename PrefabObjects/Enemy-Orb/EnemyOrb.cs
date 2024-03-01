@@ -13,7 +13,6 @@ public partial class EnemyOrb : CharacterBody3D
 	Node3D root = default;
 
 	void SpawnBullet() {
-		Debug.Print("Spawn Bullet");
 		Node3D bulletInstance = (Node3D) bulletScene.Instantiate();
 		bulletInstance.Position = Position;
 		bulletInstance.Rotation = Rotation;
@@ -36,7 +35,6 @@ public partial class EnemyOrb : CharacterBody3D
 			playerDirection = player.GlobalPosition - GlobalPosition;
 			playerDirection = playerDirection.Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
-			
 			LookAt(player.GlobalPosition);
 			if (playerDistance < 10 && shootTimer <= 0) {
 				shooting = true;

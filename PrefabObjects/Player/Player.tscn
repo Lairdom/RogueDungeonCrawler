@@ -4,15 +4,15 @@
 [ext_resource type="Script" path="res://PrefabObjects/Player/Camera.cs" id="2_spow2"]
 [ext_resource type="PackedScene" uid="uid://0h6kklgk342d" path="res://3DObjects/ukkeli.tscn" id="3_625oo"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_cemur"]
-radius = 0.3
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xbq1"]
+radius = 0.15
 height = 0.6
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_kvs2j"]
-radius = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2n0p7"]
 size = Vector3(1, 0.55, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h2rbe"]
+size = Vector3(0.05, 0.5, 0.5)
 
 [sub_resource type="Animation" id="Animation_ui76d"]
 resource_name = "new_animation"
@@ -27,12 +27,8 @@ collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_4qqyh")
 
-[node name="Mesh" type="MeshInstance3D" parent="."]
-visible = false
-mesh = SubResource("SphereMesh_cemur")
-
 [node name="Collider" type="CollisionShape3D" parent="."]
-shape = SubResource("SphereShape3D_kvs2j")
+shape = SubResource("CapsuleShape3D_0xbq1")
 
 [node name="CamRoot" type="Node3D" parent="."]
 script = ExtResource("2_spow2")
@@ -60,6 +56,14 @@ collision_mask = 5
 [node name="Collider" type="CollisionShape3D" parent="PlayerRange"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
 shape = SubResource("BoxShape3D_2n0p7")
+
+[node name="ShieldCollider" type="StaticBody3D" parent="."]
+collision_layer = 32
+collision_mask = 20
+
+[node name="Collider" type="CollisionShape3D" parent="ShieldCollider"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0)
+shape = SubResource("BoxShape3D_h2rbe")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

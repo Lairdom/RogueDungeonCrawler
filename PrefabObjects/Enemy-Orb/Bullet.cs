@@ -8,6 +8,13 @@ public partial class Bullet : Area3D
 	
 
 	private void OnHit(Node3D body) {
+		if (body.Name == "Player") {
+			Debug.Print("Player hit.");
+			// Tee damagea playeriin (tai katso onko kilpi ylhäällä ensiksi)
+		}
+		else if (body.Name == "ShieldCollider") {
+			Debug.Print("Shield hit. *play ricochet SFX");
+		}
 		//Free(); 		// Deletes node immediately
 		QueueFree();	// Deletes Node after all its DeferredCalls have ended
 	}
