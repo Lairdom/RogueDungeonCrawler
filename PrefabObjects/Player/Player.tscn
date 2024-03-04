@@ -92,7 +92,7 @@ libraries = {
 }
 
 [node name="ukkeli" parent="." instance=ExtResource("3_625oo")]
-transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, 0, -0.301814, 0)
+transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, 0, -0.295473, 0)
 
 [connection signal="body_entered" from="PlayerRange" to="." method="OnPlayerRangeEntered"]
 [connection signal="body_exited" from="PlayerRange" to="." method="OnPlayerRangeExited"]

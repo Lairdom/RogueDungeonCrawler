@@ -176,10 +176,12 @@ public partial class Player : CharacterBody3D
 		// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
 		if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
 			Debug.Print("Shield is up");
+			_animPlayer.Play("kilpiBlock");
 			shieldIsUp = true;
 		}
 		else if (Input.IsActionJustReleased("Block") && !attacking) {
 			Debug.Print("Shield is down");
+			_animPlayer.Play("kilpiDown");
 			shieldIsUp = false;
 		}
 		
@@ -234,7 +236,7 @@ public partial class Player : CharacterBody3D
 			tempVelocity.X = direction.X * 0;
 			tempVelocity.Z = direction.Z * 0;
 			if (!attacking && !shieldIsUp)				
-				_animPlayer.Stop(true);					// Väliaikainen ratkaisu. Kun Idle animaatiot saadaan pistetään idle päälle tässä
+				_animPlayer.Play("Idle");
 		}
 
 		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
