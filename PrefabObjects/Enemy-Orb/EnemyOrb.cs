@@ -12,6 +12,10 @@ public partial class EnemyOrb : CharacterBody3D
 	bool shooting = false;
 	Node3D root = default;
 
+	public void TakeDamage(int dmg) {
+		Debug.Print("Took "+dmg+" damage");
+	}
+
 	void SpawnBullet() {
 		Node3D bulletInstance = (Node3D) bulletScene.Instantiate();
 		bulletInstance.Position = Position;

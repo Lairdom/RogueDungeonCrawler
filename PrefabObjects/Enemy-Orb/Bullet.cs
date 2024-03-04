@@ -10,7 +10,7 @@ public partial class Bullet : Area3D
 	private void OnHit(Node3D body) {
 		if (body.Name == "Player") {
 			Debug.Print("Player hit.");
-			// Tee damagea playeriin (tai katso onko kilpi ylhäällä ensiksi)
+			// Tee damagea playeriin
 		}
 		else if (body.Name == "ShieldCollider") {
 			Debug.Print("Shield hit. *play ricochet SFX");

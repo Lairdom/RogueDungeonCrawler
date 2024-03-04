@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://i1qlsccl6rnj"]
+[gd_scene load_steps=12 format=3 uid="uid://i1qlsccl6rnj"]
 
 [ext_resource type="Script" path="res://PrefabObjects/Player/Player.cs" id="1_4qqyh"]
 [ext_resource type="Script" path="res://PrefabObjects/Player/Camera.cs" id="2_spow2"]
@@ -13,6 +13,14 @@ size = Vector3(1, 0.55, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2rbe"]
 size = Vector3(0.05, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5upap"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2n8ns"]
+albedo_color = Color(1, 0.0784314, 0.0784314, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_al4ej"]
+material = SubResource("StandardMaterial3D_2n8ns")
 
 [sub_resource type="Animation" id="Animation_ui76d"]
 resource_name = "new_animation"
@@ -65,6 +73,19 @@ collision_mask = 20
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0)
 shape = SubResource("BoxShape3D_h2rbe")
 
+[node name="AttackCollider" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 6.03961e-14, 0, 1, 0, -6.03961e-14, 0, 1, 0.3, 0.05, 0)
+collision_layer = 64
+collision_mask = 4
+
+[node name="CollisionShape" type="CollisionShape3D" parent="AttackCollider"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+shape = SubResource("BoxShape3D_5upap")
+
+[node name="TempMesh" type="MeshInstance3D" parent="AttackCollider"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("BoxMesh_al4ej")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_bmghm")
@@ -75,3 +96,4 @@ transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701
 
 [connection signal="body_entered" from="PlayerRange" to="." method="OnPlayerRangeEntered"]
 [connection signal="body_exited" from="PlayerRange" to="." method="OnPlayerRangeExited"]
+[connection signal="body_entered" from="AttackCollider" to="." method="OnAttackColliderEntered"]
