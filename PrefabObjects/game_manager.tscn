@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://banq5fsry5yoq"]
+
+[ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_ufaug"]
+
+[node name="GameManager" type="Node3D"]
+script = ExtResource("1_ufaug")
+playerMaxHealth = 100
+playerHealth = 21
+attackPower = 32

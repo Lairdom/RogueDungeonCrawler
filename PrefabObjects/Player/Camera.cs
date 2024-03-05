@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 public partial class Camera : Node3D
 {
+	GameManager GM;
 	float camRotH = 0;				// CameraRotationHorizontal
 	float camRotV = 0;				// CameraRotationVertical
 	Node3D H = default;
@@ -34,7 +35,8 @@ public partial class Camera : Node3D
     }
 
     public override void _Ready() {
-		player = GetParent<Node3D>();
+		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
+		player = GetParent<Player>();
 		H = GetNode<Node3D>("Horizontal");
 		V = GetNode<Node3D>("Horizontal/Vertical");
 		cameraCollider = GetNode<RayCast3D>("Horizontal/Vertical/CollisionDetection");
@@ -43,16 +45,18 @@ public partial class Camera : Node3D
 	}
 
 	public override void _Process(double delta) {
-		// Kameran Collision Detection
-		if (cameraCollider.IsColliding()) {
-			Vector3 collisionPoint = cameraCollider.GetCollisionPoint();
-			cam.GlobalPosition = cam.GlobalPosition.Lerp(collisionPoint, 1f);
+		if (GM.playerAlive) {
+			// Kameran Collision Detection
+			if (cameraCollider.IsColliding()) {
+				Vector3 collisionPoint = cameraCollider.GetCollisionPoint();
+				cam.GlobalPosition = cam.GlobalPosition.Lerp(collisionPoint, 1f);
+			}
+			else
+				cam.GlobalPosition = camPos.GlobalPosition;
+			// Pyöritetään pelaajaa tai kameraa
+			player.RotationDegrees = new Vector3(0,camRotH, 0);
+			//H.RotationDegrees = new Vector3(0, camRotH, 0);
+			V.RotationDegrees = new Vector3(0, 0, camRotV);
 		}
-		else
-			cam.GlobalPosition = camPos.GlobalPosition;
-		// Pyöritetään pelaajaa tai kameraa
-		player.RotationDegrees = new Vector3(0,camRotH, 0);
-		//H.RotationDegrees = new Vector3(0, camRotH, 0);
-		V.RotationDegrees = new Vector3(0, 0, camRotV);
 	}
 }

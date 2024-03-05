@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 public partial class EnemyOrb : CharacterBody3D
 {
+	GameManager GM;
 	Node3D player = default;
 	Vector3 playerDirection;
 	bool alive = true;
@@ -12,10 +13,11 @@ public partial class EnemyOrb : CharacterBody3D
 	float shootTimer = 0;
 	bool shooting = false;
 	Node3D root = default;
-	Node3D statHandler = default;
+	EnemyStats statHandler = default;
 
 	// Signaali joka saadaan kun health putoaa alle 0
 	public void OnDeath(float deathDelayTime) {
+		alive = false;
 		// Death animations
 		QueueFree();
 	}
@@ -26,7 +28,8 @@ public partial class EnemyOrb : CharacterBody3D
 	}
 
 	void SpawnBullet() {
-		Node3D bulletInstance = (Node3D) bulletScene.Instantiate();
+		Bullet bulletInstance = (Bullet) bulletScene.Instantiate();
+		bulletInstance.damage = statHandler.damage;
 		bulletInstance.Position = Position;
 		bulletInstance.Rotation = Rotation;
 		root.AddChild(bulletInstance);
@@ -34,9 +37,10 @@ public partial class EnemyOrb : CharacterBody3D
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		statHandler = GetNode<Node3D>("EnemyHandler");
+		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
+		statHandler = GetNode<EnemyStats>("EnemyHandler");
 		root = GetNodeOrNull<Node3D>("/root/World");
-		player = GetNodeOrNull<Node3D>("/root/World/Player");
+		player = GetNodeOrNull<Player>("/root/World/Player");
 		if (player != null) {
 			Debug.Print("Player detected");
 		}
@@ -45,12 +49,12 @@ public partial class EnemyOrb : CharacterBody3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double dDelta) {
 		float delta = (float) dDelta;
-		if (player != null) {
+		if (player != null && alive) {
 			playerDirection = player.GlobalPosition - GlobalPosition;
 			playerDirection = playerDirection.Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
 			LookAt(player.GlobalPosition);
-			if (playerDistance < 10 && shootTimer <= 0) {
+			if (playerDistance < 5 && shootTimer <= 0 && GM.playerAlive) {
 				shooting = true;
 				SpawnBullet();
 				shootTimer = 2;

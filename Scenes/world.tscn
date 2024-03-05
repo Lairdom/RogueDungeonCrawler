@@ -1,12 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=5 format=3 uid="uid://vedxskexn6fl"]
 
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
 [ext_resource type="MeshLibrary" uid="uid://bj38xbwnt4c42" path="res://3DObjects/Room_tileset/tileset.tres" id="1_xmco2"]
 [ext_resource type="PackedScene" uid="uid://dk4thlonya37j" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn" id="2_bvxjl"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_dwqo6"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_j2vjd"]
+[ext_resource type="PackedScene" uid="uid://banq5fsry5yoq" path="res://PrefabObjects/game_manager.tscn" id="4_cnyn2"]
 
 [node name="World" type="Node3D"]
 
@@ -40,23 +37,6 @@ metadata/_editor_floor_ = Vector3(0, 0, 0)
 [node name="Player" parent="." instance=ExtResource("1_oeyq3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496034, 0)
 
-[node name="Box" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.962325, -1.50779)
-visible = false
-axis_lock_linear_x = true
-axis_lock_linear_z = true
-axis_lock_angular_x = true
-axis_lock_angular_y = true
-axis_lock_angular_z = true
-inertia = Vector3(0, 200, 0)
-metadata/_edit_group_ = true
-
-[node name="Mesh" type="MeshInstance3D" parent="Box"]
-mesh = SubResource("BoxMesh_dwqo6")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Box"]
-shape = SubResource("BoxShape3D_j2vjd")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.486808, -0.773409, -0.406025, 0.259448, -0.315823, 0.912657, -0.834089, -0.549631, 0.0469146, 4.25064, 9.63092, 3.49123)
 shadow_enabled = true
@@ -64,3 +44,6 @@ shadow_bias = 1.669
 
 [node name="Enemy-Orb" parent="." instance=ExtResource("2_bvxjl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.29059, 0.733297, 2.10749)
+
+[node name="GameManager" parent="." instance=ExtResource("4_cnyn2")]
+playerHealth = 50
