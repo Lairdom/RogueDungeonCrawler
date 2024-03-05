@@ -53,7 +53,7 @@ public partial class Player : CharacterBody3D
 		}
 	}
 
-	// Signaali joka saadaan kun vihollinen on pelaajan attackColliderin sisällä
+	// Signaali joka saadaan kun vihollinen on pelaajan attackColliderin sisällä sen kytkeytyessä päälle
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.HasMethod("TakeDamage")) {
 			Debug.Print("Enemy hit");
@@ -95,9 +95,14 @@ public partial class Player : CharacterBody3D
 		}
 	}
 
-	private async void Wait(double ms) {
-		await ToSignal(GetTree().CreateTimer(ms), "timeout");
-		
+	// AttackCollider kytkeminen päälle ja pois
+	private async void AttackColliderOnOff(float secs) {
+		await ToSignal(GetTree().CreateTimer(secs), "timeout");			// vastaa Unityn yield WaitForSeconds()
+		atkCollShape.Disabled = false;
+		attackCollider.Show();
+		await ToSignal(GetTree().CreateTimer(0.1f), "timeout");
+		atkCollShape.Disabled = true;
+		attackCollider.Hide();
 	}
 
 	public override void _Ready() {
@@ -116,7 +121,7 @@ public partial class Player : CharacterBody3D
 		ChangeWeapon(curWeaponType);
 	}
 
-	public override async void _PhysicsProcess(double dDelta) {
+	public override void _PhysicsProcess(double dDelta) {
 		// Koska double tyylistä deltaa ei voi käyttää suoraan laskennassa, luodaan delta jonka avulla ei tarvitse aina castata deltaa floatiksi
 		float delta = (float) dDelta;
 		
@@ -154,13 +159,9 @@ public partial class Player : CharacterBody3D
 				_animPlayer.Play("miekkaBash");
 				delay = 0.4f;
 			}
-			
-			await ToSignal(GetTree().CreateTimer(delay), "timeout");			// vastaa Unityn yield WaitForSeconds()
-			atkCollShape.Disabled = false;
-			attackCollider.Show();
-			await ToSignal(GetTree().CreateTimer(0.1f), "timeout");
-			atkCollShape.Disabled = true;
-			attackCollider.Hide();
+
+			// Attack colliderin kytkeminen päälle ja pois 
+			AttackColliderOnOff(delay);
 		}
 
 		// Odotetaan että edellinen hyökkäys on tehty
@@ -175,12 +176,12 @@ public partial class Player : CharacterBody3D
 		// Block ('RightClick')
 		// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
 		if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
-			Debug.Print("Shield is up");
+			//Debug.Print("Shield is up");
 			_animPlayer.Play("kilpiBlock");
 			shieldIsUp = true;
 		}
 		else if (Input.IsActionJustReleased("Block") && !attacking) {
-			Debug.Print("Shield is down");
+			//Debug.Print("Shield is down");
 			_animPlayer.Play("kilpiDown");
 			shieldIsUp = false;
 		}
@@ -219,7 +220,7 @@ public partial class Player : CharacterBody3D
 		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveBackwards", "MoveForwards");
 
 		// Lukitaan hiiri ja piilotetaan se
-		//Input.MouseMode = Input.MouseModeEnum.Captured;
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 		
 		// Muutetaan input suunta vektoriksi
 		// Huomaa: 3D maailmassa Y-vektori on ylöspäin ja X ja Z vektorit luovat Y ja X suunnan. Kameran paikka ja pelaajan rotaatio vaikeuttavat asioita
@@ -227,7 +228,7 @@ public partial class Player : CharacterBody3D
 		direction = direction.Normalized();		// Asetetaan vectorin suuruudeksi 1
 
 		// Toteutetaan liike, jos direction on 0 niin pysäytetään pelaaja
-		if (direction != Vector3.Zero && !attacking) {
+		if (direction != Vector3.Zero && !attacking && !shieldIsUp) {
 			tempVelocity.X = direction.X * moveSpeed * delta;
 			tempVelocity.Z = direction.Z * moveSpeed * delta;
 			_animPlayer.Play("walkMiekkaKilpi");
@@ -239,9 +240,7 @@ public partial class Player : CharacterBody3D
 				_animPlayer.Play("Idle");
 		}
 
-		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
-		Velocity = tempVelocity;
-		// MoveAndSlide on Godotin oma funktio joka hoitaa collisionit ja liikkeen
-		MoveAndSlide();
+		Velocity = tempVelocity;		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
+		MoveAndSlide();					// MoveAndSlide on Godotin oma funktio joka hoitaa collisionit ja liikkeen
 	}
 }

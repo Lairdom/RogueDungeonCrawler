@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dk4thlonya37j"]
+[gd_scene load_steps=6 format=3 uid="uid://dk4thlonya37j"]
 
 [ext_resource type="Script" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.cs" id="1_sifar"]
+[ext_resource type="Script" path="res://Scripts/EnemyStats.cs" id="2_foepo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m1k0d"]
 albedo_color = Color(0.192157, 0, 0, 1)
@@ -21,3 +22,8 @@ mesh = SubResource("SphereMesh_w1fp4")
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_8n7nv")
+
+[node name="EnemyHandler" type="Node3D" parent="."]
+script = ExtResource("2_foepo")
+maxHealth = 300
+currentHealth = 300
