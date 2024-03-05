@@ -46,4 +46,3 @@ shadow_bias = 1.669
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.29059, 0.733297, 2.10749)
 
 [node name="GameManager" parent="." instance=ExtResource("4_cnyn2")]
-playerHealth = 50

@@ -5,5 +5,5 @@
 [node name="GameManager" type="Node3D"]
 script = ExtResource("1_ufaug")
 playerMaxHealth = 100
-playerHealth = 21
+playerHealth = 100
 attackPower = 32
