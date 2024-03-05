@@ -25,5 +25,7 @@ shape = SubResource("SphereShape3D_8n7nv")
 
 [node name="EnemyHandler" type="Node3D" parent="."]
 script = ExtResource("2_foepo")
-maxHealth = 300
-currentHealth = 300
+maxHealth = 100
+currentHealth = 100
+
+[connection signal="DeathSignal" from="EnemyHandler" to="." method="OnDeath"]

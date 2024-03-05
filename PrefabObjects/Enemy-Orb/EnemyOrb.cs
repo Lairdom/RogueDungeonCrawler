@@ -6,14 +6,23 @@ public partial class EnemyOrb : CharacterBody3D
 {
 	Node3D player = default;
 	Vector3 playerDirection;
+	bool alive = true;
 	float playerDistance;
 	PackedScene bulletScene = ResourceLoader.Load("res://PrefabObjects/Enemy-Orb/Bullet.tscn") as PackedScene;
 	float shootTimer = 0;
 	bool shooting = false;
 	Node3D root = default;
+	Node3D statHandler = default;
+
+	// Signaali joka saadaan kun health putoaa alle 0
+	public void OnDeath(float deathDelayTime) {
+		// Death animations
+		QueueFree();
+	}
 
 	public void TakeDamage(int dmg) {
 		Debug.Print("Took "+dmg+" damage");
+		statHandler.CallDeferred("ChangeHealth", dmg);
 	}
 
 	void SpawnBullet() {
@@ -25,7 +34,8 @@ public partial class EnemyOrb : CharacterBody3D
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		root = GetNode<Node3D>("/root/World");
+		statHandler = GetNode<Node3D>("EnemyHandler");
+		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Node3D>("/root/World/Player");
 		if (player != null) {
 			Debug.Print("Player detected");
