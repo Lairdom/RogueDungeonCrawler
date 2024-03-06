@@ -10,12 +10,18 @@ public partial class Player : CharacterBody3D
 {
 	GameManager GM;
 	[Export]public float moveSpeed = 75.0f;
-	[Export]public float attackDuration = 3.0f;
+	float attackDuration = 3.0f;
 	const float JUMPVELOCITY = 4.5f;
 	Area3D playerRange = default;
 	StaticBody3D playerShield = default;
 	Area3D attackCollider = default;
 	CollisionShape3D atkCollShape = default;
+	AudioStreamPlayer voiceAudioSource = default;
+	AudioStreamPlayer sfxAudioSource = default;
+	[ExportGroup ("Audio Clips")]
+	[Export] AudioStreamOggVorbis playerHit;
+	[Export] AudioStreamOggVorbis playerDeath, playerRaiseShield, footSteps, shieldHit, weaponSwing;						// insert clips via the inspector
+	bool voicePlaying, sfxPlaying;
 	bool examine = false;
 	Node3D target = default;
 	int objectsInRange = 0;
@@ -38,8 +44,14 @@ public partial class Player : CharacterBody3D
 
 	public void PlayerDeath() {
 		alive = false;
+		PlayAudioOnce(playerDeath, "Voice", -10);
 		Hide();
 		Debug.Print("You died");
+	}
+
+	public void PlayerTakeDamage(int damage) {
+		GM.ChangePlayerHealth(-damage);
+		PlayAudioOnce(playerHit, "Voice", -20);
 	}
 	
 	// Signaali joka saadaan kun objekti on pelaajan edessä
@@ -102,6 +114,33 @@ public partial class Player : CharacterBody3D
 		}
 	}
 
+	// Ääniefektien käynnistäminen
+	private void PlayAudioOnce(AudioStreamOggVorbis clip, string type, int volume) {
+		if (type == "Voice" && (!voicePlaying || voiceAudioSource.Playing && voiceAudioSource.Stream != clip)) {
+			//Debug.Print("Old Audio: "+voiceAudioSource.Stream+", New Audio: "+clip);
+			voiceAudioSource.Stream = clip;
+			voiceAudioSource.VolumeDb = volume;
+			voiceAudioSource.Play();
+			voicePlaying = true;
+		}
+		else if (type == "SFX" && (!sfxPlaying || sfxAudioSource.Playing && sfxAudioSource.Stream != clip)) {
+			sfxAudioSource.Stream = clip;
+			sfxAudioSource.VolumeDb = volume;
+			sfxAudioSource.Play();
+			sfxPlaying = true;
+		}
+	}
+
+	// Signaali joka saadaan kun ääni on viety loppuun
+	private void OnVoiceAudioFinished() {
+		voicePlaying = false;
+	}
+
+	// Signaali joka saadaan kun ääni on viety loppuun
+	private void OnSFXAudioFinished() {
+		sfxPlaying = false;
+	}
+
 	// AttackCollider kytkeminen päälle ja pois
 	private async void AttackColliderOnOff(float secs) {
 		await ToSignal(GetTree().CreateTimer(secs), "timeout");			// vastaa Unityn yield WaitForSeconds()
@@ -116,6 +155,8 @@ public partial class Player : CharacterBody3D
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		playerRange = GetNode<Area3D>("PlayerRange");
 		ukkeli = GetNode<Node3D>("ukkeli");
+		voiceAudioSource = GetNode<AudioStreamPlayer>("VoiceAudioPlayer");
+		sfxAudioSource = GetNode<AudioStreamPlayer>("SFXAudioPlayer");
 		playerShield = GetNode<StaticBody3D>("ShieldCollider");
 		playerShield.Hide();
 		attackCollider = GetNode<Area3D>("AttackCollider");
@@ -147,6 +188,7 @@ public partial class Player : CharacterBody3D
 				attackCollider.Position = atkCollPositions[stanceIndex];
 				atkCollShape.Scale = atkCollSizes[stanceIndex];
 				float delay = 0;								// aika joka odotetaan ennen kuin laitetaan attackCollider päälle
+				PlayAudioOnce(weaponSwing, "SFX", -20);
 				if (stanceIndex == 0) {
 					//Debug.Print("Slashing Attack!");
 					attackDuration = 1f;
@@ -182,12 +224,11 @@ public partial class Player : CharacterBody3D
 			// Block ('RightClick')
 			// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
 			if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
-				//Debug.Print("Shield is up");
+				PlayAudioOnce(playerRaiseShield, "Voice", -30);
 				_animPlayer.Play("kilpiBlock");
 				shieldIsUp = true;
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking) {
-				//Debug.Print("Shield is down");
 				_animPlayer.Play("kilpiDown");
 				shieldIsUp = false;
 			}
@@ -237,12 +278,15 @@ public partial class Player : CharacterBody3D
 			if (direction != Vector3.Zero && !attacking && !shieldIsUp) {
 				tempVelocity.X = direction.X * moveSpeed * delta;
 				tempVelocity.Z = direction.Z * moveSpeed * delta;
-				_animPlayer.Play("walkMiekkaKilpi");
+				if (IsOnFloor()) {
+					PlayAudioOnce(footSteps, "SFX", -20);
+					_animPlayer.Play("walkMiekkaKilpi");
+				}
 			}
 			else {
 				tempVelocity.X = direction.X * 0;
 				tempVelocity.Z = direction.Z * 0;
-				if (!attacking && !shieldIsUp)				
+				if (!attacking && !shieldIsUp && IsOnFloor())				
 					_animPlayer.Play("Idle");
 			}
 			Velocity = tempVelocity;		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi

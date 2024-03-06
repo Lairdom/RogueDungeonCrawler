@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 public partial class EnemyOrb : CharacterBody3D
 {
+	[Export] float firingDelay;
 	GameManager GM;
 	Node3D player = default;
 	Vector3 playerDirection;
@@ -41,8 +42,8 @@ public partial class EnemyOrb : CharacterBody3D
 		statHandler = GetNode<EnemyStats>("EnemyHandler");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
-		if (player != null) {
-			Debug.Print("Player detected");
+		if (GM == null || root == null || player == null) {
+			Debug.Print("Null value");
 		}
 	}
 
@@ -57,7 +58,7 @@ public partial class EnemyOrb : CharacterBody3D
 			if (playerDistance < 5 && shootTimer <= 0 && GM.playerAlive) {
 				shooting = true;
 				SpawnBullet();
-				shootTimer = 2;
+				shootTimer = firingDelay;
 			}
 			shootTimer -= delta;
 			if (shootTimer <= 0)

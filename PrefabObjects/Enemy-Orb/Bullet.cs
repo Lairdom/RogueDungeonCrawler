@@ -4,16 +4,13 @@ using System.Diagnostics;
 
 public partial class Bullet : Area3D
 {
-	public int damage = 20;
+	public int damage;
 	float timer = 5;
-	GameManager GM = default;
-	
+	Player player;
 
 	private void OnHit(Node3D body) {
 		if (body.Name == "Player") {
-			Debug.Print("Player hit.");
-			GM.ChangePlayerHealth(-damage);
-			Debug.Print("Health: "+GM.playerHealth);
+			player.PlayerTakeDamage(damage);
 		}
 		else if (body.Name == "ShieldCollider") {
 			Debug.Print("Shield hit. *play ricochet SFX");
@@ -24,7 +21,7 @@ public partial class Bullet : Area3D
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
+		player = GetNodeOrNull<Player>("/root/World/Player");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,8 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://i1qlsccl6rnj"]
+[gd_scene load_steps=18 format=3 uid="uid://i1qlsccl6rnj"]
 
 [ext_resource type="Script" path="res://PrefabObjects/Player/Player.cs" id="1_4qqyh"]
+[ext_resource type="AudioStream" uid="uid://nkwdb1l1gmot" path="res://Audio/SoundEffects/PlayerHit1.ogg" id="2_cnarf"]
 [ext_resource type="Script" path="res://PrefabObjects/Player/Camera.cs" id="2_spow2"]
 [ext_resource type="PackedScene" uid="uid://0h6kklgk342d" path="res://3DObjects/ukkeli.tscn" id="3_625oo"]
+[ext_resource type="AudioStream" uid="uid://bads62jqx3d7o" path="res://Audio/SoundEffects/PlayerDeath1.ogg" id="3_f87ft"]
+[ext_resource type="AudioStream" uid="uid://djmmxwuhathap" path="res://Audio/SoundEffects/PlayerRaiseShield1.ogg" id="4_ilwjw"]
+[ext_resource type="AudioStream" uid="uid://b7wf3h03hyc4n" path="res://Audio/SoundEffects/RockyFootsteps.ogg" id="5_e4mxd"]
+[ext_resource type="AudioStream" uid="uid://kbgf3m75pg5d" path="res://Audio/SoundEffects/ShieldHit1.ogg" id="6_6nmip"]
+[ext_resource type="AudioStream" uid="uid://dhsb7ro07kgf2" path="res://Audio/SoundEffects/WeaponSwing.ogg" id="7_m2g7b"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xbq1"]
 radius = 0.15
@@ -34,6 +40,12 @@ _data = {
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_4qqyh")
+playerHit = ExtResource("2_cnarf")
+playerDeath = ExtResource("3_f87ft")
+playerRaiseShield = ExtResource("4_ilwjw")
+footSteps = ExtResource("5_e4mxd")
+shieldHit = ExtResource("6_6nmip")
+weaponSwing = ExtResource("7_m2g7b")
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_0xbq1")
@@ -95,6 +107,13 @@ libraries = {
 [node name="ukkeli" parent="." instance=ExtResource("3_625oo")]
 transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, 0, -0.295473, 0)
 
+[node name="VoiceAudioPlayer" type="AudioStreamPlayer" parent="."]
+max_polyphony = 6
+
+[node name="SFXAudioPlayer" type="AudioStreamPlayer" parent="."]
+
 [connection signal="body_entered" from="PlayerRange" to="." method="OnPlayerRangeEntered"]
 [connection signal="body_exited" from="PlayerRange" to="." method="OnPlayerRangeExited"]
 [connection signal="body_entered" from="AttackCollider" to="." method="OnAttackColliderEntered"]
+[connection signal="finished" from="VoiceAudioPlayer" to="." method="OnVoiceAudioFinished"]
+[connection signal="finished" from="SFXAudioPlayer" to="." method="OnSFXAudioFinished"]
