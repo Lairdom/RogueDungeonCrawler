@@ -46,7 +46,7 @@ public partial class Player : CharacterBody3D
 	public void PlayerDeath() {
 		alive = false;
 		PlayAudioOnce(playerDeath, "Voice", -10);
-		Hide();
+		_animPlayer.Play("Death");
 		Debug.Print("You died");
 	}
 
