@@ -288,7 +288,7 @@ public partial class Player : CharacterBody3D
 				tempVelocity.Z = direction.Z * moveSpeed * delta;
 				if (IsOnFloor()) {
 					PlayAudioOnce(footSteps, "SFX", -20);
-					_animPlayer.Play("walkMiekkaKilpi");
+					_animPlayer.Play("walk");
 				}
 			}
 			else {
