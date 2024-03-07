@@ -5,7 +5,7 @@ using System.Diagnostics;
 public partial class EnemyStats : Node3D
 {
 	[Export] int maxHealth;
-	[Export] int currentHealth;
+	[Export] public int currentHealth;
 	[Export] public int damage;
 	[Export(PropertyHint.Flags, "Slashing,Piercing,Bludgeoning")] int weakness;
 	[Signal] public delegate void DeathSignalEventHandler(float deathDelayTime);
@@ -15,7 +15,7 @@ public partial class EnemyStats : Node3D
 
 		// Palautetaan true jos health on yli 0 ja false jos alle
 		if (currentHealth <= 0) {
-			EmitSignal(SignalName.DeathSignal, 0.1f);
+			EmitSignal(SignalName.DeathSignal, 0.5f);
 		}
 	}
 

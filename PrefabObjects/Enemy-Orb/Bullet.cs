@@ -13,7 +13,7 @@ public partial class Bullet : Area3D
 			player.PlayerTakeDamage(damage);
 		}
 		else if (body.Name == "ShieldCollider") {
-			Debug.Print("Shield hit. *play ricochet SFX");
+			player.ShieldHit();
 		}
 		//Free(); 		// Deletes node immediately
 		QueueFree();	// Deletes Node after all its DeferredCalls have ended

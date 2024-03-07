@@ -42,6 +42,7 @@ public partial class Player : CharacterBody3D
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
+	// Funktio jota kutsutaan kun pelaajan health laskee alle 0
 	public void PlayerDeath() {
 		alive = false;
 		PlayAudioOnce(playerDeath, "Voice", -10);
@@ -49,9 +50,16 @@ public partial class Player : CharacterBody3D
 		Debug.Print("You died");
 	}
 
+	// Funktio jota kutsutaan vihollisten osuttua Playeriin
 	public void PlayerTakeDamage(int damage) {
 		GM.ChangePlayerHealth(-damage);
-		PlayAudioOnce(playerHit, "Voice", -20);
+		if (GM.playerHealth > 0)
+			PlayAudioOnce(playerHit, "Voice", -20);
+	}
+
+	// Funktio jota kutsutaan vihollisten osuttua pelaajan kilpeen
+	public void ShieldHit() {
+		PlayAudioOnce(shieldHit, "SFX", -10);
 	}
 	
 	// Signaali joka saadaan kun objekti on pelaajan edessä
@@ -224,7 +232,7 @@ public partial class Player : CharacterBody3D
 			// Block ('RightClick')
 			// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
 			if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
-				PlayAudioOnce(playerRaiseShield, "Voice", -30);
+				//PlayAudioOnce(playerRaiseShield, "Voice", -30);
 				_animPlayer.Play("kilpiBlock");
 				shieldIsUp = true;
 			}

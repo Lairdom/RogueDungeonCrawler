@@ -6,7 +6,7 @@ public partial class EnemyOrb : CharacterBody3D
 {
 	[Export] float firingDelay;
 	GameManager GM;
-	Node3D player = default;
+	Player player = default;
 	Vector3 playerDirection;
 	bool alive = true;
 	float playerDistance;
@@ -15,31 +15,49 @@ public partial class EnemyOrb : CharacterBody3D
 	bool shooting = false;
 	Node3D root = default;
 	EnemyStats statHandler = default;
+	AudioStreamPlayer3D audioSource = default;
+	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis fireBall = ResourceLoader.Load("res://Audio/SoundEffects/EnemyFireball1.ogg") as AudioStreamOggVorbis;
 
 	// Signaali joka saadaan kun health putoaa alle 0
-	public void OnDeath(float deathDelayTime) {
+	public async void OnDeath(float deathDelayTime) {
 		alive = false;
+		PlayAudioOnce(deathSound, -20);
 		// Death animations
+		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
 		QueueFree();
 	}
 
+	// Signaali joka saadaan kun vihollinen ottaa damagea
 	public void TakeDamage(int dmg) {
-		Debug.Print("Took "+dmg+" damage");
-		statHandler.CallDeferred("ChangeHealth", dmg);
+		statHandler.ChangeHealth(dmg);
+		if (statHandler.currentHealth > 0) {
+			PlayAudioOnce(hitSound, -20);
+		}
 	}
 
-	void SpawnBullet() {
+	// Luodaan ammus
+	private void SpawnBullet() {
 		Bullet bulletInstance = (Bullet) bulletScene.Instantiate();
 		bulletInstance.damage = statHandler.damage;
 		bulletInstance.Position = Position;
 		bulletInstance.Rotation = Rotation;
 		root.AddChild(bulletInstance);
+		PlayAudioOnce(fireBall, -20);
+	}
+
+	private void PlayAudioOnce(AudioStreamOggVorbis clip, int volume) {
+		audioSource.Stream = clip;
+		audioSource.VolumeDb = volume;
+		audioSource.Play();
 	}
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		statHandler = GetNode<EnemyStats>("EnemyHandler");
+		audioSource = GetNode<AudioStreamPlayer3D>("AudioPlayer");
+		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
 		if (GM == null || root == null || player == null) {
