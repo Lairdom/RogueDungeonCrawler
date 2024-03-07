@@ -4,19 +4,19 @@ using System;
 public partial class ScreenUI : CanvasLayer
 {
     // Health bar
-    ProgressBar healthBar;
+    [Export] public ProgressBar healthBar;
 
     // Stance indication
-    Label stanceLabel;
+    [Export] public Label stanceLabel;
 
     // Current weapon
-    Label weaponLabel;
+    [Export] public Label weaponLabel;
 
     // Passive skills
-    Label passiveSkillsLabel;
+    [Export] public Label passiveSkillsLabel;
 
-	public override void _Ready(){
-		// Find UI elements by their names
+    public override void _Ready(){
+        // Find UI elements by their names
         healthBar = GetNode<ProgressBar>("HealthBar");
         stanceLabel = GetNode<Label>("StanceLabel");
         weaponLabel = GetNode<Label>("WeaponLabel");
@@ -24,6 +24,9 @@ public partial class ScreenUI : CanvasLayer
 
         // Initialize UI elements
         InitializeUI();
+
+        // Connect to the signal emitted by GameManager
+        GetNode<GameManager>("/root/World/GameManager").Connect(nameof(GameManager.PlayerHealthChangedEventHandler), new Callable(this, nameof(OnPlayerHealthChanged)));
     }
 
     private void InitializeUI() {
@@ -54,8 +57,13 @@ public partial class ScreenUI : CanvasLayer
         passiveSkillsLabel.Text = newSkills;
     }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
+    // Called when player health changes
+    private void OnPlayerHealthChanged(float currentHealth, float maxHealth) {
+        UpdateHealthBar(currentHealth, maxHealth);
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
+    {
+    }
 }

@@ -1,11 +1,44 @@
-[gd_scene load_steps=5 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=6 format=3 uid="uid://vedxskexn6fl"]
 
+[ext_resource type="Script" path="res://Scripts/ScreenUI.cs" id="1_gin83"]
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
 [ext_resource type="MeshLibrary" uid="uid://bj38xbwnt4c42" path="res://3DObjects/Room_tileset/tileset.tres" id="1_xmco2"]
 [ext_resource type="PackedScene" uid="uid://dk4thlonya37j" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn" id="2_bvxjl"]
 [ext_resource type="PackedScene" uid="uid://banq5fsry5yoq" path="res://PrefabObjects/game_manager.tscn" id="4_cnyn2"]
 
 [node name="World" type="Node3D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." node_paths=PackedStringArray("healthBar", "stanceLabel", "weaponLabel", "passiveSkillsLabel")]
+script = ExtResource("1_gin83")
+healthBar = NodePath("HealthBar")
+stanceLabel = NodePath("CurrentStance")
+weaponLabel = NodePath("CurrentWeapon")
+passiveSkillsLabel = NodePath("PassiveSkills")
+
+[node name="HealthBar" type="ProgressBar" parent="CanvasLayer"]
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 354.0
+offset_bottom = 59.0
+value = 100.0
+
+[node name="CurrentStance" type="Label" parent="CanvasLayer"]
+offset_left = 31.0
+offset_top = 599.0
+offset_right = 203.0
+offset_bottom = 622.0
+
+[node name="CurrentWeapon" type="Label" parent="CanvasLayer"]
+offset_left = 1002.0
+offset_top = 595.0
+offset_right = 1100.0
+offset_bottom = 618.0
+
+[node name="PassiveSkills" type="Label" parent="CanvasLayer"]
+offset_left = 905.0
+offset_top = 30.0
+offset_right = 1110.0
+offset_bottom = 53.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.607376, -0.333219, 0.721152, 0, 0.907777, 0.419452, -0.794415, 0.254765, -0.551362, 4.31237, 1.82015, -4.49467)

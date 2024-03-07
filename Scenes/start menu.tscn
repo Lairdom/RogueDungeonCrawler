@@ -11,11 +11,9 @@
 [ext_resource type="Texture2D" uid="uid://r0kf0knudokw" path="res://Images/Exit (3).png" id="9_qopwx"]
 [ext_resource type="Texture2D" uid="uid://dwb2l81po5q1v" path="res://Images/Exit (2).png" id="10_0ol3k"]
 
-[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("start", "help", "exit")]
+[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("start")]
 script = ExtResource("1_tb8y0")
 start = NodePath("Control/start")
-help = NodePath("")
-exit = NodePath("")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
