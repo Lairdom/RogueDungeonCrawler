@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://7c1hfmv45u3i"]
+
+[ext_resource type="PackedScene" uid="uid://dst15qq6aw4hm" path="res://3DObjects/Doors/doors.glb" id="1_yfoto"]
+
+[node name="doors" instance=ExtResource("1_yfoto")]
+
+[node name="Door" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0854759, 0.939664, -1.41407)
+visible = false
+
+[node name="StaticBody3D" parent="Door" index="0"]
+visible = false
+
+[node name="CollisionShape3D" parent="Door/StaticBody3D" index="0"]
+visible = false

@@ -1,19 +1,80 @@
-[gd_scene load_steps=6 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=11 format=3 uid="uid://vedxskexn6fl"]
 
 [ext_resource type="Script" path="res://Scripts/ScreenUI.cs" id="1_gin83"]
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
 [ext_resource type="MeshLibrary" uid="uid://bj38xbwnt4c42" path="res://3DObjects/Room_tileset/tileset.tres" id="1_xmco2"]
 [ext_resource type="PackedScene" uid="uid://dk4thlonya37j" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn" id="2_bvxjl"]
 [ext_resource type="PackedScene" uid="uid://banq5fsry5yoq" path="res://PrefabObjects/game_manager.tscn" id="4_cnyn2"]
+[ext_resource type="PackedScene" uid="uid://dad2oisp1e5ov" path="res://3DObjects/Doors/door_L.tscn" id="6_wsbns"]
+[ext_resource type="PackedScene" uid="uid://7c1hfmv45u3i" path="res://3DObjects/Doors/door_R.tscn" id="7_6pu8r"]
+
+[sub_resource type="Animation" id="Animation_bna74"]
+resource_name = "open"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DoorHinge_L:rotation:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1.5708, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DoorHinge_R:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, -1.5708, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="Animation" id="Animation_v08fg"]
+resource_name = "close"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DoorHinge_L:rotation:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1.5708, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("DoorHinge_R")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array()
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("DoorHinge_R:rotation:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(-1.5708, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ihdjd"]
+_data = {
+"close": SubResource("Animation_v08fg"),
+"open": SubResource("Animation_bna74")
+}
 
 [node name="World" type="Node3D"]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." node_paths=PackedStringArray("healthBar", "stanceLabel", "weaponLabel", "passiveSkillsLabel")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 script = ExtResource("1_gin83")
-healthBar = NodePath("HealthBar")
-stanceLabel = NodePath("CurrentStance")
-weaponLabel = NodePath("CurrentWeapon")
-passiveSkillsLabel = NodePath("PassiveSkills")
 
 [node name="HealthBar" type="ProgressBar" parent="CanvasLayer"]
 offset_left = 32.0
@@ -79,3 +140,22 @@ shadow_bias = 1.669
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.29059, 0.733297, 2.10749)
 
 [node name="GameManager" parent="." instance=ExtResource("4_cnyn2")]
+
+[node name="Doors" type="Node3D" parent="."]
+
+[node name="DoorHinge_L" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.00868, 0, 1.00033)
+
+[node name="door_L" parent="Doors/DoorHinge_L" instance=ExtResource("6_wsbns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0373449, 0, -0.501128)
+
+[node name="DoorHinge_R" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.02889, 0, -0.99999)
+
+[node name="door_R" parent="Doors/DoorHinge_R" instance=ExtResource("7_6pu8r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0165606, 0, 1.51238)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Doors"]
+libraries = {
+"": SubResource("AnimationLibrary_ihdjd")
+}
