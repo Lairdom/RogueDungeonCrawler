@@ -237,7 +237,6 @@ public partial class Player : CharacterBody3D
 				shieldIsUp = true;
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking) {
-				_animPlayer.Play("kilpiDown");
 				shieldIsUp = false;
 			}
 			
