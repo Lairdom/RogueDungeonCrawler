@@ -26,7 +26,7 @@ public partial class GameManager : Node3D
         }
 
         // Emit the signal to notify UI about the health change
-        EmitSignal(nameof(PlayerHealthChangedEventHandler), playerHealth, playerMaxHealth);
+        EmitSignal(SignalName.PlayerHealthChanged, playerHealth, playerMaxHealth);
     }
 
     // Called when the node enters the scene tree for the first time.

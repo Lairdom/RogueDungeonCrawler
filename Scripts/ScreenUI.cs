@@ -26,7 +26,7 @@ public partial class ScreenUI : CanvasLayer
 		InitializeUI();
 
 		// Connect to the signal emitted by GameManager
-		GetNode<GameManager>("/root/World/GameManager").Connect(nameof(GameManager.PlayerHealthChangedEventHandler), new Callable(this, nameof(OnPlayerHealthChanged)));
+		GetNode<GameManager>("/root/World/GameManager").Connect(nameof(GameManager.PlayerHealthChanged), new Callable(this, nameof(OnPlayerHealthChanged)));
 	}
 
 	private void InitializeUI() {
