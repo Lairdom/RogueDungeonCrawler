@@ -10,7 +10,6 @@ public partial class EnemyOrb : CharacterBody3D
 	Vector3 playerDirection;
 	bool alive = true;
 	float playerDistance;
-	PackedScene bulletScene = ResourceLoader.Load("res://PrefabObjects/Enemy-Orb/Bullet.tscn") as PackedScene;
 	float shootTimer = 0;
 	bool shooting = false;
 	Node3D root = default;
@@ -19,6 +18,7 @@ public partial class EnemyOrb : CharacterBody3D
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis fireBall = ResourceLoader.Load("res://Audio/SoundEffects/EnemyFireball1.ogg") as AudioStreamOggVorbis;
+	PackedScene bulletScene = ResourceLoader.Load("res://PrefabObjects/Enemy-Orb/Bullet.tscn") as PackedScene;
 
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {

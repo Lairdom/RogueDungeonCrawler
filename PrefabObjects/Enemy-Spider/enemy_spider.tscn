@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://bcpc5qjw1j64q"]
+
+[ext_resource type="Script" path="res://PrefabObjects/Enemy-Spider/EnemySpider.cs" id="1_xgb2t"]
+[ext_resource type="Script" path="res://Scripts/EnemyStats.cs" id="2_i1g68"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0axd7"]
+albedo_color = Color(0.321569, 0.0352941, 0.0392157, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_he058"]
+material = SubResource("StandardMaterial3D_0axd7")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ys4w5"]
+
+[node name="Enemy-Spider" type="CharacterBody3D"]
+script = ExtResource("1_xgb2t")
+
+[node name="OrbMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_he058")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_ys4w5")
+
+[node name="Pathfinding" type="NavigationAgent3D" parent="."]
+
+[node name="EnemyHandler" type="Node3D" parent="."]
+script = ExtResource("2_i1g68")
+maxHealth = 50
+currentHealth = 50
+damage = 12
+movementSpeed = 80.0
+weakness = 1

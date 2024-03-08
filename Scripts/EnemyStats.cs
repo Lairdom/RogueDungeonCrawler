@@ -7,6 +7,7 @@ public partial class EnemyStats : Node3D
 	[Export] int maxHealth;
 	[Export] public int currentHealth;
 	[Export] public int damage;
+	[Export] public float movementSpeed;
 	[Export(PropertyHint.Flags, "Slashing,Piercing,Bludgeoning")] int weakness;
 	[Signal] public delegate void DeathSignalEventHandler(float deathDelayTime);
 	
