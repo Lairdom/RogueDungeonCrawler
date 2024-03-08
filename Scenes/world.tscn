@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=12 format=3 uid="uid://vedxskexn6fl"]
 
 [ext_resource type="Script" path="res://Scripts/ScreenUI.cs" id="1_gin83"]
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dk4thlonya37j" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn" id="2_bvxjl"]
 [ext_resource type="PackedScene" uid="uid://banq5fsry5yoq" path="res://PrefabObjects/game_manager.tscn" id="4_cnyn2"]
 [ext_resource type="PackedScene" uid="uid://dad2oisp1e5ov" path="res://3DObjects/Doors/door_L.tscn" id="6_wsbns"]
+[ext_resource type="Script" path="res://Scripts/Door.cs" id="6_y45kg"]
 [ext_resource type="PackedScene" uid="uid://7c1hfmv45u3i" path="res://3DObjects/Doors/door_R.tscn" id="7_6pu8r"]
 
 [sub_resource type="Animation" id="Animation_v08fg"]
@@ -142,6 +143,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.29059, 0.733297, 2.10749)
 [node name="GameManager" parent="." instance=ExtResource("4_cnyn2")]
 
 [node name="Doors" type="Node3D" parent="."]
+script = ExtResource("6_y45kg")
 
 [node name="DoorHinge_L" type="Node3D" parent="Doors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.00868, 0, 1.00033)
