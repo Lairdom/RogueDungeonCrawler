@@ -16,7 +16,7 @@ public partial class Camera : Node3D
 	public bool lookMode = false;
 
 	// Otetaan vastaan inputEvent. _Input on Godotin sisäänrakennettu funktio
-    public override void _Input(InputEvent tapahtuma) {
+	public override void _Input(InputEvent tapahtuma) {
 		// Tarkastetaan että event on hiiren liikkuminen
 		if (tapahtuma is InputEventMouseMotion) {
 			InputEventMouseMotion mouse = (InputEventMouseMotion) tapahtuma;
@@ -32,9 +32,9 @@ public partial class Camera : Node3D
 			else
 				camRotV += -mouse.Relative.Y;
 		}
-    }
+	}
 
-    public override void _Ready() {
+	public override void _Ready() {
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		player = GetParent<Player>();
 		H = GetNode<Node3D>("Horizontal");
