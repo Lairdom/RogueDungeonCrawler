@@ -12,14 +12,13 @@ public partial class ScreenUI : CanvasLayer
 	// Passive skills
 	[Export] public Label passiveSkillsLabel;
 	private string[] stanceTexts = { "Slashing", "Piercing", "Bludgeoning" };
-	// private Player player; (not in use at the moment)
+	// private Player player; // (not in use at the moment)
 
 	private void InitializeUI() {
 		// Set initial values for UI elements
 		healthBar.Value = 100; // Example health value
-		// this doesn't work as intended, label goes from slashing to piercing to back to slashing and then starts to work normally
 		UpdateStanceLabel(stanceTexts[0]); // Initialize stance label with the first stance
-		// and this commented version breaks the whole UI
+		// This commented version breaks the whole UI
 		// UpdateStanceLabel(player.stance[0]); // Initialize stance label with the first stance from Player.cs
 		weaponLabel.Text = "Sword"; // Example weapon
 		passiveSkillsLabel.Text = "None"; // Example passive skills
