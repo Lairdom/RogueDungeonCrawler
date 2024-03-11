@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 public partial class Player : CharacterBody3D
 {
+	[Signal] public delegate void StanceChangedEventHandler(string newStance);
 	GameManager GM;
 	[Export]public float moveSpeed = 75.0f;
 	float attackDuration = 3.0f;
@@ -159,6 +160,14 @@ public partial class Player : CharacterBody3D
 		attackCollider.Hide();
 	}
 
+		private void ChangeStance()
+	{
+		// Increase the stance index or loop back to the first stance
+		stanceIndex = (stanceIndex + 1) % stance.Length;
+		// Emit the StanceChanged signal with the new stance
+		EmitSignal("StanceChanged", stance[stanceIndex]);
+	}
+
 	public override void _Ready() {
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		playerRange = GetNode<Area3D>("PlayerRange");
@@ -248,6 +257,7 @@ public partial class Player : CharacterBody3D
 			// StanceChange ('Q')
 			// Nappia painamalla voidaan vaihtaa stancea. Napin painallus muuttaa indexiä. Käydään läpi stance niminen string array jossa eri stancen nimet.
 			if (Input.IsActionJustPressed("StanceChange")) {
+				ChangeStance();
 				Debug.Print("Changed Stance");
 				if (stanceIndex < 2)
 					stanceIndex++;
