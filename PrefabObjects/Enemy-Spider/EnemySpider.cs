@@ -21,6 +21,7 @@ public partial class EnemySpider : CharacterBody3D
 	float lerpTimer;
 	float aggrRange;
 	bool idling;
+	private AnimationTree _animTree;
 	bool attacking;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
@@ -59,6 +60,7 @@ public partial class EnemySpider : CharacterBody3D
 	private async void SpiderAttack() {
 		attacking = true;
 		// SpiderAttack animations
+		_animTree.Set("parameters/OneShot/request", 1);
 		float animDuration = 1;
 		PlayAudioOnce(spiderAttack, -20);
 		await ToSignal(GetTree().CreateTimer(animDuration/2), "timeout");
@@ -111,6 +113,7 @@ public partial class EnemySpider : CharacterBody3D
 		audioSource = GetNode<AudioStreamPlayer3D>("AudioPlayer");
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		player = GetNodeOrNull<Player>("/root/World/Player");
 		if (GM == null || root == null || player == null) {
 			Debug.Print("Null value");
