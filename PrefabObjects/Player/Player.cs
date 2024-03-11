@@ -160,8 +160,7 @@ public partial class Player : CharacterBody3D
 		attackCollider.Hide();
 	}
 
-		private void ChangeStance()
-	{
+	private void ChangeStance() {
 		// Increase the stance index or loop back to the first stance
 		stanceIndex = (stanceIndex + 1) % stance.Length;
 		// Emit the StanceChanged signal with the new stance
@@ -180,7 +179,6 @@ public partial class Player : CharacterBody3D
 		atkCollShape = GetNode<CollisionShape3D>("AttackCollider/CollisionShape");
 		atkCollShape.Disabled = true;
 		attackCollider.Hide();
-		//Animaatiokoodi: yritän löytää ukkelin animationPlayerin
 		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
 		ChangeWeapon(curWeaponType);
 	}
@@ -257,13 +255,7 @@ public partial class Player : CharacterBody3D
 			// StanceChange ('Q')
 			// Nappia painamalla voidaan vaihtaa stancea. Napin painallus muuttaa indexiä. Käydään läpi stance niminen string array jossa eri stancen nimet.
 			if (Input.IsActionJustPressed("StanceChange")) {
-				ChangeStance();
-				Debug.Print("Changed Stance");
-				if (stanceIndex < 2)
-					stanceIndex++;
-				else
-					stanceIndex = 0;
-				
+				ChangeStance();			
 				Debug.Print("Current Stance: "+stance[stanceIndex]);
 			}
 

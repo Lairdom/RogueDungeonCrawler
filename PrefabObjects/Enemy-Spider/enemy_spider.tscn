@@ -12,6 +12,8 @@ material = SubResource("StandardMaterial3D_0axd7")
 [sub_resource type="SphereShape3D" id="SphereShape3D_ys4w5"]
 
 [node name="Enemy-Spider" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 43
 script = ExtResource("1_xgb2t")
 
 [node name="OrbMesh" type="MeshInstance3D" parent="."]
@@ -20,8 +22,6 @@ mesh = SubResource("SphereMesh_he058")
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_ys4w5")
 
-[node name="Pathfinding" type="NavigationAgent3D" parent="."]
-
 [node name="EnemyHandler" type="Node3D" parent="."]
 script = ExtResource("2_i1g68")
 maxHealth = 50
@@ -29,3 +29,9 @@ currentHealth = 50
 damage = 12
 movementSpeed = 80.0
 weakness = 1
+
+[node name="Pathfinding" type="NavigationAgent3D" parent="."]
+
+[node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
+
+[connection signal="DeathSignal" from="EnemyHandler" to="." method="OnDeath"]
