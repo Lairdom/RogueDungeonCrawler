@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bcpc5qjw1j64q"]
+[gd_scene load_steps=9 format=3 uid="uid://bcpc5qjw1j64q"]
 
 [ext_resource type="Script" path="res://PrefabObjects/Enemy-Spider/EnemySpider.cs" id="1_xgb2t"]
 [ext_resource type="Script" path="res://Scripts/EnemyStats.cs" id="2_i1g68"]
@@ -9,15 +9,32 @@ albedo_color = Color(0.321569, 0.0352941, 0.0392157, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_he058"]
 material = SubResource("StandardMaterial3D_0axd7")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tobhl"]
+albedo_color = Color(0.321569, 0.0352941, 0.0392157, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_83el4"]
+material = SubResource("StandardMaterial3D_tobhl")
+radius = 0.2
+height = 0.4
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_ys4w5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vp11x"]
 
 [node name="Enemy-Spider" type="CharacterBody3D"]
 collision_layer = 4
 collision_mask = 43
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
 script = ExtResource("1_xgb2t")
 
 [node name="OrbMesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_he058")
+
+[node name="HeadMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.637375)
+mesh = SubResource("SphereMesh_83el4")
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_ys4w5")
@@ -28,10 +45,20 @@ maxHealth = 50
 currentHealth = 50
 damage = 12
 movementSpeed = 80.0
+aggroRange = 2.0
 weakness = 1
+
+[node name="AttackCollider" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+collision_layer = 128
+collision_mask = 34
+
+[node name="Collider" type="CollisionShape3D" parent="AttackCollider"]
+shape = SubResource("BoxShape3D_vp11x")
 
 [node name="Pathfinding" type="NavigationAgent3D" parent="."]
 
 [node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
 
 [connection signal="DeathSignal" from="EnemyHandler" to="." method="OnDeath"]
+[connection signal="body_entered" from="AttackCollider" to="." method="OnAttackColliderEntered"]

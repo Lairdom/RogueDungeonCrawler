@@ -93,3 +93,4 @@ Weapon2={
 3d_physics/layer_5="Projectiles"
 3d_physics/layer_6="ShieldBlock"
 3d_physics/layer_7="PlayerAttack"
+3d_physics/layer_8="EnemyAttack"

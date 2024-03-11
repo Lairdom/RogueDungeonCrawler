@@ -9,6 +9,7 @@ public partial class EnemySpider : CharacterBody3D
 	Node3D root;
 	Vector3 playerDirection;
 	EnemyStats statHandler;
+	CollisionShape3D attackCollider;
 	AudioStreamPlayer3D audioSource;
 	bool isAlive = true;
 	float playerDistance;
@@ -17,6 +18,10 @@ public partial class EnemySpider : CharacterBody3D
 	float moveSpeed;
 	bool playerDetected = false;
 	float attackTimer;
+	float lerpTimer;
+	float aggrRange;
+	bool idling;
+	bool attacking;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/EnemyFireball1.ogg") as AudioStreamOggVorbis;
@@ -34,13 +39,44 @@ public partial class EnemySpider : CharacterBody3D
 		MovementTarget = movementTarget;
 	}
 
+	// Random patrol position
+	private async void RandomPatrolPosition(float waitTime) {
+		idling = true;
+		lerpTimer = 0;
+		await ToSignal(GetTree().CreateTimer(waitTime), "timeout");
+		idling = false;
+		int rng = GD.RandRange(1,5);
+		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;
+		Vector3 randomPosition = GetNodeOrNull<Node3D>(path).GlobalPosition;
+		Debug.Print(""+pathFinder.GetNextPathPosition());
+		movementTarget = randomPosition;
+		if (!pathFinder.IsTargetReachable()) {
+			Debug.Print("Target unreachable");
+		}
+	}
+
 	// Hämähäkin melee hyökkäys
 	private async void SpiderAttack() {
+		attacking = true;
 		// SpiderAttack animations
 		float animDuration = 1;
 		PlayAudioOnce(spiderAttack, -20);
-		await ToSignal(GetTree().CreateTimer(animDuration), "timeout");
-		// Create enemy attack collider
+		await ToSignal(GetTree().CreateTimer(animDuration/2), "timeout");
+		attackCollider.Disabled = false;
+		await ToSignal(GetTree().CreateTimer(animDuration/4), "timeout");
+		attackCollider.Disabled = true;
+		attacking = false;
+	}
+
+	// Signaali joka saadaan kun joko pelaaja tai shieldcollider on vihollisen hyökkäyscolliderin sisällä
+	private void OnAttackColliderEntered(Node3D body) {
+		Debug.Print("Collider entered: "+body.Name);
+		if (body.Name == "Player") {
+			player.PlayerTakeDamage(statHandler.damage);
+		}
+		else if (body.Name == "ShieldCollider") {
+			player.ShieldHit();
+		}
 	}
 
 	// Signaali joka saadaan kun health putoaa alle 0
@@ -71,6 +107,7 @@ public partial class EnemySpider : CharacterBody3D
 	public override void _Ready() {
 		pathFinder = GetNode<NavigationAgent3D>("Pathfinding");
 		statHandler = GetNode<EnemyStats>("EnemyHandler");
+		attackCollider = GetNode<CollisionShape3D>("AttackCollider/Collider");
 		audioSource = GetNode<AudioStreamPlayer3D>("AudioPlayer");
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
@@ -79,8 +116,9 @@ public partial class EnemySpider : CharacterBody3D
 			Debug.Print("Null value");
 		}
 		moveSpeed = statHandler.movementSpeed;
-		pathFinder.PathDesiredDistance = 0.2f;
-		pathFinder.TargetDesiredDistance = 0.2f;
+		aggrRange = statHandler.aggroRange;
+		pathFinder.PathDesiredDistance = 0.5f;
+		pathFinder.TargetDesiredDistance = 0.5f;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -90,14 +128,14 @@ public partial class EnemySpider : CharacterBody3D
 			Vector3 tempVelocity;
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
-			if (playerDistance < 5) {
+			if (playerDistance < aggrRange) {
 				playerDetected = true;
 			}
 			// Detects player
 			if (playerDetected == true) {
 				LookAt(player.GlobalPosition);
 				movementTarget = player.GlobalPosition;
-				if (playerDistance < 0.5f && attackTimer >= 2) {
+				if (playerDistance < 0.75f && attackTimer >= 2 && !attacking) {
 					SpiderAttack();
 					attackTimer = 0;
 					return;
@@ -108,25 +146,33 @@ public partial class EnemySpider : CharacterBody3D
 			// Moving around randomly or patrolling
 			else {
 				// Random Movement here
-				if (pathFinder.IsNavigationFinished()) {
-					return;
+				if (pathFinder.IsNavigationFinished() && !idling) {
+					RandomPatrolPosition(2.5f);
+				}
+				else if (Position.DistanceTo(pathFinder.GetNextPathPosition()) > 0.5f) {
+					LookAt(pathFinder.GetNextPathPosition());
+					// Lerp turning towards target
+					if (lerpTimer < 1)
+						lerpTimer += delta;
 				}
 			}
-			MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
-			Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
-			Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
-			tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
-			if (!IsOnFloor())
-				tempVelocity.Y -= gravity * delta;
-			if (tempVelocity == Vector3.Zero) {
-				// Idling animations
+			if (!attacking) {
+				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
+				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
+				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
+				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
+				if (!IsOnFloor())
+					tempVelocity.Y -= gravity * delta;
+				if (tempVelocity == Vector3.Zero) {
+					// Idling animations
+				}
+				else {
+					// Movement animations
+				}
+				// Liikkeen toteutus
+				Velocity = tempVelocity;
+				MoveAndSlide();
 			}
-			else {
-				// Movement animations
-			}
-			// Liikkeen toteutus
-			Velocity = tempVelocity;
-			MoveAndSlide();
 		}
 	}
 }
