@@ -35,6 +35,7 @@ public partial class Player : CharacterBody3D
 	float attackTimer = 0f;
 	Node3D ukkeli = default;
 	private AnimationPlayer _animPlayer;
+	private AnimationTree _animTree;
 	string[] weaponType = {"Sword", "Spear", "Mace"};
 	int curWeaponType = 0;					// currentWeaponType index. Indexiä vaihtamalla valitaan weaponType listasta asetyyppi
 	MeshInstance3D weaponMesh = default;
@@ -47,6 +48,7 @@ public partial class Player : CharacterBody3D
 	public void PlayerDeath() {
 		alive = false;
 		PlayAudioOnce(playerDeath, "Voice", -10);
+		_animTree.Set("parameters/death/blend_amount", 1.0);
 		_animPlayer.Play("Death");
 		Debug.Print("You died");
 	}
@@ -180,6 +182,7 @@ public partial class Player : CharacterBody3D
 		atkCollShape.Disabled = true;
 		attackCollider.Hide();
 		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		ChangeWeapon(curWeaponType);
 	}
 
@@ -207,18 +210,24 @@ public partial class Player : CharacterBody3D
 				if (stanceIndex == 0) {
 					//Debug.Print("Slashing Attack!");
 					attackDuration = 1f;
+					_animTree.Set("parameters/Stance/blend_amount", 0.0);
+					_animTree.Set("parameters/lyonti/request", 1);
 					_animPlayer.Play("miekkaSlash");
 					delay = 0.3f;
 				}
 				else if (stanceIndex == 1) {
 					//Debug.Print("Poking Attack!");
 					attackDuration = 1f;
+					_animTree.Set("parameters/Stance/blend_amount", -1.0);
+					_animTree.Set("parameters/lyonti/request", 1);
 					_animPlayer.Play("miekkaStab");
 					delay = 0.5f;
 				}
 				else if (stanceIndex == 2) {
 					//Debug.Print("Smashing Attack!");
 					attackDuration = 1f;
+					_animTree.Set("parameters/Stance/blend_amount", 1.0);
+					_animTree.Set("parameters/lyonti/request", 1);
 					_animPlayer.Play("miekkaBash");
 					delay = 0.4f;
 				}
@@ -240,10 +249,12 @@ public partial class Player : CharacterBody3D
 			// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
 			if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
 				//PlayAudioOnce(playerRaiseShield, "Voice", -30);
+				_animTree.Set("parameters/KilpiBlock/blend_amount", 1.0);
 				_animPlayer.Play("kilpiBlock");
 				shieldIsUp = true;
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking) {
+				_animTree.Set("parameters/KilpiBlock/blend_amount", 0.0);
 				shieldIsUp = false;
 			}
 			
@@ -284,11 +295,12 @@ public partial class Player : CharacterBody3D
 			direction = direction.Normalized();		// Asetetaan vectorin suuruudeksi 1
 
 			// Toteutetaan liike, jos direction on 0 niin pysäytetään pelaaja
-			if (direction != Vector3.Zero && !attacking && !shieldIsUp) {
+			if (direction != Vector3.Zero) {
 				tempVelocity.X = direction.X * moveSpeed * delta;
 				tempVelocity.Z = direction.Z * moveSpeed * delta;
 				if (IsOnFloor()) {
 					PlayAudioOnce(footSteps, "SFX", -20);
+					_animTree.Set("parameters/IdleWalk/blend_amount", 1.0);
 					_animPlayer.Play("walk");
 				}
 			}
@@ -297,6 +309,7 @@ public partial class Player : CharacterBody3D
 				tempVelocity.Z = direction.Z * 0;
 				if (!attacking && !shieldIsUp && IsOnFloor())				
 					_animPlayer.Play("Idle");
+					_animTree.Set("parameters/IdleWalk/blend_amount", 0.0);
 			}
 			Velocity = tempVelocity;		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
 			MoveAndSlide();					// MoveAndSlide on Godotin oma funktio joka hoitaa collisionit ja liikkeen
