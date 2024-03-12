@@ -50,10 +50,10 @@ public partial class ScreenUI : CanvasLayer
 	}
 
 	private void OnStanceChanged(string newStance)
-    {
-        // Update the UI to reflect the new stance
-        stanceLabel.Text = newStance;
-    }
+	{
+		// Update the UI to reflect the new stance
+		stanceLabel.Text = newStance;
+	}
 
 	public override void _Ready(){
 		// Find UI elements by their names
