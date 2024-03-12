@@ -7,3 +7,4 @@ script = ExtResource("1_ufaug")
 playerMaxHealth = 100
 playerHealth = 100
 attackPower = 32
+movementSpeed = 75.0

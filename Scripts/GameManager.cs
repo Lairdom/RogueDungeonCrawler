@@ -12,6 +12,7 @@ public partial class GameManager : Node3D
 	[Export] public int playerMaxHealth;
 	[Export] public int playerHealth;
 	[Export] public int attackPower;
+	[Export] public float movementSpeed;
 	[Export] public bool araknoPhobiaMode = false;
 
 	Node3D player = default;

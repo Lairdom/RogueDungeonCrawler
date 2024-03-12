@@ -49,10 +49,9 @@ public partial class EnemySpider : CharacterBody3D
 		lerpTimer = 0;
 		await ToSignal(GetTree().CreateTimer(waitTime), "timeout");
 		idling = false;
-		int rng = GD.RandRange(1,5);
-		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;
-		Vector3 randomPosition = GetNodeOrNull<Node3D>(path).GlobalPosition;
-		movementTarget = randomPosition;
+		int rng = GD.RandRange(1,5);												// Valitaan satunnaisesti yksi viidestä patrol position pisteestä
+		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;				// Muutetaan path sen mukaisesti
+		movementTarget = GetNodeOrNull<Node3D>(path).GlobalPosition;				// Etsitään kyseisen pisteen positio ja laitetaan se kohteeksi
 		if (!pathFinder.IsTargetReachable()) {
 			Debug.Print("Target unreachable");
 		}
@@ -157,9 +156,10 @@ public partial class EnemySpider : CharacterBody3D
 			// Moving around randomly or patrolling
 			else {
 				Vector3 targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
+				// Mikäli ei olla saavuttu valittuun pisteeseen, niin katsotaan kohti kyseistä pistettä
 				if (Transform.Origin != targetPos)
 					LookAt(targetPos);
-				// Random Movement here
+				// Jos ollaan saavuttu päätepisteeseen, haetaan uusi patrol piste
 				if (pathFinder.IsNavigationFinished() && !idling) {
 					RandomPatrolPosition(2.5f);
 				}

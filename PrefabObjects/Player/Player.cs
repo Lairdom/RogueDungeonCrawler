@@ -10,7 +10,7 @@ public partial class Player : CharacterBody3D
 {
 	[Signal] public delegate void StanceChangedEventHandler(string newStance);
 	GameManager GM;
-	[Export]public float moveSpeed = 75.0f;
+	public float moveSpeed = 75.0f;
 	float attackDuration = 3.0f;
 	const float JUMPVELOCITY = 4.5f;
 	Area3D playerRange = default;
@@ -33,6 +33,7 @@ public partial class Player : CharacterBody3D
 	bool shieldIsUp = false;
 	bool attacking = false;
 	float attackTimer = 0f;
+	float footStepTimer;
 	Node3D ukkeli = default;
 	private AnimationPlayer _animPlayer;
 	private AnimationTree _animTree;
@@ -127,18 +128,15 @@ public partial class Player : CharacterBody3D
 
 	// Ääniefektien käynnistäminen
 	private void PlayAudioOnce(AudioStreamOggVorbis clip, string type, int volume) {
-		if (type == "Voice" && (!voicePlaying || voiceAudioSource.Playing && voiceAudioSource.Stream != clip)) {
-			//Debug.Print("Old Audio: "+voiceAudioSource.Stream+", New Audio: "+clip);
+		if (type == "Voice") {
 			voiceAudioSource.Stream = clip;
 			voiceAudioSource.VolumeDb = volume;
 			voiceAudioSource.Play();
-			voicePlaying = true;
 		}
-		else if (type == "SFX" && (!sfxPlaying || sfxAudioSource.Playing && sfxAudioSource.Stream != clip)) {
+		else if (type == "SFX" ) {
 			sfxAudioSource.Stream = clip;
 			sfxAudioSource.VolumeDb = volume;
 			sfxAudioSource.Play();
-			sfxPlaying = true;
 		}
 	}
 
@@ -184,6 +182,7 @@ public partial class Player : CharacterBody3D
 		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
 		_animTree = GetNode<AnimationTree>("AnimationTree");
 		ChangeWeapon(curWeaponType);
+		moveSpeed = GM.movementSpeed;
 	}
 
 	public override void _PhysicsProcess(double dDelta) {
@@ -249,11 +248,13 @@ public partial class Player : CharacterBody3D
 			// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
 			if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
 				//PlayAudioOnce(playerRaiseShield, "Voice", -30);
+				moveSpeed = GM.movementSpeed/3;
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 1.0);
 				_animPlayer.Play("kilpiBlock");
 				shieldIsUp = true;
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking) {
+				moveSpeed = GM.movementSpeed;
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 0.0);
 				shieldIsUp = false;
 			}
@@ -299,7 +300,11 @@ public partial class Player : CharacterBody3D
 				tempVelocity.X = direction.X * moveSpeed * delta;
 				tempVelocity.Z = direction.Z * moveSpeed * delta;
 				if (IsOnFloor()) {
-					PlayAudioOnce(footSteps, "SFX", -20);
+					if (footStepTimer <= 0) {
+						PlayAudioOnce(footSteps, "SFX", -20);
+						footStepTimer = 0.5f;
+					}
+					else {	footStepTimer -= delta;		}
 					_animTree.Set("parameters/IdleWalk/blend_amount", 1.0);
 					_animPlayer.Play("walk");
 				}
