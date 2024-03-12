@@ -23,6 +23,7 @@ public partial class EnemySpider : CharacterBody3D
 	bool idling;
 	private AnimationTree _animTree;
 	bool attacking;
+	float yPosTarget;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/EnemyFireball1.ogg") as AudioStreamOggVorbis;
@@ -49,7 +50,6 @@ public partial class EnemySpider : CharacterBody3D
 		int rng = GD.RandRange(1,5);
 		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;
 		Vector3 randomPosition = GetNodeOrNull<Node3D>(path).GlobalPosition;
-		Debug.Print(""+pathFinder.GetNextPathPosition());
 		movementTarget = randomPosition;
 		if (!pathFinder.IsTargetReachable()) {
 			Debug.Print("Target unreachable");
@@ -111,9 +111,9 @@ public partial class EnemySpider : CharacterBody3D
 		statHandler = GetNode<EnemyStats>("EnemyHandler");
 		attackCollider = GetNode<CollisionShape3D>("AttackCollider/Collider");
 		audioSource = GetNode<AudioStreamPlayer3D>("AudioPlayer");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
-		_animTree = GetNode<AnimationTree>("AnimationTree");
 		player = GetNodeOrNull<Player>("/root/World/Player");
 		if (GM == null || root == null || player == null) {
 			Debug.Print("Null value");
@@ -122,6 +122,7 @@ public partial class EnemySpider : CharacterBody3D
 		aggrRange = statHandler.aggroRange;
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
+		yPosTarget = Transform.Origin.Y;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -138,7 +139,7 @@ public partial class EnemySpider : CharacterBody3D
 			if (playerDetected == true) {
 				LookAt(player.GlobalPosition);
 				movementTarget = player.GlobalPosition;
-				if (playerDistance < 0.75f && attackTimer >= 2 && !attacking) {
+				if (playerDistance < 0.6f && attackTimer >= 2 && !attacking) {
 					SpiderAttack();
 					attackTimer = 0;
 					return;
@@ -148,15 +149,12 @@ public partial class EnemySpider : CharacterBody3D
 			}
 			// Moving around randomly or patrolling
 			else {
+				Vector3 targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
+				if (Transform.Origin != targetPos)
+					LookAt(targetPos);
 				// Random Movement here
 				if (pathFinder.IsNavigationFinished() && !idling) {
 					RandomPatrolPosition(2.5f);
-				}
-				else if (Position.DistanceTo(pathFinder.GetNextPathPosition()) > 0.5f) {
-					LookAt(pathFinder.GetNextPathPosition());
-					// Lerp turning towards target
-					if (lerpTimer < 1)
-						lerpTimer += delta;
 				}
 			}
 			if (!attacking) {
