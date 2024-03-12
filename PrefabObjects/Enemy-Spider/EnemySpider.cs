@@ -85,6 +85,7 @@ public partial class EnemySpider : CharacterBody3D
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
 		isAlive = false;
+		_animTree.Set("parameters/Death/blend_amount", 1.0);
 		PlayAudioOnce(deathSound, -20);
 		// Death animations
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
@@ -178,6 +179,7 @@ public partial class EnemySpider : CharacterBody3D
 					// Movement animations
 					if (skitterTimer <= 0) {
 						PlayAudioOnce(spiderSkitter, -20);
+						_animTree.Set("parameters/Walk/blend_amount", 0.0);
 						skitterTimer = (float)GD.RandRange(0.1f, 0.3f);
 					}
 					else
