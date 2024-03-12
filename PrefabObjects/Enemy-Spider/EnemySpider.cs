@@ -21,12 +21,14 @@ public partial class EnemySpider : CharacterBody3D
 	float lerpTimer;
 	float aggrRange;
 	bool idling;
+	float skitterTimer;
 	private AnimationTree _animTree;
 	bool attacking;
 	float yPosTarget;
-	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
-	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
-	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/EnemyFireball1.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit2.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/SpiderDeath1.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/SpiderAttack1.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis spiderSkitter = ResourceLoader.Load("res://Audio/SoundEffects/SpiderWalk.ogg") as AudioStreamOggVorbis;
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	// Pathfinder set/get target position for movement
@@ -123,6 +125,11 @@ public partial class EnemySpider : CharacterBody3D
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
 		yPosTarget = Transform.Origin.Y;
+		if (GM.araknoPhobiaMode == true) {
+			GetNode<Node3D>("Hamahakki").Hide();
+			GetNode<MeshInstance3D>("OrbMesh").Show();
+			GetNode<MeshInstance3D>("HeadMesh").Show();
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -164,11 +171,17 @@ public partial class EnemySpider : CharacterBody3D
 				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
 				if (!IsOnFloor())
 					tempVelocity.Y -= gravity * delta;
-				if (tempVelocity == Vector3.Zero) {
+				if (Velocity.Z == 0) {
 					// Idling animations
 				}
 				else {
 					// Movement animations
+					if (skitterTimer <= 0) {
+						PlayAudioOnce(spiderSkitter, -20);
+						skitterTimer = (float)GD.RandRange(0.1f, 0.3f);
+					}
+					else
+						skitterTimer -= delta;
 				}
 				// Liikkeen toteutus
 				Velocity = tempVelocity;
