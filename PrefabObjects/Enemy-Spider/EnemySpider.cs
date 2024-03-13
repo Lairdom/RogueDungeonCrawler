@@ -74,7 +74,6 @@ public partial class EnemySpider : CharacterBody3D
 
 	// Signaali joka saadaan kun joko pelaaja tai shieldcollider on vihollisen hyökkäyscolliderin sisällä
 	private void OnAttackColliderEntered(Node3D body) {
-		Debug.Print("Collider entered: "+body.Name);
 		if (body.Name == "Player") {
 			player.PlayerTakeDamage(statHandler.damage);
 		}
@@ -170,7 +169,6 @@ public partial class EnemySpider : CharacterBody3D
 				}
 			}
 			if (!attacking) {
-				Debug.Print("Velocity: "+Velocity);
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
@@ -185,7 +183,7 @@ public partial class EnemySpider : CharacterBody3D
 					// Movement animations
 					_animTree.Set("parameters/Walk/blend_amount", 0.0);
 					if (skitterTimer <= 0) {
-						PlayAudioOnce(spiderSkitter, -20);
+						PlayAudioOnce(spiderSkitter, -10);
 						skitterTimer = (float)GD.RandRange(0.1f, 0.3f);
 					}
 					else
