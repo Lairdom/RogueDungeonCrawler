@@ -9,6 +9,7 @@ public partial class EnemySpider : CharacterBody3D
 	Node3D root;
 	Vector3 playerDirection;
 	EnemyStats statHandler;
+	CollisionShape3D coll;
 	CollisionShape3D attackCollider;
 	AudioStreamPlayer3D audioSource;
 	bool isAlive = true;
@@ -85,11 +86,13 @@ public partial class EnemySpider : CharacterBody3D
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
 		isAlive = false;
+		coll.Disabled = true;
+		attackCollider.Disabled = true;
 		_animTree.Set("parameters/Death/blend_amount", 1.0);
 		PlayAudioOnce(deathSound, -20);
-		// Death animations
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
-		QueueFree();
+		if (GM.araknoPhobiaMode == true)
+			QueueFree();
 	}
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
@@ -112,6 +115,7 @@ public partial class EnemySpider : CharacterBody3D
 		pathFinder = GetNode<NavigationAgent3D>("Pathfinding");
 		statHandler = GetNode<EnemyStats>("EnemyHandler");
 		attackCollider = GetNode<CollisionShape3D>("AttackCollider/Collider");
+		coll = GetNode<CollisionShape3D>("Collider");
 		audioSource = GetNode<AudioStreamPlayer3D>("AudioPlayer");
 		_animTree = GetNode<AnimationTree>("AnimationTree");
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
@@ -166,20 +170,22 @@ public partial class EnemySpider : CharacterBody3D
 				}
 			}
 			if (!attacking) {
+				Debug.Print("Velocity: "+Velocity);
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
 				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
 				if (!IsOnFloor())
 					tempVelocity.Y -= gravity * delta;
-				if (Velocity.Z == 0) {
+				if (MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations
+					_animTree.Set("parameters/Walk/blend_amount", 1.0);
 				}
 				else {
 					// Movement animations
+					_animTree.Set("parameters/Walk/blend_amount", 0.0);
 					if (skitterTimer <= 0) {
 						PlayAudioOnce(spiderSkitter, -20);
-						_animTree.Set("parameters/Walk/blend_amount", 0.0);
 						skitterTimer = (float)GD.RandRange(0.1f, 0.3f);
 					}
 					else
