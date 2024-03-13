@@ -50,7 +50,14 @@ public partial class EnemySpider : CharacterBody3D
 		lerpTimer = 0;
 		await ToSignal(GetTree().CreateTimer(waitTime), "timeout");
 		idling = false;
-		int rng = GD.RandRange(1,5);												// Valitaan satunnaisesti yksi viidestä patrol position pisteestä
+		int rng = 0;
+		// Valitaan patrol piste riippuen missä huoneessa vihollinen spawnaa
+		if (GM.currentRoom == 0)
+			rng = GD.RandRange(1,5);
+		else if (GM.currentRoom == 1)
+			rng = GD.RandRange(6,10);
+		else if (GM.currentRoom == 2)
+			rng = GD.RandRange(11,18);												
 		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;				// Muutetaan path sen mukaisesti
 		movementTarget = GetNodeOrNull<Node3D>(path).GlobalPosition;				// Etsitään kyseisen pisteen positio ja laitetaan se kohteeksi
 		if (!pathFinder.IsTargetReachable()) {
@@ -173,8 +180,12 @@ public partial class EnemySpider : CharacterBody3D
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
 				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
-				if (!IsOnFloor())
+				if (!IsOnFloor()) {
+					AxisLockLinearY = false;
 					tempVelocity.Y -= gravity * delta;
+				}
+				else
+					AxisLockLinearY = true;
 				if (MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations
 					_animTree.Set("parameters/Walk/blend_amount", 1.0);
