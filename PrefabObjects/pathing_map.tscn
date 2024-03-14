@@ -14,6 +14,7 @@ polygons = [PackedInt32Array(0, 5, 1), PackedInt32Array(1, 5, 2), PackedInt32Arr
 size = Vector2(1, 1)
 
 [node name="PathingMap" type="NavigationRegion3D"]
+visible = false
 navigation_mesh = SubResource("NavigationMesh_ner3u")
 
 [node name="Mesh1" type="MeshInstance3D" parent="."]

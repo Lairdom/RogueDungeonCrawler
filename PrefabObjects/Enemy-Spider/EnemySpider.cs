@@ -8,7 +8,7 @@ public partial class EnemySpider : CharacterBody3D
 	Player player;
 	Node3D root;
 	Vector3 playerDirection;
-	EnemyStats statHandler;
+	public EnemyStats statHandler;
 	CollisionShape3D coll;
 	CollisionShape3D attackCollider;
 	AudioStreamPlayer3D audioSource;
@@ -16,6 +16,7 @@ public partial class EnemySpider : CharacterBody3D
 	float playerDistance;
 	NavigationAgent3D pathFinder;
 	Vector3 movementTarget;
+	Vector3 targetPos;
 	float moveSpeed;
 	bool playerDetected = false;
 	float attackTimer;
@@ -26,6 +27,7 @@ public partial class EnemySpider : CharacterBody3D
 	private AnimationTree _animTree;
 	bool attacking;
 	float yPosTarget;
+	float facing;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit2.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/SpiderDeath1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/SpiderAttack1.ogg") as AudioStreamOggVorbis;
@@ -60,6 +62,7 @@ public partial class EnemySpider : CharacterBody3D
 			rng = GD.RandRange(11,18);												
 		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;				// Muutetaan path sen mukaisesti
 		movementTarget = GetNodeOrNull<Node3D>(path).GlobalPosition;				// Etsitään kyseisen pisteen positio ja laitetaan se kohteeksi
+		movementTarget.Y = 0.5f;
 		if (!pathFinder.IsTargetReachable()) {
 			Debug.Print("Target unreachable");
 		}
@@ -81,11 +84,14 @@ public partial class EnemySpider : CharacterBody3D
 
 	// Signaali joka saadaan kun joko pelaaja tai shieldcollider on vihollisen hyökkäyscolliderin sisällä
 	private void OnAttackColliderEntered(Node3D body) {
-		if (body.Name == "Player") {
-			player.PlayerTakeDamage(statHandler.damage);
-		}
-		else if (body.Name == "ShieldCollider") {
-			player.ShieldHit();
+		if (body.Name == "Player" || body.Name == "ShieldCollider") {
+			CalculateFacing();
+			//Debug.Print("Player facing: "+player.facing+", Me facing: "+facing);
+			Debug.Print("Difference: "+CalculateDifference());
+			if (player.shieldIsUp && CalculateDifference() < 55)
+				player.ShieldHit();
+			else 
+				player.PlayerTakeDamage(statHandler.damage);
 		}
 	}
 
@@ -116,6 +122,25 @@ public partial class EnemySpider : CharacterBody3D
 		audioSource.Play();
 	}
 
+	//Funktio rotationin laskemiseksi
+	private void CalculateFacing() {
+		bool neg = false;
+		facing = RotationDegrees.Y +90;
+		if (facing < 0)
+			neg = true;
+		facing = Mathf.Abs(facing) % 360;
+		if (neg)
+			facing = 360-facing;
+	}
+
+	// Lasketaan erot 
+	private float CalculateDifference() {
+		if (facing > player.facing)
+			return Mathf.Abs(facing-player.facing-180);
+		else
+			return Mathf.Abs(player.facing-facing-180);
+	}
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		pathFinder = GetNode<NavigationAgent3D>("Pathfinding");
@@ -134,7 +159,8 @@ public partial class EnemySpider : CharacterBody3D
 		aggrRange = statHandler.aggroRange;
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
-		yPosTarget = Transform.Origin.Y;
+		yPosTarget = Scale.Y/2;
+		Debug.Print(""+yPosTarget);
 		if (GM.araknoPhobiaMode == true) {
 			GetNode<Node3D>("Hamahakki").Hide();
 			GetNode<MeshInstance3D>("OrbMesh").Show();
@@ -154,9 +180,11 @@ public partial class EnemySpider : CharacterBody3D
 			}
 			// Detects player
 			if (playerDetected == true) {
-				LookAt(player.GlobalPosition);
-				movementTarget = player.GlobalPosition;
-				if (playerDistance < 0.6f && attackTimer >= 2 && !attacking) {
+				targetPos = player.GlobalPosition;
+				targetPos.Y = yPosTarget;
+				LookAt(targetPos);
+				movementTarget = targetPos;
+				if (playerDistance < Scale.Y && attackTimer >= 2 && !attacking) {
 					SpiderAttack();
 					attackTimer = 0;
 					return;
@@ -166,12 +194,12 @@ public partial class EnemySpider : CharacterBody3D
 			}
 			// Moving around randomly or patrolling
 			else {
-				Vector3 targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
+				targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
 				// Mikäli ei olla saavuttu valittuun pisteeseen, niin katsotaan kohti kyseistä pistettä
-				if (Transform.Origin != targetPos)
+				if (!pathFinder.IsNavigationFinished())
 					LookAt(targetPos);
 				// Jos ollaan saavuttu päätepisteeseen, haetaan uusi patrol piste
-				if (pathFinder.IsNavigationFinished() && !idling) {
+				else if (pathFinder.IsNavigationFinished() && !idling) {
 					RandomPatrolPosition(2.5f);
 				}
 			}

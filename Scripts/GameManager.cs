@@ -22,7 +22,7 @@ public partial class GameManager : Node3D
 	Player player = default;
 	PackedScene spider = ResourceLoader.Load("res://PrefabObjects/Enemy-Spider/enemy_spider.tscn") as PackedScene;
 	PackedScene orb = ResourceLoader.Load("res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn") as PackedScene;
-	
+	Vector3[] scaleSets = {new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1, 1, 1), new Vector3(1.5f, 1.5f, 1.5f)};
 
 	// Set Stage for each room
 	public void SetStage() {
@@ -52,6 +52,8 @@ public partial class GameManager : Node3D
 	// Spawn Spider
 	public void SpawnSpider(Vector3 location) {
 		EnemySpider spiderInstance = (EnemySpider) spider.Instantiate();
+		spiderInstance.Scale = scaleSets[GD.RandRange(0,2)];
+		location.Y = 0.25f;
 		spiderInstance.Position = location;
 		root.AddChild(spiderInstance);
 	}
@@ -59,6 +61,7 @@ public partial class GameManager : Node3D
 	// Spawn Orb
 	public void SpawnOrb(Vector3 location) {
 		EnemyOrb orbInstance = (EnemyOrb) orb.Instantiate();
+		location.Y = 0.65f;
 		orbInstance.Position = location;
 		root.AddChild(orbInstance);
 	}
@@ -75,6 +78,7 @@ public partial class GameManager : Node3D
 			point = GD.RandRange(11,18);
 		path = "/root/World/PatrolPositions/PatrolPoint"+point;
 		randomPoint = GetNodeOrNull<Node3D>(path).GlobalPosition;
+		
 		return randomPoint;
 	}
 

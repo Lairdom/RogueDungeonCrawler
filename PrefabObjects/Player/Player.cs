@@ -30,7 +30,8 @@ public partial class Player : CharacterBody3D
 	int stanceIndex = 0;
 	Vector3[] atkCollPositions = {new Vector3(0.3f, 0.05f, 0), new Vector3(0.3f, 0.05f, 0), new Vector3(0.2f, 0.05f, 0)};
 	Vector3[] atkCollSizes = {new Vector3(0.45f, 0.1f, 0.55f), new Vector3(0.7f, 0.1f, 0.1f), new Vector3(0.3f, 0.1f, 0.1f)};
-	bool shieldIsUp = false;
+	public bool shieldIsUp = false;
+	public float facing;
 	bool attacking = false;
 	float attackTimer = 0f;
 	float footStepTimer;
@@ -68,7 +69,6 @@ public partial class Player : CharacterBody3D
 	
 	// Signaali joka saadaan kun objekti on pelaajan edessä
 	private void OnPlayerRangeEntered(Node3D body) {
-		//Debug.Print("Object "+body.Name+" entered.");
 		if (body.HasMethod("OnActivate")) {
 			objectsInRange++;
 			target = body;
@@ -148,6 +148,16 @@ public partial class Player : CharacterBody3D
 	// Signaali joka saadaan kun ääni on viety loppuun
 	private void OnSFXAudioFinished() {
 		sfxPlaying = false;
+	}
+
+	//Funktio rotationin laskemiseksi
+	private void CalculateFacing() {
+		bool neg = false;
+		if (facing < 0)
+			neg = true;
+		facing = Mathf.Abs(RotationDegrees.Y) % 360;
+		if (neg)
+			facing = 360-facing;
 	}
 
 	// AttackCollider kytkeminen päälle ja pois
@@ -259,8 +269,10 @@ public partial class Player : CharacterBody3D
 				shieldIsUp = false;
 			}
 			
-			if (shieldIsUp)
+			if (shieldIsUp) {
 				playerShield.CollisionLayer = 32;
+				CalculateFacing();
+			}
 			else
 				playerShield.CollisionLayer = 0;
 
