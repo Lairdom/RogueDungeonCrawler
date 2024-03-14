@@ -6,6 +6,8 @@ public partial class GameManager : Node3D
 {
 	[Signal]
 	public delegate void PlayerHealthChangedEventHandler(float currentHealth, float maxHealth);
+	[Signal]
+    public delegate void AllEnemiesDefeatedEventHandler();
 
 	[ExportCategory("Player Stats")]
 	[Export] public bool playerAlive = true;
@@ -102,7 +104,31 @@ public partial class GameManager : Node3D
 
 		// Emit the signal to notify UI about the health change
 		EmitSignal(SignalName.PlayerHealthChanged, playerHealth, playerMaxHealth);
-	}
+	}	
+
+public void CheckAllEnemiesDefeated()
+{
+    /* bool allDefeated = true; // Assume all enemies are defeated initially
+    
+    // Iterate through all enemies in the scene
+    foreach (Enemy enemy in GetTree().GetNodesInGroup("enemies"))
+    {
+        // Check if the enemy is still alive
+        if (!enemy.IsDead)
+        {
+            // If any enemy is still alive, set the flag to false and break the loop
+            allDefeated = false;
+            break;
+        }
+    }
+    
+    // If all enemies are defeated, emit the signal
+    if (allDefeated)
+    {
+        EmitSignal(nameof(AllEnemiesDefeated));
+    }
+	*/
+}
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {

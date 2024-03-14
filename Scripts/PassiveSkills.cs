@@ -34,19 +34,46 @@ public partial class PassiveSkills : Node
 
     private void PresentSkillSelection(PassiveSkill[] skills)
     {
-        // Display the skills and allow the player to choose one
+        // Create a Popup dialog node
+        Popup popup = new Popup();
+        AddChild(popup); // Add the popup as a child of your scene
+
+        // Create buttons for each skill
+        foreach (PassiveSkill skill in skills)
+        {
+            Button button = new Button();
+            button.Text = skill.Name; // Set the button text to the skill name
+            // button.Connect("pressed", this, nameof(OnSkillButtonPressed), new Godot.Collections.Array { skill });
+            popup.AddChild(button); // Add the button to the popup
+        }
+
+        // Display the popup
+        popup.PopupCentered();
+    }
+
+    private void OnSkillButtonPressed(PassiveSkill skill)
+    {
+        // Handle the selection of the skill here
+        ApplySkillEffects(skill);
+        GD.Print("Selected skill: " + skill.Name);
+        GetNode<Popup>("PopupDialog").QueueFree(); // Close the popup
+        // Update UI to display information about the selected skill
     }
 
     private void HandleSkillSelection(PassiveSkill selectedSkill)
     {
         ApplySkillEffects(selectedSkill);
         // Update UI to display information about the selected skill
+        GetNode<ScreenUI>("/root/ScreenUI").UpdatePassiveSkills(selectedSkill.Name);
     }
 
     private void OnEnemiesDefeated()
     {
         PassiveSkill[] randomSkills = SelectRandomSkills();
         PresentSkillSelection(randomSkills);
+
+        // Check if all enemies are defeated
+        GetNode<GameManager>("/root/World/GameManager").CheckAllEnemiesDefeated();
     }
 
     private void Shuffle<T>(T[] array)
@@ -65,6 +92,7 @@ public partial class PassiveSkills : Node
 
     public override void _Ready()
     {
-        // Subscribe to the event for when all enemies in a room are defeated
+        // Connect to the signal emitted by the GameManager when all enemies are defeated
+        GetNode<GameManager>("/root/World/GameManager").Connect(nameof(GameManager.AllEnemiesDefeated), new Callable (this, nameof(OnEnemiesDefeated)));
     }
 }
