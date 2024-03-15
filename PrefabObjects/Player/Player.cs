@@ -287,7 +287,10 @@ public partial class Player : CharacterBody3D
 			// Input.IsActionPressed() jos nappia painaa tai se on pohjassa antaa true
 			// Input.IsActionJustPressed() jos nappia painaa, pohjassa pitäminen ei tee mitään otetaan true vain kerran
 			if (Input.IsActionJustPressed("Jump") && IsOnFloor() && !attacking)
+			{
+				_animTree.Set("parameters/Jump/request", 1);
 				tempVelocity.Y = JUMPVELOCITY;
+			}
 
 			// Interact ('E')
 			if (Input.IsActionJustPressed("Examine") && objectsInRange > 0 && target != null && !shieldIsUp) {
