@@ -16,6 +16,7 @@ public partial class GameManager : Node3D
 	[Export] public int attackPower;
 	[Export] public float movementSpeed;
 	[Export] public bool araknoPhobiaMode = false;
+	public bool door1Unlocked, door2Unlocked, door3Unlocked = false;
 	public int currentRoom = 0;
 	public int numberOfEnemies;
 	public int numberOfSpiders;
@@ -92,6 +93,14 @@ public partial class GameManager : Node3D
 
 	// Called when room is cleared
 	public void RoomCleared() {
+		// Unlock the door to the next room
+		if (currentRoom == 0)
+			door1Unlocked = true;
+		else if (currentRoom == 1)
+			door2Unlocked = true;
+		else if (currentRoom == 2)
+			door3Unlocked = true;
+			
 		// Spawn 2 powerups or items from which the player can choose only 1
 		currentRoom++;
 		SetStage();

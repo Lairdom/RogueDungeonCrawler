@@ -1,90 +1,17 @@
-[gd_scene load_steps=24 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=16 format=3 uid="uid://vedxskexn6fl"]
 
 [ext_resource type="Script" path="res://Scripts/ScreenUI.cs" id="1_gin83"]
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
 [ext_resource type="MeshLibrary" uid="uid://bj38xbwnt4c42" path="res://3DObjects/Room_tileset/tileset.tres" id="1_xmco2"]
 [ext_resource type="PackedScene" uid="uid://dk4thlonya37j" path="res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn" id="2_bvxjl"]
+[ext_resource type="PackedScene" uid="uid://cltlrim7c2u2q" path="res://PrefabObjects/InteractiveObjects/doubledoors.tscn" id="3_imqnj"]
 [ext_resource type="PackedScene" uid="uid://banq5fsry5yoq" path="res://PrefabObjects/game_manager.tscn" id="4_cnyn2"]
-[ext_resource type="PackedScene" uid="uid://dad2oisp1e5ov" path="res://3DObjects/Doors/door_L.tscn" id="6_wsbns"]
-[ext_resource type="Script" path="res://Scripts/Door.cs" id="6_y45kg"]
-[ext_resource type="PackedScene" uid="uid://7c1hfmv45u3i" path="res://3DObjects/Doors/door_R.tscn" id="7_6pu8r"]
 [ext_resource type="PackedScene" uid="uid://bcpc5qjw1j64q" path="res://PrefabObjects/Enemy-Spider/enemy_spider.tscn" id="8_4skvf"]
 [ext_resource type="PackedScene" uid="uid://kjxheya6q35v" path="res://PrefabObjects/pathing_map.tscn" id="10_ahl7g"]
 [ext_resource type="Texture2D" uid="uid://c7chjwaw5gyt2" path="res://3DObjects/Doors/tiili.png" id="10_owr2l"]
 [ext_resource type="PackedScene" uid="uid://nav8qmde0nq2" path="res://PrefabObjects/patrol_positions.tscn" id="11_8o7v6"]
 [ext_resource type="Texture2D" uid="uid://dn5jhabaohbrr" path="res://3DObjects/Doors/tiili_ambient.png" id="11_u6qwo"]
 [ext_resource type="Texture2D" uid="uid://bhfp8cstw4bt6" path="res://3DObjects/Doors/tiili_rough.png" id="12_fyyaa"]
-
-[sub_resource type="Animation" id="Animation_v08fg"]
-resource_name = "close"
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("DoorHinge_L:rotation:y")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(1.5708, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1)
-}
-tracks/1/type = "rotation_3d"
-tracks/1/imported = false
-tracks/1/enabled = false
-tracks/1/path = NodePath("DoorHinge_R")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array()
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("DoorHinge_R:rotation:y")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(-1.5708, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1)
-}
-
-[sub_resource type="Animation" id="Animation_bna74"]
-resource_name = "open"
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("DoorHinge_L:rotation:y")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1.5708, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("DoorHinge_R:rotation:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, -1.5708, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1)
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_ihdjd"]
-_data = {
-"close": SubResource("Animation_v08fg"),
-"open": SubResource("Animation_bna74")
-}
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_717u7"]
-albedo_color = Color(0.501961, 0.207843, 0.0392157, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_2vym8"]
-material = SubResource("StandardMaterial3D_717u7")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_lyuq1"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ynbbi"]
 height = 2.45
@@ -160,25 +87,9 @@ data = {
 }
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
-[node name="Doors" type="Node3D" parent="."]
-script = ExtResource("6_y45kg")
-
-[node name="DoorHinge_L" type="Node3D" parent="Doors"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.00868, 0, 1.00033)
-
-[node name="door_L" parent="Doors/DoorHinge_L" instance=ExtResource("6_wsbns")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0373449, 0, -0.501128)
-
-[node name="DoorHinge_R" type="Node3D" parent="Doors"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.02889, 0, -0.99999)
-
-[node name="door_R" parent="Doors/DoorHinge_R" instance=ExtResource("7_6pu8r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0165606, 0, 1.51238)
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Doors"]
-libraries = {
-"": SubResource("AnimationLibrary_ihdjd")
-}
+[node name="Doors1" parent="." instance=ExtResource("3_imqnj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 0)
+connectedRoom = 1
 
 [node name="Player" parent="." instance=ExtResource("1_oeyq3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496034, 0)
@@ -197,15 +108,6 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.827, 0.25, -2.091)
 [node name="GameManager" parent="." instance=ExtResource("4_cnyn2")]
 
 [node name="PathingMap" parent="." instance=ExtResource("10_ahl7g")]
-
-[node name="Este" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.52276, 0, 0.49202, -3.74898)
-
-[node name="Mesh" type="MeshInstance3D" parent="Este"]
-mesh = SubResource("BoxMesh_2vym8")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Este"]
-shape = SubResource("BoxShape3D_lyuq1")
 
 [node name="PatrolPositions" parent="." instance=ExtResource("11_8o7v6")]
 
