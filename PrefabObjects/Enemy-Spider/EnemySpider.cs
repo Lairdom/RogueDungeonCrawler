@@ -49,7 +49,6 @@ public partial class EnemySpider : CharacterBody3D
 	// Random patrol position
 	private async void RandomPatrolPosition(float waitTime) {
 		idling = true;
-		lerpTimer = 0;
 		await ToSignal(GetTree().CreateTimer(waitTime), "timeout");
 		idling = false;
 		int rng = 0;
@@ -86,8 +85,7 @@ public partial class EnemySpider : CharacterBody3D
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.Name == "Player" || body.Name == "ShieldCollider") {
 			CalculateFacing();
-			//Debug.Print("Player facing: "+player.facing+", Me facing: "+facing);
-			Debug.Print("Difference: "+CalculateDifference());
+			//Debug.Print("Difference: "+CalculateDifference());
 			if (player.shieldIsUp && CalculateDifference() < 55)
 				player.ShieldHit();
 			else 
@@ -125,20 +123,28 @@ public partial class EnemySpider : CharacterBody3D
 	//Funktio rotationin laskemiseksi
 	private void CalculateFacing() {
 		bool neg = false;
-		facing = RotationDegrees.Y +90;
+		facing = RotationDegrees.Y +270;
 		if (facing < 0)
 			neg = true;
 		facing = Mathf.Abs(facing) % 360;
 		if (neg)
 			facing = 360-facing;
+		//Debug.Print("Enemy Facing: "+facing+", Player Facing: "+player.facing);
 	}
 
 	// Lasketaan erot 
 	private float CalculateDifference() {
-		if (facing > player.facing)
-			return Mathf.Abs(facing-player.facing-180);
-		else
-			return Mathf.Abs(player.facing-facing-180);
+		float diff;
+		diff = Mathf.Abs(facing-player.facing);
+		if (diff > 180) {
+			// Recalculate difference
+			if (player.facing > facing)
+				diff = facing+MathF.Abs(player.facing-360);
+			else
+				diff = player.facing+MathF.Abs(facing-360);
+			
+		}
+		return diff;
 	}
 
 	// Called when the node enters the scene tree for the first time.
@@ -179,7 +185,7 @@ public partial class EnemySpider : CharacterBody3D
 				playerDetected = true;
 			}
 			// Detects player
-			if (playerDetected == true) {
+			if (playerDetected == true && GM.playerAlive) {
 				targetPos = player.GlobalPosition;
 				targetPos.Y = yPosTarget;
 				LookAt(targetPos);
@@ -196,8 +202,10 @@ public partial class EnemySpider : CharacterBody3D
 			else {
 				targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
 				// Mikäli ei olla saavuttu valittuun pisteeseen, niin katsotaan kohti kyseistä pistettä
-				if (!pathFinder.IsNavigationFinished())
+				if (!pathFinder.IsNavigationFinished()) {
+					// Add Lerp to looking direction
 					LookAt(targetPos);
+				}
 				// Jos ollaan saavuttu päätepisteeseen, haetaan uusi patrol piste
 				else if (pathFinder.IsNavigationFinished() && !idling) {
 					RandomPatrolPosition(2.5f);

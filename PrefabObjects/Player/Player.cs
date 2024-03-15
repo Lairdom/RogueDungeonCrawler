@@ -87,8 +87,8 @@ public partial class Player : CharacterBody3D
 	// Signaali joka saadaan kun vihollinen on pelaajan attackColliderin sisällä sen kytkeytyessä päälle
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.HasMethod("TakeDamage")) {
-			Debug.Print("Enemy hit");
-			body.CallDeferred("TakeDamage", 32);
+			//Debug.Print("Enemy hit");
+			body.CallDeferred("TakeDamage", GM.attackPower);
 		}
 	}
 
@@ -153,9 +153,10 @@ public partial class Player : CharacterBody3D
 	//Funktio rotationin laskemiseksi
 	private void CalculateFacing() {
 		bool neg = false;
+		facing = RotationDegrees.Y;
 		if (facing < 0)
 			neg = true;
-		facing = Mathf.Abs(RotationDegrees.Y) % 360;
+		facing = Mathf.Abs(facing) % 360;
 		if (neg)
 			facing = 360-facing;
 	}

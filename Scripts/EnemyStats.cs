@@ -29,7 +29,7 @@ public partial class EnemyStats : Node3D
 			currentHealth = maxHealth;
 			damage *= 3;
 			movementSpeed *= 2;
-			aggroRange *= 1.5f;
+			aggroRange *= 2f;
 		}
 		// If baby version of monster
 		else if (GetParent<Node3D>().Scale.Y < 1) {
