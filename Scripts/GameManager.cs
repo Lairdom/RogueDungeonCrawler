@@ -27,9 +27,10 @@ public partial class GameManager : Node3D
 	Vector3[] scaleSets = {new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1, 1, 1), new Vector3(1.5f, 1.5f, 1.5f)};
 
 	// Set Stage for each room
-	public void SetStage() {
+	public async void SetStage() {
+		await ToSignal(GetTree().CreateTimer(0.01f), "timeout");
 		if (currentRoom == 0) {
-			numberOfEnemies = 0;
+			numberOfSpiders = 1;
 		}
 		else if (currentRoom == 1) {
 			numberOfSpiders = GD.RandRange(0,3);
@@ -38,6 +39,9 @@ public partial class GameManager : Node3D
 		else if (currentRoom == 2) {
 			numberOfSpiders = GD.RandRange(0,5);
 			numberOfOrbs = GD.RandRange(0,4);
+		}
+		else if (currentRoom == 3) {
+			Debug.Print("Boss Spawned");
 		}
 		for (int i = 0; i<numberOfSpiders; i++) {
 			SpawnSpider(SelectRandomSpawnPoint());
@@ -58,6 +62,7 @@ public partial class GameManager : Node3D
 		location.Y = 0.25f;
 		spiderInstance.Position = location;
 		root.AddChild(spiderInstance);
+		spiderInstance.statHandler.AddToGroup("enemies");
 	}
 
 	// Spawn Orb
@@ -66,6 +71,7 @@ public partial class GameManager : Node3D
 		location.Y = 0.65f;
 		orbInstance.Position = location;
 		root.AddChild(orbInstance);
+		orbInstance.statHandler.AddToGroup("enemies");
 	}
 
 	private Vector3 SelectRandomSpawnPoint() {
@@ -87,7 +93,6 @@ public partial class GameManager : Node3D
 	// Called when room is cleared
 	public void RoomCleared() {
 		// Spawn 2 powerups or items from which the player can choose only 1
-		Debug.Print("Room Cleared");
 		currentRoom++;
 		SetStage();
 	}
@@ -106,16 +111,13 @@ public partial class GameManager : Node3D
 		EmitSignal(SignalName.PlayerHealthChanged, playerHealth, playerMaxHealth);
 	}	
 
-public void CheckAllEnemiesDefeated()
-{
-    /* bool allDefeated = true; // Assume all enemies are defeated initially
+public void CheckAllEnemiesDefeated() {
+    bool allDefeated = true; // Assume all enemies are defeated initially
     
     // Iterate through all enemies in the scene
-    foreach (Enemy enemy in GetTree().GetNodesInGroup("enemies"))
-    {
+    foreach (EnemyStats enemy in GetTree().GetNodesInGroup("enemies")) {
         // Check if the enemy is still alive
-        if (!enemy.IsDead)
-        {
+        if (enemy.isAlive) {
             // If any enemy is still alive, set the flag to false and break the loop
             allDefeated = false;
             break;
@@ -123,11 +125,12 @@ public void CheckAllEnemiesDefeated()
     }
     
     // If all enemies are defeated, emit the signal
-    if (allDefeated)
-    {
+    if (allDefeated) {
+		Debug.Print("All defeated");
+		RoomCleared();
         EmitSignal(nameof(AllEnemiesDefeated));
     }
-	*/
+	
 }
 
 	// Called when the node enters the scene tree for the first time.
@@ -140,9 +143,5 @@ public void CheckAllEnemiesDefeated()
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double dDelta) {
 		float delta = (float) dDelta;
-		if (numberOfEnemies == 0) {
-			RoomCleared();
-		}
-
 	}
 }

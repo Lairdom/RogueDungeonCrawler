@@ -8,12 +8,11 @@ public partial class EnemyOrb : CharacterBody3D
 	GameManager GM;
 	Player player = default;
 	Vector3 playerDirection;
-	bool alive = true;
 	float playerDistance;
 	float shootTimer = 0;
 	bool shooting = false;
 	Node3D root = default;
-	EnemyStats statHandler = default;
+	public EnemyStats statHandler = default;
 	AudioStreamPlayer3D audioSource = default;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyDeath1.ogg") as AudioStreamOggVorbis;
@@ -22,7 +21,8 @@ public partial class EnemyOrb : CharacterBody3D
 
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
-		alive = false;
+		statHandler.isAlive = false;
+		GM.CheckAllEnemiesDefeated();
 		PlayAudioOnce(deathSound, -20);
 		// Death animations
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
@@ -68,7 +68,7 @@ public partial class EnemyOrb : CharacterBody3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double dDelta) {
 		float delta = (float) dDelta;
-		if (player != null && alive) {
+		if (player != null && statHandler.isAlive) {
 			playerDirection = player.GlobalPosition - GlobalPosition;
 			playerDirection = playerDirection.Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);

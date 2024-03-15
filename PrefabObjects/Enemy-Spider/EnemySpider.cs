@@ -12,7 +12,6 @@ public partial class EnemySpider : CharacterBody3D
 	CollisionShape3D coll;
 	CollisionShape3D attackCollider;
 	AudioStreamPlayer3D audioSource;
-	bool isAlive = true;
 	float playerDistance;
 	NavigationAgent3D pathFinder;
 	Vector3 movementTarget;
@@ -95,7 +94,8 @@ public partial class EnemySpider : CharacterBody3D
 
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
-		isAlive = false;
+		statHandler.isAlive = false;
+		GM.CheckAllEnemiesDefeated();
 		coll.Disabled = true;
 		attackCollider.Disabled = true;
 		_animTree.Set("parameters/Death/blend_amount", 1.0);
@@ -177,7 +177,7 @@ public partial class EnemySpider : CharacterBody3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double dDelta) {
 		float delta = (float) dDelta;
-		if (isAlive) {
+		if (statHandler.isAlive) {
 			Vector3 tempVelocity;
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);

@@ -11,6 +11,7 @@ public partial class EnemyStats : Node3D
 	[Export] public float aggroRange;
 	[Export(PropertyHint.Flags, "Slashing,Piercing,Bludgeoning")] int weakness;
 	[Signal] public delegate void DeathSignalEventHandler(float deathDelayTime);
+	public bool isAlive = true;
 	
 	public void ChangeHealth(int amount) {
 		currentHealth -= amount;
