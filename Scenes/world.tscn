@@ -91,6 +91,10 @@ metadata/_editor_floor_ = Vector3(0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 0)
 connectedRoom = 1
 
+[node name="Doors2" parent="." instance=ExtResource("3_imqnj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.0346, 0, 0)
+connectedRoom = 2
+
 [node name="Player" parent="." instance=ExtResource("1_oeyq3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496034, 0)
 

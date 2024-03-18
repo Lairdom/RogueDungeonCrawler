@@ -87,8 +87,14 @@ public partial class Player : CharacterBody3D
 	// Signaali joka saadaan kun vihollinen on pelaajan attackColliderin sisällä sen kytkeytyessä päälle
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.HasMethod("TakeDamage")) {
-			//Debug.Print("Enemy hit");
-			body.CallDeferred("TakeDamage", GM.attackPower);
+			// Jos nykyinen stance on vihun heikkous
+			if (body.GetNode<EnemyStats>("EnemyHandler").weaknesses.Contains(stance[stanceIndex])) {
+				body.CallDeferred("TakeDamage", (int) (GM.attackPower*1.5f));
+			}
+			// Jos vihu ei ole immuuni nykyiselle stancelle
+			else if (!body.GetNode<EnemyStats>("EnemyHandler").immunities.Contains(stance[stanceIndex])) {
+				body.CallDeferred("TakeDamage", GM.attackPower);
+			}
 		}
 	}
 
