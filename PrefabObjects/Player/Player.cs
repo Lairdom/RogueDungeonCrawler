@@ -36,7 +36,6 @@ public partial class Player : CharacterBody3D
 	float attackTimer = 0f;
 	float footStepTimer;
 	Node3D ukkeli = default;
-	private AnimationPlayer _animPlayer;
 	private AnimationTree _animTree;
 	string[] weaponType = {"Sword", "Spear", "Mace"};
 	int curWeaponType = 0;					// currentWeaponType index. Indexiä vaihtamalla valitaan weaponType listasta asetyyppi
@@ -51,7 +50,6 @@ public partial class Player : CharacterBody3D
 		alive = false;
 		PlayAudioOnce(playerDeath, "Voice", -10);
 		_animTree.Set("parameters/death/blend_amount", 1.0);
-		_animPlayer.Play("Death");
 		Debug.Print("You died");
 	}
 
@@ -87,14 +85,8 @@ public partial class Player : CharacterBody3D
 	// Signaali joka saadaan kun vihollinen on pelaajan attackColliderin sisällä sen kytkeytyessä päälle
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.HasMethod("TakeDamage")) {
-			// Jos nykyinen stance on vihun heikkous
-			if (body.GetNode<EnemyStats>("EnemyHandler").weaknesses.Contains(stance[stanceIndex])) {
-				body.CallDeferred("TakeDamage", (int) (GM.attackPower*1.5f));
-			}
-			// Jos vihu ei ole immuuni nykyiselle stancelle
-			else if (!body.GetNode<EnemyStats>("EnemyHandler").immunities.Contains(stance[stanceIndex])) {
-				body.CallDeferred("TakeDamage", GM.attackPower);
-			}
+			//Debug.Print("Enemy hit");
+			body.CallDeferred("TakeDamage", GM.attackPower);
 		}
 	}
 
@@ -196,7 +188,6 @@ public partial class Player : CharacterBody3D
 		atkCollShape = GetNode<CollisionShape3D>("AttackCollider/CollisionShape");
 		atkCollShape.Disabled = true;
 		attackCollider.Hide();
-		_animPlayer = GetNode<AnimationPlayer>("ukkeli/AnimationPlayer");
 		_animTree = GetNode<AnimationTree>("AnimationTree");
 		ChangeWeapon(curWeaponType);
 		moveSpeed = GM.movementSpeed;
@@ -228,7 +219,6 @@ public partial class Player : CharacterBody3D
 					attackDuration = 1f;
 					_animTree.Set("parameters/Stance/blend_amount", 0.0);
 					_animTree.Set("parameters/lyonti/request", 1);
-					_animPlayer.Play("miekkaSlash");
 					delay = 0.3f;
 				}
 				else if (stanceIndex == 1) {
@@ -236,7 +226,6 @@ public partial class Player : CharacterBody3D
 					attackDuration = 1f;
 					_animTree.Set("parameters/Stance/blend_amount", -1.0);
 					_animTree.Set("parameters/lyonti/request", 1);
-					_animPlayer.Play("miekkaStab");
 					delay = 0.5f;
 				}
 				else if (stanceIndex == 2) {
@@ -244,7 +233,6 @@ public partial class Player : CharacterBody3D
 					attackDuration = 1f;
 					_animTree.Set("parameters/Stance/blend_amount", 1.0);
 					_animTree.Set("parameters/lyonti/request", 1);
-					_animPlayer.Play("miekkaBash");
 					delay = 0.4f;
 				}
 
@@ -267,7 +255,6 @@ public partial class Player : CharacterBody3D
 				//PlayAudioOnce(playerRaiseShield, "Voice", -30);
 				moveSpeed = GM.movementSpeed/3;
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 1.0);
-				_animPlayer.Play("kilpiBlock");
 				shieldIsUp = true;
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking) {
@@ -327,15 +314,39 @@ public partial class Player : CharacterBody3D
 						footStepTimer = 0.5f;
 					}
 					else {	footStepTimer -= delta;		}
-					_animTree.Set("parameters/IdleWalk/blend_amount", 1.0);
-					_animPlayer.Play("walk");
+					{
+						_animTree.Set("parameters/IdleWalk/blend_amount", 1.0);
+						_animTree.Set("parameters/takaperin/blend_amount", 0.0);
+						if (Input.IsActionPressed("MoveForwards"))
+						{
+							_animTree.Set("parameters/suunta/blend_amount", 0.0);
+							_animTree.Set("parameters/takaperin/blend_amount", 0.0);
+							Debug.Print("Moving Forwards");
+						}
+						if (Input.IsActionPressed("MoveBackwards"))
+						{
+							_animTree.Set("parameters/takaperin/blend_amount", 1.0);
+							Debug.Print("Moving Backwards");
+						}
+						if (Input.IsActionPressed("MoveRight"))
+						{
+							_animTree.Set("parameters/suunta/blend_amount", 1.0);
+							_animTree.Set("parameters/takaperin/blend_amount", 0.0);
+							Debug.Print("Moving Right");
+						}
+						if (Input.IsActionPressed("MoveLeft"))
+						{
+							_animTree.Set("parameters/suunta/blend_amount", -1.0);
+							Debug.Print("Moving Left");
+						}
+					}
+					
 				}
 			}
 			else {
 				tempVelocity.X = direction.X * 0;
 				tempVelocity.Z = direction.Z * 0;
 				if (!attacking && !shieldIsUp && IsOnFloor())				
-					_animPlayer.Play("Idle");
 					_animTree.Set("parameters/IdleWalk/blend_amount", 0.0);
 			}
 			Velocity = tempVelocity;		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
