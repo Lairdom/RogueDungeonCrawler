@@ -255,11 +255,13 @@ public partial class Player : CharacterBody3D
 				//PlayAudioOnce(playerRaiseShield, "Voice", -30);
 				moveSpeed = GM.movementSpeed/3;
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 1.0);
+				_animTree.Set("parameters/kavelyNopeus/scale", 0.4);
 				shieldIsUp = true;
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking) {
 				moveSpeed = GM.movementSpeed;
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 0.0);
+				_animTree.Set("parameters/kavelyNopeus/scale", 1.0);
 				shieldIsUp = false;
 			}
 			
