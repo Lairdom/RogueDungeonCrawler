@@ -40,22 +40,22 @@ public partial class PassiveSkills : Node
         foreach (PassiveSkill skill in skills)
         {
             // Instantiate the passive skill pickup scene
-            // passiveskillpickup pickupInstance = (passiveskillpickup)passiveSkillPickupScene.Instance();
+            passiveskillpickup pickupInstance = (passiveskillpickup)passiveSkillPickupScene.Instance();
 
             // Set properties of the pickup instance based on the skill
-            // pickupInstance.Setup(skill.Name, skill.Description);
+            pickupInstance.Setup(skill.Name, skill.Description);
 
             // Add the pickup to the game world (adjust position as needed)
-            // AddChild(pickupInstance);
+            AddChild(pickupInstance);
         }
     }
     private void OnSkillButtonPressed(PassiveSkill skill)
     {
         // Handle the selection of the skill here
         ApplySkillEffects(skill);
-        GD.Print("Selected skill: " + skill.Name);
-        GetNode<Popup>("PopupDialog").QueueFree(); // Close the popup
-        // Update UI to display information about the selected skill
+        GD.Print("Picked up skill: " + skill.Name);
+        // Sound or visual effect here?
+        // and also update UI
     }
 
     private void HandleSkillSelection(PassiveSkill selectedSkill)
