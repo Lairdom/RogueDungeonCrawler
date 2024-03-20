@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://b72oet2ex7cog"]
+
+[ext_resource type="Script" path="res://PrefabObjects/Enemy-Boss/WebAttack.cs" id="1_77v1t"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0isx3"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_1cugn"]
+material = SubResource("StandardMaterial3D_0isx3")
+radius = 0.1
+height = 0.1
+radial_segments = 32
+rings = 16
+is_hemisphere = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_roouw"]
+radius = 0.1
+
+[node name="WebAttack" type="Area3D"]
+collision_layer = 16
+collision_mask = 43
+script = ExtResource("1_77v1t")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("SphereMesh_1cugn")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_roouw")
+
+[connection signal="body_entered" from="." to="." method="OnHit"]

@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3 uid="uid://drofe7drt7dqa"]
+
+[ext_resource type="Script" path="res://PrefabObjects/Enemy-Boss/EnemyBoss.cs" id="1_hjwav"]
+[ext_resource type="Script" path="res://Scripts/EnemyStats.cs" id="1_x5dmi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ejwmr"]
+albedo_color = Color(0.658824, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_uq3sp"]
+material = SubResource("StandardMaterial3D_ejwmr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jxfsr"]
+albedo_color = Color(0.658824, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_xlx7f"]
+material = SubResource("StandardMaterial3D_jxfsr")
+radius = 0.2
+height = 0.4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_invt5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1xvml"]
+size = Vector3(1, 0.5, 1)
+
+[node name="Enemy-Boss" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 43
+axis_lock_angular_z = true
+script = ExtResource("1_hjwav")
+
+[node name="TempMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_uq3sp")
+
+[node name="MeshHead" type="MeshInstance3D" parent="TempMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.591739)
+mesh = SubResource("SphereMesh_xlx7f")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+shape = SubResource("SphereShape3D_invt5")
+
+[node name="EnemyHandler" type="Node3D" parent="."]
+script = ExtResource("1_x5dmi")
+maxHealth = 500
+currentHealth = 500
+damage = 24
+movementSpeed = 200.0
+aggroRange = 10.0
+weakTo = 2
+
+[node name="AttackCollider" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
+collision_layer = 128
+collision_mask = 34
+
+[node name="Collider" type="CollisionShape3D" parent="AttackCollider"]
+shape = SubResource("BoxShape3D_1xvml")
+disabled = true
+
+[node name="Pathfinding" type="NavigationAgent3D" parent="."]
+
+[node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
+max_distance = 15.0
+
+[node name="GroundPathingNode" type="Node3D" parent="."]
+
+[connection signal="DeathSignal" from="EnemyHandler" to="." method="OnDeath"]
+[connection signal="body_entered" from="AttackCollider" to="." method="OnAttackColliderEntered"]
