@@ -29,6 +29,7 @@ public partial class EnemySkeleton : CharacterBody3D
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/PlayerWork.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis skeletonAttack = ResourceLoader.Load("res://Audio/SoundEffects/WeaponSwing.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis footSteps = ResourceLoader.Load("res://Audio/SoundEffects/RockyFootsteps.ogg") as AudioStreamOggVorbis;
+	private AnimationTree _animTree;
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	// Pathfinder set/get target position for movement
@@ -71,6 +72,7 @@ public partial class EnemySkeleton : CharacterBody3D
 		coll.Disabled = true;
 		attackCollider.Disabled = true;
 		// Kuolema animaatio
+		_animTree.Set("parameters/die/blend_amount", 1.0);
 		PlayAudioOnce(deathSound, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
 		QueueFree();
@@ -153,6 +155,7 @@ public partial class EnemySkeleton : CharacterBody3D
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		if (GM == null || root == null || player == null) {
 			Debug.Print("Null value");
 		}
@@ -184,6 +187,7 @@ public partial class EnemySkeleton : CharacterBody3D
 				// Kun ollaan tarpeeksi lähellä tehdään melee hyökkäys
 				if (playerDistance <= 0.5 && attackTimer >= 2 && !attacking) {
 					SkeletonMeleeAttack();
+					_animTree.Set("parameters/Lyo/request", 1);
 					attackTimer = 0;
 					return;
 				}
@@ -216,10 +220,12 @@ public partial class EnemySkeleton : CharacterBody3D
 					AxisLockLinearY = true;
 				if (MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations
+					_animTree.Set("parameters/Kavely/blend_amount", 0.0);
 	
 				}
 				else {
 					// Movement animations
+					_animTree.Set("parameters/Kavely/blend_amount", 1.0);
 					
 					if (footStepsTimer <= 0) {
 						PlayAudioOnce(footSteps, -20);
