@@ -9,7 +9,7 @@ public partial class Camera : Node3D
 	float camRotV = 0;				// CameraRotationVertical
 	Node3D H = default;
 	Node3D V = default;
-	Node3D player = default;
+	Player player = default;
 	RayCast3D cameraCollider = default;
 	Camera3D cam = default;
 	Node3D camPos = default;
@@ -18,7 +18,7 @@ public partial class Camera : Node3D
 	// Otetaan vastaan inputEvent. _Input on Godotin sisäänrakennettu funktio
 	public override void _Input(InputEvent tapahtuma) {
 		// Tarkastetaan että event on hiiren liikkuminen
-		if (tapahtuma is InputEventMouseMotion) {
+		if (tapahtuma is InputEventMouseMotion && !player.webbed) {
 			InputEventMouseMotion mouse = (InputEventMouseMotion) tapahtuma;
 
 			//Kamera saa pyöriä horizontal suunnassa vapaasti
@@ -45,7 +45,7 @@ public partial class Camera : Node3D
 	}
 
 	public override void _Process(double delta) {
-		if (GM.playerAlive) {
+		if (GM.playerAlive || !player.webbed) {
 			// Kameran Collision Detection
 			if (cameraCollider.IsColliding()) {
 				Vector3 collisionPoint = cameraCollider.GetCollisionPoint();

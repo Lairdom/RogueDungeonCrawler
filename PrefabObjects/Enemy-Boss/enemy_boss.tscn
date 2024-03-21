@@ -24,7 +24,7 @@ size = Vector3(1, 0.5, 1)
 
 [node name="Enemy-Boss" type="CharacterBody3D"]
 collision_layer = 4
-collision_mask = 43
+collision_mask = 11
 axis_lock_angular_z = true
 script = ExtResource("1_hjwav")
 

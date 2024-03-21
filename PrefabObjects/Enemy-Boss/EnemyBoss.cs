@@ -245,7 +245,7 @@ public partial class EnemyBoss : CharacterBody3D
 					attackTimer = 0;
 					return;
 				}
-				else if (attackTimer < 2) {	attackTimer += delta;	}
+				if (attackTimer < 2) {	attackTimer += delta;	}
 			}
 			// Liikkuminen
 			if (!attacking && !landing && !takingFlight) {

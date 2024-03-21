@@ -30,7 +30,7 @@ public partial class Player : CharacterBody3D
 	int stanceIndex = 0;
 	Vector3[] atkCollPositions = {new Vector3(0.3f, 0.05f, 0), new Vector3(0.3f, 0.05f, 0), new Vector3(0.2f, 0.05f, 0)};
 	Vector3[] atkCollSizes = {new Vector3(0.45f, 0.1f, 0.55f), new Vector3(0.7f, 0.1f, 0.1f), new Vector3(0.3f, 0.1f, 0.1f)};
-	public bool shieldIsUp = false;
+	public bool shieldIsUp = false, raisingShield = false;
 	public float facing;
 	bool attacking = false;
 	float attackTimer = 0f;
@@ -41,6 +41,7 @@ public partial class Player : CharacterBody3D
 	int curWeaponType = 0;					// currentWeaponType index. Indexiä vaihtamalla valitaan weaponType listasta asetyyppi
 	MeshInstance3D weaponMesh = default;
 	bool alive = true;
+	public bool webbed = false;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -88,6 +89,14 @@ public partial class Player : CharacterBody3D
 			//Debug.Print("Enemy hit");
 			body.CallDeferred("TakeDamage", GM.attackPower);
 		}
+	}
+
+	private async void RaisingShield() {
+		raisingShield = true;
+		//float dur = _animTree.GetAnimation("kilpiBlock").Length;
+		await ToSignal(GetTree().CreateTimer(0.1f), "timeout");
+		shieldIsUp = true;
+		raisingShield = false;
 	}
 
 	// Vaihdetaan ase
@@ -159,6 +168,12 @@ public partial class Player : CharacterBody3D
 			facing = 360-facing;
 	}
 
+	private async void DestroyWebbing() {
+		await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
+		// Audio effect?
+		webbed = false;
+	}
+
 	// AttackCollider kytkeminen päälle ja pois
 	private async void AttackColliderOnOff(float secs) {
 		await ToSignal(GetTree().CreateTimer(secs), "timeout");			// vastaa Unityn yield WaitForSeconds()
@@ -220,6 +235,7 @@ public partial class Player : CharacterBody3D
 					_animTree.Set("parameters/Stance/blend_amount", 0.0);
 					_animTree.Set("parameters/lyonti/request", 1);
 					delay = 0.3f;
+					DestroyWebbing();
 				}
 				else if (stanceIndex == 1) {
 					//Debug.Print("Poking Attack!");
@@ -251,45 +267,44 @@ public partial class Player : CharacterBody3D
 
 			// Block ('RightClick')
 			// Nappia pitämällä pohjassa kilpi on ylhäällä. Kilpeä ei voi nostaa ennen kuin hyökkäys on tehty loppuun.
-			if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp) {
-				//PlayAudioOnce(playerRaiseShield, "Voice", -30);
-				moveSpeed = GM.movementSpeed/3;
+			if (Input.IsActionPressed("Block") && IsOnFloor() && !attacking && !shieldIsUp && !raisingShield && !webbed) {
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 1.0);
-				_animTree.Set("parameters/kavelyNopeus/scale", 0.4);
 				shieldIsUp = true;
 			}
-			else if (Input.IsActionJustReleased("Block") && !attacking) {
-				moveSpeed = GM.movementSpeed;
+			else if (Input.IsActionJustReleased("Block") && !attacking || webbed) {
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 0.0);
-				_animTree.Set("parameters/kavelyNopeus/scale", 1.0);
 				shieldIsUp = false;
 			}
 			
 			if (shieldIsUp) {
+				moveSpeed = GM.movementSpeed/3;
+				_animTree.Set("parameters/kavelyNopeus/scale", 0.4);
 				playerShield.CollisionLayer = 32;
 				CalculateFacing();
 			}
-			else
+			else {
+				moveSpeed = GM.movementSpeed;
+				_animTree.Set("parameters/kavelyNopeus/scale", 1.0);
 				playerShield.CollisionLayer = 0;
+			}
 
 			// StanceChange ('Q')
 			// Nappia painamalla voidaan vaihtaa stancea. Napin painallus muuttaa indexiä. Käydään läpi stance niminen string array jossa eri stancen nimet.
 			if (Input.IsActionJustPressed("StanceChange")) {
 				ChangeStance();			
-				Debug.Print("Current Stance: "+stance[stanceIndex]);
+				//Debug.Print("Current Stance: "+stance[stanceIndex]);
 			}
 
 			// Jump (Space)
 			// Input.IsActionPressed() jos nappia painaa tai se on pohjassa antaa true
 			// Input.IsActionJustPressed() jos nappia painaa, pohjassa pitäminen ei tee mitään otetaan true vain kerran
-			if (Input.IsActionJustPressed("Jump") && IsOnFloor() && !attacking)
-			{
+			if (Input.IsActionJustPressed("Jump") && IsOnFloor() && !attacking && !webbed) {
 				_animTree.Set("parameters/Jump/request", 1);
 				tempVelocity.Y = JUMPVELOCITY;
 			}
 
 			// Interact ('E')
-			if (Input.IsActionJustPressed("Examine") && objectsInRange > 0 && target != null && !shieldIsUp) {
+			if (Input.IsActionJustPressed("Examine") && objectsInRange > 0 && target != null && !shieldIsUp && !webbed) {
 				Debug.Print("Called method: OnActivate");
 				target.CallDeferred("OnActivate");
 			}
@@ -307,49 +322,42 @@ public partial class Player : CharacterBody3D
 			direction = direction.Normalized();		// Asetetaan vectorin suuruudeksi 1
 
 			// Toteutetaan liike, jos direction on 0 niin pysäytetään pelaaja
-			if (direction != Vector3.Zero) {
+			if (direction != Vector3.Zero && !webbed) {
 				tempVelocity.X = direction.X * moveSpeed * delta;
 				tempVelocity.Z = direction.Z * moveSpeed * delta;
 				if (IsOnFloor()) {
+					// Kävelyanimaatiot
+					_animTree.Set("parameters/IdleWalk/blend_amount", 1.0);
+					_animTree.Set("parameters/takaperin/blend_amount", 0.0);
+					if (Input.IsActionPressed("MoveForwards")) {
+						_animTree.Set("parameters/suunta/blend_amount", 0.0);
+						_animTree.Set("parameters/takaperin/blend_amount", 0.0);
+					}
+					if (Input.IsActionPressed("MoveBackwards")) {
+						_animTree.Set("parameters/takaperin/blend_amount", 1.0);
+					}
+					if (Input.IsActionPressed("MoveRight")) {
+						_animTree.Set("parameters/suunta/blend_amount", 1.0);
+						_animTree.Set("parameters/takaperin/blend_amount", 0.0);
+					}
+					if (Input.IsActionPressed("MoveLeft")) {
+						_animTree.Set("parameters/suunta/blend_amount", -1.0);
+					}
 					if (footStepTimer <= 0) {
 						PlayAudioOnce(footSteps, "SFX", -20);
-						footStepTimer = 0.5f;
+						if (shieldIsUp) {footStepTimer = 1.2f;}
+						else {footStepTimer = 0.5f;}
 					}
 					else {	footStepTimer -= delta;		}
-					{
-						_animTree.Set("parameters/IdleWalk/blend_amount", 1.0);
-						_animTree.Set("parameters/takaperin/blend_amount", 0.0);
-						if (Input.IsActionPressed("MoveForwards"))
-						{
-							_animTree.Set("parameters/suunta/blend_amount", 0.0);
-							_animTree.Set("parameters/takaperin/blend_amount", 0.0);
-							Debug.Print("Moving Forwards");
-						}
-						if (Input.IsActionPressed("MoveBackwards"))
-						{
-							_animTree.Set("parameters/takaperin/blend_amount", 1.0);
-							Debug.Print("Moving Backwards");
-						}
-						if (Input.IsActionPressed("MoveRight"))
-						{
-							_animTree.Set("parameters/suunta/blend_amount", 1.0);
-							_animTree.Set("parameters/takaperin/blend_amount", 0.0);
-							Debug.Print("Moving Right");
-						}
-						if (Input.IsActionPressed("MoveLeft"))
-						{
-							_animTree.Set("parameters/suunta/blend_amount", -1.0);
-							Debug.Print("Moving Left");
-						}
-					}
-					
 				}
 			}
 			else {
 				tempVelocity.X = direction.X * 0;
 				tempVelocity.Z = direction.Z * 0;
-				if (!attacking && !shieldIsUp && IsOnFloor())				
+				if (IsOnFloor())				
 					_animTree.Set("parameters/IdleWalk/blend_amount", 0.0);
+				if (webbed)
+					_animTree.Set("parameters/kavelyNopeus/scale", 0);
 			}
 			Velocity = tempVelocity;		// Asetetaan tempVelocity muuttujan arvot uudeksi Velocityksi
 			MoveAndSlide();					// MoveAndSlide on Godotin oma funktio joka hoitaa collisionit ja liikkeen
