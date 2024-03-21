@@ -29,6 +29,8 @@ script = ExtResource("2_foepo")
 maxHealth = 100
 currentHealth = 100
 damage = 20
+aggroRange = 30.0
+weakTo = 4
 
 [node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
 

@@ -68,12 +68,20 @@ public partial class EnemyOrb : CharacterBody3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double dDelta) {
 		float delta = (float) dDelta;
-		if (player != null && statHandler.isAlive) {
+		if (GM.playerAlive && statHandler.isAlive) {
 			playerDirection = player.GlobalPosition - GlobalPosition;
 			playerDirection = playerDirection.Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
 			LookAt(player.GlobalPosition);
-			if (playerDistance < 5 && shootTimer <= 0 && GM.playerAlive) {
+
+			// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
+			var spaceState = GetWorld3D().DirectSpaceState;
+			var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+			var result = spaceState.IntersectRay(query);
+			Node3D hitNode = (Node3D) result["collider"];
+			bool seesPlayer = hitNode.Name == "Player";
+
+			if (playerDistance < statHandler.aggroRange && seesPlayer && shootTimer <= 0) {
 				shooting = true;
 				SpawnBullet();
 				shootTimer = firingDelay;

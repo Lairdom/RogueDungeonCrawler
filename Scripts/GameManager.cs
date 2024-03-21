@@ -14,44 +14,51 @@ public partial class GameManager : Node3D
 	[Export] public int playerMaxHealth;
 	[Export] public int playerHealth;
 	[Export] public int attackPower;
+	[Export] public float critChance;
 	[Export] public float movementSpeed;
 	[Export] public bool araknoPhobiaMode = false;
 	public bool door1Unlocked, door2Unlocked, door3Unlocked = false;
 	public int currentRoom = 0;
-	public int numberOfEnemies;
-	public int numberOfSpiders;
-	public int numberOfOrbs;
+	public int numberOfEnemies, numberOfSpiders, numberOfOrbs, numberOfSkeletons;
+	public bool bossSpawned;
 	Node3D root = default;
 	Player player = default;
 	PackedScene spider = ResourceLoader.Load("res://PrefabObjects/Enemy-Spider/enemy_spider.tscn") as PackedScene;
 	PackedScene orb = ResourceLoader.Load("res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn") as PackedScene;
+	PackedScene skeleton = ResourceLoader.Load("res://PrefabObjects/Enemy-Skeleton/enemy_skeleton.tscn") as PackedScene;
+	PackedScene boss = ResourceLoader.Load("res://PrefabObjects/Enemy-Boss/enemy_boss.tscn") as PackedScene;
 	Vector3[] scaleSets = {new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1, 1, 1), new Vector3(1.5f, 1.5f, 1.5f)};
 
 	// Set Stage for each room
 	public async void SetStage() {
 		await ToSignal(GetTree().CreateTimer(0.01f), "timeout");
-		if (currentRoom == 0) {
-			numberOfSpiders = 1;
-		}
-		else if (currentRoom == 1) {
+		
+		if (currentRoom == 1) {
 			numberOfSpiders = GD.RandRange(0,3);
-			numberOfOrbs = GD.RandRange(0,2);			
+			numberOfOrbs = GD.RandRange(0,2);	
+			numberOfSkeletons = GD.RandRange(0,3);
+			numberOfEnemies = numberOfSpiders+numberOfOrbs+numberOfSkeletons;
 		}
 		else if (currentRoom == 2) {
 			numberOfSpiders = GD.RandRange(0,5);
 			numberOfOrbs = GD.RandRange(0,4);
+			numberOfSkeletons = GD.RandRange(0,5);
+			numberOfEnemies = numberOfSpiders+numberOfOrbs+numberOfSkeletons;
 		}
 		else if (currentRoom == 3) {
-			Debug.Print("Boss Spawned");
+			Vector3 point = GetNodeOrNull<Node3D>("/root/World/PatrolPositions/PatrolPoint16").GlobalPosition;
+			SpawnBoss(point);
+			numberOfEnemies++;
 		}
-		for (int i = 0; i<numberOfSpiders; i++) {
-			SpawnSpider(SelectRandomSpawnPoint());
+		if (currentRoom < 3 && currentRoom != 0) {
+			for (int i = 0; i<numberOfSpiders; i++) 
+				SpawnSpider(SelectRandomSpawnPoint());
+			for (int i = 0; i<numberOfOrbs; i++) 
+				SpawnOrb(SelectRandomSpawnPoint());
+			for (int i = 0; i<numberOfSkeletons; i++)
+				SpawnSkeleton(SelectRandomSpawnPoint());
 		}
-		for (int i = 0; i<numberOfOrbs; i++) {
-			SpawnOrb(SelectRandomSpawnPoint());
-		}
-		Debug.Print("Number of Spiders: "+numberOfSpiders+", number of Orbs: "+numberOfOrbs);
-		numberOfEnemies = numberOfSpiders+numberOfOrbs;
+		//Debug.Print("Number of Spiders: "+numberOfSpiders+", number of Orbs: "+numberOfOrbs+", number of Skeletons: "+numberOfSkeletons);
 		if (numberOfEnemies == 0 && currentRoom != 0)
 			SetStage();
 	}
@@ -73,6 +80,24 @@ public partial class GameManager : Node3D
 		orbInstance.Position = location;
 		root.AddChild(orbInstance);
 		orbInstance.statHandler.AddToGroup("enemies");
+	}
+
+	// Spawn Skeleton
+	public void SpawnSkeleton(Vector3 location) {
+		EnemySkeleton skeletonInstance = (EnemySkeleton) skeleton.Instantiate();
+		location.Y = 0.5f;
+		skeletonInstance.Position = location;
+		root.AddChild(skeletonInstance);
+		skeletonInstance.statHandler.AddToGroup("enemies");
+	}
+
+	// Spawn Skeleton
+	public void SpawnBoss(Vector3 location) {
+		EnemyBoss bossInstance = (EnemyBoss) boss.Instantiate();
+		location.Y = 1.5f;
+		bossInstance.Position = location;
+		root.AddChild(bossInstance);
+		bossInstance.statHandler.AddToGroup("enemies");
 	}
 
 	private Vector3 SelectRandomSpawnPoint() {
@@ -98,12 +123,34 @@ public partial class GameManager : Node3D
 			door1Unlocked = true;
 		else if (currentRoom == 1)
 			door2Unlocked = true;
-		else if (currentRoom == 2)
-			door3Unlocked = true;
 			
-		// Spawn 2 powerups or items from which the player can choose only 1
 		currentRoom++;
 		SetStage();
+	}
+
+	// Signaali saadaan aina kun vihollinen tapetaan
+	public void CheckAllEnemiesDefeated() {
+    	bool allDefeated = true; // Assume all enemies are defeated initially
+    
+		// Iterate through all enemies in the scene
+		foreach (EnemyStats enemy in GetTree().GetNodesInGroup("enemies")) {
+			// Check if the enemy is still alive
+			if (enemy.isAlive) {
+				// If any enemy is still alive, set the flag to false and break the loop
+				allDefeated = false;
+				break;
+			}
+		}
+		
+		// If all enemies are defeated, emit the signal
+		if (allDefeated && currentRoom != 2) {
+			Debug.Print("All defeated");
+			RoomCleared();
+			EmitSignal(nameof(AllEnemiesDefeated));
+		}
+		else if (allDefeated && currentRoom == 2) {
+			RoomCleared();
+		}
 	}
 
 	// Kutsutaan kun pelaaja ottaa vahinkoa tai parantaa itseään (vahinko on negatiivinen arvo, parantaminen positiivinen arvo)
@@ -118,29 +165,17 @@ public partial class GameManager : Node3D
 
 		// Emit the signal to notify UI about the health change
 		EmitSignal(SignalName.PlayerHealthChanged, playerHealth, playerMaxHealth);
-	}	
+	}
 
-public void CheckAllEnemiesDefeated() {
-    bool allDefeated = true; // Assume all enemies are defeated initially
-    
-    // Iterate through all enemies in the scene
-    foreach (EnemyStats enemy in GetTree().GetNodesInGroup("enemies")) {
-        // Check if the enemy is still alive
-        if (enemy.isAlive) {
-            // If any enemy is still alive, set the flag to false and break the loop
-            allDefeated = false;
-            break;
-        }
-    }
-    
-    // If all enemies are defeated, emit the signal
-    if (allDefeated) {
-		Debug.Print("All defeated");
-		RoomCleared();
-        EmitSignal(nameof(AllEnemiesDefeated));
-    }
-	
-}
+	// Kutsutaan kun pelaaja tekee vahinkoa viholliseen
+	public float CheckCrit() {
+		float critModifier = 1f;
+		float chance = critChance*100;
+		bool crit = GD.RandRange(1, 100) < chance;
+		if (crit)
+			critModifier = 3f;
+		return critModifier;
+	}
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {

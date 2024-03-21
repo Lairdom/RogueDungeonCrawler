@@ -62,7 +62,7 @@ public partial class EnemyBoss : CharacterBody3D
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
 		statHandler.isAlive = false;
-		// Victory
+		Debug.Print("Victory!!!");
 		coll.Disabled = true;
 		attackCollider.Disabled = true;
 		// Kuolema animaatio
@@ -235,12 +235,12 @@ public partial class EnemyBoss : CharacterBody3D
 					return;
 				}
 				// Jos boss on laskeutunut ja lähestyy pelaajaa
-				else if (!flying && playerDistance > 1.5f && !attacking) {
+				else if (!flying && playerDistance > 1.6f && !attacking) {
 					targetPos.Y = 0.25f;
 					movementTarget = targetPos;
 				}
 				// Jos boss on laskeutunut ja melee etäisyydellä
-				else if (!flying && playerDistance <= 1.5f && attackTimer >= 2 && !attacking) {
+				else if (!flying && playerDistance <= 1.6f && attackTimer >= 2 && !attacking) {
 					BossMeleeAttack();
 					attackTimer = 0;
 					return;
