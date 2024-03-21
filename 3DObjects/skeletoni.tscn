@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://wkfxnpqskgyu"]
+
+[ext_resource type="PackedScene" uid="uid://mqappq6l33ii" path="res://3DObjects/Skeletoni.glb" id="1_qi8ao"]
+
+[node name="Skeletoni" instance=ExtResource("1_qi8ao")]
+transform = Transform3D(-0.05, 0, -7.54979e-09, 0, 0.05, 0, 7.54979e-09, 0, -0.05, 0, 0, 0)
