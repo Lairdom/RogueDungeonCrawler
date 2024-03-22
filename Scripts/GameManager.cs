@@ -7,7 +7,7 @@ public partial class GameManager : Node3D
 	[Signal]
 	public delegate void PlayerHealthChangedEventHandler(float currentHealth, float maxHealth);
 	[Signal]
-    public delegate void AllEnemiesDefeatedEventHandler();
+	public delegate void AllEnemiesDefeatedEventHandler();
 
 	[ExportCategory("Player Stats")]
 	[Export] public bool playerAlive = true;
@@ -130,8 +130,8 @@ public partial class GameManager : Node3D
 
 	// Signaali saadaan aina kun vihollinen tapetaan
 	public void CheckAllEnemiesDefeated() {
-    	bool allDefeated = true; // Assume all enemies are defeated initially
-    
+		bool allDefeated = true; // Assume all enemies are defeated initially
+	
 		// Iterate through all enemies in the scene
 		foreach (EnemyStats enemy in GetTree().GetNodesInGroup("enemies")) {
 			// Check if the enemy is still alive
