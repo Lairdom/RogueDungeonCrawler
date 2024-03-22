@@ -4,13 +4,12 @@ using System.Diagnostics;
 
 public partial class EnemyOrb : CharacterBody3D
 {
-	[Export] float firingDelay;
 	GameManager GM;
 	Player player = default;
 	Vector3 playerDirection;
 	float playerDistance;
 	float shootTimer = 0;
-	bool shooting = false;
+	float firingDelay;
 	Node3D root = default;
 	public EnemyStats statHandler = default;
 	AudioStreamPlayer3D audioSource = default;
@@ -60,6 +59,7 @@ public partial class EnemyOrb : CharacterBody3D
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
+		firingDelay = statHandler.attackSpeed;
 		if (GM == null || root == null || player == null) {
 			Debug.Print("Null value");
 		}
@@ -71,7 +71,7 @@ public partial class EnemyOrb : CharacterBody3D
 		if (GM.playerAlive && statHandler.isAlive) {
 			playerDirection = player.GlobalPosition - GlobalPosition;
 			playerDirection = playerDirection.Normalized();
-			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
+			playerDistance = Position.DistanceTo(player.GlobalPosition);
 			LookAt(player.GlobalPosition);
 
 			// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
@@ -81,14 +81,12 @@ public partial class EnemyOrb : CharacterBody3D
 			Node3D hitNode = (Node3D) result["collider"];
 			bool seesPlayer = hitNode.Name == "Player";
 
-			if (playerDistance < statHandler.aggroRange && seesPlayer && shootTimer <= 0) {
-				shooting = true;
+			if (playerDistance < statHandler.aggroRange && seesPlayer && shootTimer > firingDelay) {
 				SpawnBullet();
-				shootTimer = firingDelay;
+				shootTimer = 0;
 			}
-			shootTimer -= delta;
-			if (shootTimer <= 0)
-				shooting = false;
+			if (shootTimer < firingDelay)
+				shootTimer += delta;
 		}
 	}
 }

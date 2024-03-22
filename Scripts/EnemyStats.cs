@@ -9,6 +9,7 @@ public partial class EnemyStats : Node3D
 	[Export] int maxHealth;
 	[Export] public int currentHealth;
 	[Export] public int damage;
+	[Export] public float attackSpeed;
 	[Export] public float movementSpeed;
 	[Export] public float aggroRange;
 	[Export(PropertyHint.Flags, "Slashing,Piercing,Bludgeoning")] int weakTo;
