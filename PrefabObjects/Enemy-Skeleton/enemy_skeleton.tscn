@@ -18,8 +18,8 @@ radius = 0.15
 [sub_resource type="BoxShape3D" id="BoxShape3D_0ewhr"]
 size = Vector3(0.5, 0.5, 0.5)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_xse0y"]
-size = Vector3(10, 0.5, 8.8)
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_pmbau"]
+points = PackedVector3Array(0, -5, -10, -7.07126, -5, -7.07126, 0, 5, 0, 7.0693, -5, -7.07126, -10, -5, 0, -7.07126, -5, 7.0693, 0, -5, 10, 7.0693, -5, 7.0693, 10, -5, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qewg2"]
 resource_name = "Material"
@@ -1894,13 +1894,13 @@ shape = SubResource("BoxShape3D_0ewhr")
 disabled = true
 
 [node name="VisionCollider" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -5)
 collision_layer = 256
 collision_mask = 2
 
 [node name="Collider" type="CollisionShape3D" parent="VisionCollider"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, -4.5)
-shape = SubResource("BoxShape3D_xse0y")
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_pmbau")
 
 [node name="Pathfinding" type="NavigationAgent3D" parent="."]
 avoidance_enabled = true
@@ -1926,7 +1926,7 @@ bones/1/name = "KantaIK.R"
 bones/1/parent = 0
 bones/1/rest = Transform3D(-0.0127435, 0.00285278, -0.999919, -0.0655205, -0.997849, -0.00201187, -0.99777, 0.0654893, 0.012903, -0.61062, 0.27758, -0.0627969)
 bones/1/enabled = true
-bones/1/position = Vector3(-0.611752, -0.0926077, -1.09239)
+bones/1/position = Vector3(-0.615176, 1.75042, -0.387017)
 bones/1/rotation = Quaternion(-0.702176, 0.022312, 0.711248, -0.0240329)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Jalkatera.R"
@@ -1954,7 +1954,7 @@ bones/5/name = "KantaIK.L"
 bones/5/parent = 0
 bones/5/rest = Transform3D(-0.0127443, -0.00285288, 0.999919, 0.0655205, -0.997849, -0.00201192, 0.99777, 0.0654893, 0.0129038, 0.61062, 0.27758, -0.0627963)
 bones/5/enabled = true
-bones/5/position = Vector3(0.615287, 1.02019, -0.111502)
+bones/5/position = Vector3(0.611016, -0.768807, 0.00592184)
 bones/5/rotation = Quaternion(0.702175, 0.022312, 0.711248, 0.0240329)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/name = "Jalkatera.L"
@@ -1982,7 +1982,7 @@ bones/9/name = "KasiIK.R.001"
 bones/9/parent = 0
 bones/9/rest = Transform3D(-0.999724, 0.00203145, 0.0233924, 0.00153835, -0.988444, 0.151587, 0.0234297, 0.15158, 0.988181, -5.75098, -0.337624, -9.02972)
 bones/9/enabled = true
-bones/9/position = Vector3(-2.32015, -0.354397, -5.25751)
+bones/9/position = Vector3(-2.32015, -0.329248, -4.87453)
 bones/9/rotation = Quaternion(0.0149068, 0.0654826, 0.918923, 0.388678)
 bones/9/scale = Vector3(1, 1, 1.00001)
 bones/10/name = "KyynarIK.R"
@@ -1996,7 +1996,7 @@ bones/11/name = "KasiIK.L.001"
 bones/11/parent = 0
 bones/11/rest = Transform3D(-0.999724, -0.00203145, -0.0233932, -0.00153846, -0.988444, 0.151587, -0.0234305, 0.151579, 0.98818, 5.75099, -0.337625, -9.02971)
 bones/11/enabled = true
-bones/11/position = Vector3(2.32016, -0.354397, -5.25751)
+bones/11/position = Vector3(2.32016, -0.329248, -4.87453)
 bones/11/rotation = Quaternion(-0.0149073, 0.0654824, 0.918923, -0.388678)
 bones/11/scale = Vector3(1, 1, 1.00001)
 bones/12/name = "KyynarIK.L"
@@ -2010,7 +2010,7 @@ bones/13/name = "Hantaluu"
 bones/13/parent = 0
 bones/13/rest = Transform3D(1, 3.31403e-07, -1.04436e-07, -1.65701e-07, 0.719014, 0.694996, 3.05414e-07, -0.694996, 0.719014, 2.2747e-06, -0.610201, -4.77035)
 bones/13/enabled = true
-bones/13/position = Vector3(2.18633e-06, -0.610295, -4.77176)
+bones/13/position = Vector3(2.18132e-06, -0.585146, -4.38879)
 bones/13/rotation = Quaternion(-0.374824, -1.1052e-07, -1.34049e-07, 0.927096)
 bones/13/scale = Vector3(1, 1, 1)
 bones/14/name = "Ranka"
@@ -2165,21 +2165,21 @@ bones/35/parent = 34
 bones/35/rest = Transform3D(-0.808494, -0.558531, 0.185417, 0.0144966, 0.296067, 0.955057, -0.588325, 0.774846, -0.231272, -0.217436, 0.851517, 0.256319)
 bones/35/enabled = true
 bones/35/position = Vector3(-0.217436, 0.851517, 0.256319)
-bones/35/rotation = Quaternion(0.0501372, 0.773465, 0.627411, 0.0747922)
+bones/35/rotation = Quaternion(0.0971387, 0.772186, 0.626256, 0.045784)
 bones/35/scale = Vector3(1, 1, 1)
 bones/36/name = "Polvi.R"
 bones/36/parent = 35
 bones/36/rest = Transform3D(0.996011, 0.0749706, 0.048389, -0.0769343, 0.99623, 0.0400808, -0.0452017, -0.0436437, 0.998024, -6.0536e-09, 2.09307, -4.51691e-08)
 bones/36/enabled = true
 bones/36/position = Vector3(-6.0536e-09, 2.09307, -4.51691e-08)
-bones/36/rotation = Quaternion(-0.00543917, 0.0299422, -0.336091, 0.941338)
+bones/36/rotation = Quaternion(-0.0138285, 0.0270231, -0.196463, 0.980041)
 bones/36/scale = Vector3(1, 1, 1)
 bones/37/name = "Reisi.R"
 bones/37/parent = 36
 bones/37/rest = Transform3D(0.996795, 0.0622508, -0.0502436, -0.0646703, 0.996749, -0.0480586, 0.0470885, 0.0511539, 0.99758, -1.02445e-08, 0.169995, 4.84288e-08)
 bones/37/enabled = true
 bones/37/position = Vector3(-1.02445e-08, 0.169995, 4.84288e-08)
-bones/37/rotation = Quaternion(0.0446167, -0.0153383, -0.345003, 0.937415)
+bones/37/rotation = Quaternion(0.0364138, -0.0200142, -0.197623, 0.979397)
 bones/37/scale = Vector3(1, 1, 1)
 bones/38/name = "Lonkka.L"
 bones/38/parent = 13
@@ -2193,21 +2193,21 @@ bones/39/parent = 38
 bones/39/rest = Transform3D(-0.808494, 0.558531, -0.185417, -0.0144965, 0.296067, 0.955057, 0.588325, 0.774846, -0.231272, 0.217437, 0.851517, 0.256319)
 bones/39/enabled = true
 bones/39/position = Vector3(0.217437, 0.851517, 0.256319)
-bones/39/rotation = Quaternion(0.139501, 0.770781, 0.577004, -0.231307)
+bones/39/rotation = Quaternion(0.156681, 0.763723, 0.578504, -0.239817)
 bones/39/scale = Vector3(1, 1, 1)
 bones/40/name = "Polvi.L"
 bones/40/parent = 39
 bones/40/rest = Transform3D(0.996011, -0.0749706, -0.0483889, 0.0769344, 0.99623, 0.0400809, 0.0452016, -0.0436438, 0.998024, -3.11993e-08, 2.09307, 1.03493e-07)
 bones/40/enabled = true
 bones/40/position = Vector3(-3.11993e-08, 2.09307, 1.03493e-07)
-bones/40/rotation = Quaternion(-0.0192878, -0.0227411, 0.00674866, 0.999533)
+bones/40/rotation = Quaternion(-0.0151939, -0.0264722, 0.171647, 0.984686)
 bones/40/scale = Vector3(1, 1, 1)
 bones/41/name = "Reisi.L"
 bones/41/parent = 40
 bones/41/rest = Transform3D(0.996795, -0.0622508, 0.0502436, 0.0646703, 0.996749, -0.0480586, -0.0470885, 0.0511538, 0.99758, -1.95578e-08, 0.169995, -3.53903e-08)
 bones/41/enabled = true
 bones/41/position = Vector3(-1.95578e-08, 0.169995, -3.53903e-08)
-bones/41/rotation = Quaternion(0.0195554, 0.0250492, 0.000135672, 0.999495)
+bones/41/rotation = Quaternion(0.034839, 0.0207667, 0.171532, 0.984343)
 bones/41/scale = Vector3(1, 1, 1)
 
 [node name="Cube" type="MeshInstance3D" parent="Skeletoni/Armature/Skeleton3D"]
