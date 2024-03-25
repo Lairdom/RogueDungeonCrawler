@@ -19,13 +19,14 @@ public partial class GameManager : Node3D
 	[Export] public bool araknoPhobiaMode = false;
 	public bool door1Unlocked, door2Unlocked, door3Unlocked = false;
 	public int currentRoom = 0;
-	public int numberOfEnemies, numberOfSpiders, numberOfOrbs, numberOfSkeletons;
+	public int numberOfEnemies, numberOfSpiders, numberOfOrbs, numberOfSkeletons, numberOfRangedSkeletons;
 	public bool bossSpawned;
 	Node3D root = default;
 	Player player = default;
 	PackedScene spider = ResourceLoader.Load("res://PrefabObjects/Enemy-Spider/enemy_spider.tscn") as PackedScene;
 	PackedScene orb = ResourceLoader.Load("res://PrefabObjects/Enemy-Orb/EnemyOrb.tscn") as PackedScene;
 	PackedScene skeleton = ResourceLoader.Load("res://PrefabObjects/Enemy-Skeleton/enemy_skeleton.tscn") as PackedScene;
+	PackedScene rangedSkeleton = ResourceLoader.Load("res://PrefabObjects/Enemy-RangedSkeleton/Enemy_Ranged_Skeleton.tscn") as PackedScene;
 	PackedScene boss = ResourceLoader.Load("res://PrefabObjects/Enemy-Boss/enemy_boss.tscn") as PackedScene;
 	Vector3[] scaleSets = {new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1, 1, 1), new Vector3(1.5f, 1.5f, 1.5f)};
 
@@ -35,15 +36,17 @@ public partial class GameManager : Node3D
 		
 		if (currentRoom == 1) {
 			numberOfSpiders = GD.RandRange(0,3);
-			numberOfOrbs = GD.RandRange(0,2);	
-			numberOfSkeletons = GD.RandRange(0,3);
-			numberOfEnemies = numberOfSpiders+numberOfOrbs+numberOfSkeletons;
+			numberOfOrbs = GD.RandRange(0,1);	
+			numberOfSkeletons = GD.RandRange(0,2);
+			numberOfRangedSkeletons = GD.RandRange(0,2);
+			numberOfEnemies = numberOfSpiders+numberOfOrbs+numberOfSkeletons+numberOfRangedSkeletons;
 		}
 		else if (currentRoom == 2) {
-			numberOfSpiders = GD.RandRange(0,5);
-			numberOfOrbs = GD.RandRange(0,4);
-			numberOfSkeletons = GD.RandRange(0,5);
-			numberOfEnemies = numberOfSpiders+numberOfOrbs+numberOfSkeletons;
+			numberOfSpiders = GD.RandRange(0,6);
+			numberOfOrbs = GD.RandRange(0,3);
+			numberOfSkeletons = GD.RandRange(0,4);
+			numberOfRangedSkeletons = GD.RandRange(0,4);
+			numberOfEnemies = numberOfSpiders+numberOfOrbs+numberOfSkeletons+numberOfRangedSkeletons;
 		}
 		else if (currentRoom == 3) {
 			Vector3 point = GetNodeOrNull<Node3D>("/root/World/PatrolPositions/PatrolPoint16").GlobalPosition;
@@ -57,8 +60,9 @@ public partial class GameManager : Node3D
 				SpawnOrb(SelectRandomSpawnPoint());
 			for (int i = 0; i<numberOfSkeletons; i++)
 				SpawnSkeleton(SelectRandomSpawnPoint());
+			for (int i = 0; i<numberOfRangedSkeletons; i++)
+				SpawnRangedSkeleton(SelectRandomSpawnPoint());
 		}
-		//Debug.Print("Number of Spiders: "+numberOfSpiders+", number of Orbs: "+numberOfOrbs+", number of Skeletons: "+numberOfSkeletons);
 		if (numberOfEnemies == 0 && currentRoom != 0)
 			SetStage();
 	}
@@ -92,6 +96,15 @@ public partial class GameManager : Node3D
 	}
 
 	// Spawn Skeleton
+	public void SpawnRangedSkeleton(Vector3 location) {
+		EnemyRangedSkeleton rangedSkelInstance = (EnemyRangedSkeleton) rangedSkeleton.Instantiate();
+		location.Y = 0.5f;
+		rangedSkelInstance.Position = location;
+		root.AddChild(rangedSkelInstance);
+		rangedSkelInstance.statHandler.AddToGroup("enemies");
+	}
+
+	// Spawn Boss
 	public void SpawnBoss(Vector3 location) {
 		EnemyBoss bossInstance = (EnemyBoss) boss.Instantiate();
 		location.Y = 1.5f;

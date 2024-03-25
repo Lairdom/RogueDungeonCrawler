@@ -17,12 +17,10 @@ public partial class EnemySkeleton : CharacterBody3D
 	Vector3 movementTarget;
 	Vector3 targetPos;
 	float moveSpeed;
-	bool playerDetected = false;
-	float attackTimer;
+	bool seesPlayer, inSight, playerDetected = false;
+	float attackTimer, footStepsTimer;
 	float aggrRange;
-	bool idling;
-	bool attacking;
-	float footStepsTimer;
+	bool idling, attacking;
 	float yPosTarget;
 	float facing;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit1.ogg") as AudioStreamOggVorbis;
@@ -80,6 +78,7 @@ public partial class EnemySkeleton : CharacterBody3D
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
 	public void TakeDamage(int dmg) {
+		playerDetected = true;
 		statHandler.ChangeHealth(dmg);
 		if (statHandler.currentHealth > 0) {
 			PlayAudioOnce(hitSound, -20);
@@ -109,6 +108,20 @@ public partial class EnemySkeleton : CharacterBody3D
 				player.ShieldHit();
 			else 
 				player.PlayerTakeDamage(statHandler.damage);
+		}
+	}
+
+	// Signaali joka saadaan kun pelaaja on vihollisen visioncolliderin sisällä
+	private void OnVisionColliderEntered(Node3D body) {
+		if (body.Name == "Player") {
+			inSight = true;
+		}
+	}
+
+	// Signaali joka saadaan kun pelaaja poistuu vihollisen visioncolliderin sisältä
+	private void OnVisionColliderExited(Node3D body) {
+		if (body.Name == "Player") {
+			inSight = false;
 		}
 	}
 
@@ -175,7 +188,14 @@ public partial class EnemySkeleton : CharacterBody3D
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
 			if (playerDistance < aggrRange) {
-				playerDetected = true;
+				// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
+				var spaceState = GetWorld3D().DirectSpaceState;
+				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+				var result = spaceState.IntersectRay(query);
+				Node3D hitNode = (Node3D) result["collider"];
+				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+				if (seesPlayer && inSight)
+					playerDetected = true;
 			}
 			// Pelaaja havaitaan
 			if (playerDetected == true && GM.playerAlive) {

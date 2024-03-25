@@ -17,12 +17,10 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 	Vector3 movementTarget;
 	Vector3 targetPos;
 	float moveSpeed;
-	bool playerDetected = false;
-	float attackTimer;
+	bool seesPlayer, inSight, playerDetected = false;
+	float attackTimer, footStepsTimer;
 	float aggrRange;
-	bool idling;
-	bool attacking;
-	float footStepsTimer;
+	bool idling, attacking;
 	float yPosTarget;
 	float facing;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/SkeletonHit.ogg") as AudioStreamOggVorbis;
@@ -81,6 +79,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
 	public void TakeDamage(int dmg) {
+		playerDetected = true;
 		statHandler.ChangeHealth(dmg);
 		if (statHandler.currentHealth > 0) {
 			PlayAudioOnce(hitSound, -20);
@@ -130,6 +129,20 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 				player.ShieldHit();
 			else 
 				player.PlayerTakeDamage(statHandler.damage);
+		}
+	}
+
+	// Signaali joka saadaan kun pelaaja on vihollisen visioncolliderin sisällä
+	private void OnVisionColliderEntered(Node3D body) {
+		if (body.Name == "Player") {
+			inSight = true;
+		}
+	}
+
+	// Signaali joka saadaan kun pelaaja poistuu vihollisen visioncolliderin sisältä
+	private void OnVisionColliderExited(Node3D body) {
+		if (body.Name == "Player") {
+			inSight = false;
 		}
 	}
 
@@ -203,7 +216,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 			Node3D hitNode = (Node3D) result["collider"];
 			bool seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
 
-			if (playerDistance < aggrRange && seesPlayer) {
+			if (playerDistance < aggrRange && seesPlayer && inSight) {
 				playerDetected = true;
 			}
 			// Pelaaja havaitaan

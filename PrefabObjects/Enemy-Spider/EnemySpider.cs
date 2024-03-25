@@ -12,19 +12,16 @@ public partial class EnemySpider : CharacterBody3D
 	CollisionShape3D coll;
 	CollisionShape3D attackCollider;
 	AudioStreamPlayer3D audioSource;
-	float playerDistance;
 	NavigationAgent3D pathFinder;
 	Vector3 movementTarget;
 	Vector3 targetPos;
 	float moveSpeed;
+	bool seesPlayer, inSight;
 	bool playerDetected = false;
-	float attackTimer;
-	float lerpTimer;
-	float aggrRange;
-	bool idling;
-	float skitterTimer;
+	float attackTimer, skitterTimer, lerpTimer;
+	float playerDistance, aggrRange;
+	bool idling, attacking;
 	private AnimationTree _animTree;
-	bool attacking;
 	float yPosTarget;
 	float facing;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit2.ogg") as AudioStreamOggVorbis;
@@ -92,6 +89,20 @@ public partial class EnemySpider : CharacterBody3D
 		}
 	}
 
+	// Signaali joka saadaan kun pelaaja on vihollisen visioncolliderin sisällä
+	private void OnVisionColliderEntered(Node3D body) {
+		if (body.Name == "Player") {
+			inSight = true;
+		}
+	}
+
+	// Signaali joka saadaan kun pelaaja poistuu vihollisen visioncolliderin sisältä
+	private void OnVisionColliderExited(Node3D body) {
+		if (body.Name == "Player") {
+			inSight = false;
+		}
+	}
+
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
 		statHandler.isAlive = false;
@@ -107,6 +118,7 @@ public partial class EnemySpider : CharacterBody3D
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
 	public void TakeDamage(int dmg) {
+		playerDetected = true;
 		statHandler.ChangeHealth(dmg);
 		if (statHandler.currentHealth > 0) {
 			PlayAudioOnce(hitSound, -20);
@@ -129,7 +141,6 @@ public partial class EnemySpider : CharacterBody3D
 		facing = Mathf.Abs(facing) % 360;
 		if (neg)
 			facing = 360-facing;
-		//Debug.Print("Enemy Facing: "+facing+", Player Facing: "+player.facing);
 	}
 
 	// Lasketaan erot 
@@ -142,7 +153,6 @@ public partial class EnemySpider : CharacterBody3D
 				diff = facing+MathF.Abs(player.facing-360);
 			else
 				diff = player.facing+MathF.Abs(facing-360);
-			
 		}
 		return diff;
 	}
@@ -168,7 +178,6 @@ public partial class EnemySpider : CharacterBody3D
 		yPosTarget = Scale.Y/2;
 		if (Scale.Y == 0.5f)
 			statHandler.immunities.Add("Slashing");						// Jos pieni hämis niin huitaisut menevät yli
-		Debug.Print(""+yPosTarget);
 		if (GM.araknoPhobiaMode == true) {
 			GetNode<Node3D>("Hamahakki").Hide();
 			GetNode<MeshInstance3D>("OrbMesh").Show();
@@ -184,7 +193,14 @@ public partial class EnemySpider : CharacterBody3D
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
 			if (playerDistance < aggrRange) {
-				playerDetected = true;
+				// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
+				var spaceState = GetWorld3D().DirectSpaceState;
+				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+				var result = spaceState.IntersectRay(query);
+				Node3D hitNode = (Node3D) result["collider"];
+				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+				if (seesPlayer && inSight)
+					playerDetected = true;
 			}
 			// Detects player
 			if (playerDetected == true && GM.playerAlive) {

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bsaei22dtas73"]
+[gd_scene load_steps=7 format=3 uid="uid://bsaei22dtas73"]
 
 [ext_resource type="Script" path="res://Scripts/EnemyStats.cs" id="1_ceveb"]
 [ext_resource type="Script" path="res://PrefabObjects/Enemy-RangedSkeleton/EnemyRangedSkeleton.cs" id="1_x31pe"]
@@ -14,6 +14,9 @@ radius = 0.15
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lnx4s"]
 size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cumrm"]
+size = Vector3(10, 0.5, 8.8)
 
 [node name="Enemy-RangedSkeleton" type="CharacterBody3D"]
 collision_layer = 4
@@ -46,7 +49,17 @@ collision_mask = 34
 shape = SubResource("BoxShape3D_lnx4s")
 disabled = true
 
+[node name="VisionCollider" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 256
+collision_mask = 2
+
+[node name="Collider" type="CollisionShape3D" parent="VisionCollider"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, -4.5)
+shape = SubResource("BoxShape3D_cumrm")
+
 [node name="Pathfinding" type="NavigationAgent3D" parent="."]
+avoidance_enabled = true
 
 [node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
 max_distance = 15.0
@@ -54,3 +67,5 @@ max_polyphony = 5
 
 [connection signal="DeathSignal" from="EnemyHandler" to="." method="OnDeath"]
 [connection signal="body_entered" from="AttackCollider" to="." method="OnAttackColliderEntered"]
+[connection signal="body_entered" from="VisionCollider" to="." method="OnVisionColliderEntered"]
+[connection signal="body_exited" from="VisionCollider" to="." method="OnVisionColliderExited"]
