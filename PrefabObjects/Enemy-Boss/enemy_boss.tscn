@@ -10,7 +10,7 @@ albedo_color = Color(0.658824, 0, 0, 1)
 material = SubResource("StandardMaterial3D_ejwmr")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jxfsr"]
-albedo_color = Color(0.658824, 0, 0, 1)
+albedo_color = Color(0.470588, 0, 0, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_xlx7f"]
 material = SubResource("StandardMaterial3D_jxfsr")
@@ -61,6 +61,11 @@ disabled = true
 
 [node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
 max_distance = 15.0
+max_polyphony = 5
+
+[node name="MoveSFXAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+max_distance = 15.0
+max_polyphony = 5
 
 [node name="GroundPathingNode" type="Node3D" parent="."]
 

@@ -81,6 +81,7 @@ public partial class EnemySpider : CharacterBody3D
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.Name == "Player" || body.Name == "ShieldCollider") {
 			CalculateFacing();
+			player.CalculateFacing();
 			//Debug.Print("Difference: "+CalculateDifference());
 			if (player.shieldIsUp && CalculateDifference() < 55)
 				player.ShieldHit();
@@ -176,6 +177,7 @@ public partial class EnemySpider : CharacterBody3D
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
 		yPosTarget = Scale.Y/2;
+		RandomPatrolPosition(2.5f);
 		if (Scale.Y == 0.5f)
 			statHandler.immunities.Add("Slashing");						// Jos pieni hämis niin huitaisut menevät yli
 		if (GM.araknoPhobiaMode == true) {

@@ -12,7 +12,7 @@ public partial class EnemyBoss : CharacterBody3D
 	public EnemyStats statHandler;
 	CollisionShape3D coll;
 	CollisionShape3D attackCollider;
-	AudioStreamPlayer3D audioSource;
+	AudioStreamPlayer3D audioSource, moveSFXSource;
 	float playerDistance;
 	NavigationAgent3D pathFinder;
 	Vector3 movementTarget;
@@ -26,11 +26,12 @@ public partial class EnemyBoss : CharacterBody3D
 	public bool caughtPlayer;
 	float yPosTarget;
 	float facing;
+	int smacks;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit2.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/SpiderDeath1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/SpiderAttack1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis spiderSkitter = ResourceLoader.Load("res://Audio/SoundEffects/SpiderWalk.ogg") as AudioStreamOggVorbis;
-	AudioStreamOggVorbis wingsFlapping = ResourceLoader.Load("res://Audio/SoundEffects/SpiderWalk.ogg") as AudioStreamOggVorbis;
+	AudioStreamOggVorbis wingsFlapping = ResourceLoader.Load("res://Audio/SoundEffects/InsectWings.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis webFlying = ResourceLoader.Load("res://Audio/SoundEffects/WeaponSwing.ogg") as AudioStreamOggVorbis;
 	PackedScene webAttackScene = ResourceLoader.Load("res://PrefabObjects/Enemy-Boss/WebAttack.tscn") as PackedScene;
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -51,6 +52,7 @@ public partial class EnemyBoss : CharacterBody3D
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.Name == "Player" || body.Name == "ShieldCollider") {
 			CalculateFacing();
+			player.CalculateFacing();
 			//Debug.Print("Difference: "+CalculateDifference());
 			if (player.shieldIsUp && CalculateDifference() < 55)
 				player.ShieldHit();
@@ -67,18 +69,19 @@ public partial class EnemyBoss : CharacterBody3D
 		attackCollider.Disabled = true;
 		// Kuolema animaatio
 
-		PlayAudioOnce(deathSound, -20);
+		PlayAudioOnce(deathSound, 0, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
 		QueueFree();
 	}
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
 	public void TakeDamage(int dmg) {
+		smacks++;
 		statHandler.ChangeHealth(dmg);
 		if (statHandler.currentHealth > 0) {
-			PlayAudioOnce(hitSound, -20);
+			PlayAudioOnce(hitSound, 0, -20);
 		}
-		if (groundedTimer > 10) 
+		if (groundedTimer > 10 || smacks%3 == 0) 
 			BossTakeFlight();
 	}
 
@@ -89,7 +92,7 @@ public partial class EnemyBoss : CharacterBody3D
 		
 		Debug.Print("Melee Attack");
 		float animDuration = 1;
-		PlayAudioOnce(spiderAttack, -20);
+		PlayAudioOnce(spiderAttack, 0, -20);
 		await ToSignal(GetTree().CreateTimer(animDuration/2), "timeout");
 		attackCollider.Disabled = false;
 		await ToSignal(GetTree().CreateTimer(animDuration/4), "timeout");
@@ -104,7 +107,7 @@ public partial class EnemyBoss : CharacterBody3D
 
 		SpawnWebShot();
 		float animDuration = 2;
-		PlayAudioOnce(spiderAttack, -20);
+		PlayAudioOnce(spiderAttack, 0, -20);
 		await ToSignal(GetTree().CreateTimer(animDuration), "timeout");
 		// Instantiate web
 		attacking = false;
@@ -119,7 +122,7 @@ public partial class EnemyBoss : CharacterBody3D
 		webInstance.Position = Position;
 		webInstance.Rotation = Rotation;
 		root.AddChild(webInstance);
-		PlayAudioOnce(webFlying, -20);
+		PlayAudioOnce(webFlying, 0, -20);
 	}
 
 	// Boss laskeutuu maahan
@@ -143,7 +146,6 @@ public partial class EnemyBoss : CharacterBody3D
 		await ToSignal(GetTree().CreateTimer(2), "timeout");
 		takingFlight = false;
 		caughtPlayer = false;
-		Debug.Print("Normal behaviour continues");
 	}
 
 	//Funktio rotationin laskemiseksi
@@ -172,10 +174,17 @@ public partial class EnemyBoss : CharacterBody3D
 	}
 
 	// Äänen toisto
-	private void PlayAudioOnce(AudioStreamOggVorbis clip, int volume) {
-		audioSource.Stream = clip;
-		audioSource.VolumeDb = volume;
-		audioSource.Play();
+	private void PlayAudioOnce(AudioStreamOggVorbis clip, int source, int volume) {
+		if (source == 0) {
+			audioSource.Stream = clip;
+			audioSource.VolumeDb = volume;
+			audioSource.Play();
+		}
+		else {
+			moveSFXSource.Stream = clip;
+			moveSFXSource.VolumeDb = volume;
+			moveSFXSource.Play();
+		}
 	}
 
 	// Called when the node enters the scene tree for the first time.
@@ -185,6 +194,7 @@ public partial class EnemyBoss : CharacterBody3D
 		statHandler = GetNode<EnemyStats>("EnemyHandler");
 		coll = GetNode<CollisionShape3D>("Collider");
 		audioSource = GetNode<AudioStreamPlayer3D>("AudioPlayer");
+		moveSFXSource = GetNode<AudioStreamPlayer3D>("MoveSFXAudioPlayer");
 		groundNode = GetNode<Node3D>("GroundPathingNode");
 		attackCollider = GetNode<CollisionShape3D>("AttackCollider/Collider");
 		// Ulkoiset muuttujat
@@ -209,7 +219,7 @@ public partial class EnemyBoss : CharacterBody3D
 		float delta = (float) dDelta;
 		if (statHandler.isAlive) {
 			Vector3 tempVelocity = Vector3.Zero;
-			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
+			playerDirection = Position.DirectionTo(player.Position);
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
 			// Koska boss, niin pelaaja havaitaan automaattisesti
 			if (GM.playerAlive) {
@@ -224,7 +234,7 @@ public partial class EnemyBoss : CharacterBody3D
 				seesPlayer = hitNode.Name == "Player";
 				
 				// Jos boss on ilmassa mutta liian kaukana tai ei näe pelaajaa
-				if (flying && playerDistance > 6 && !attacking && !landing || !seesPlayer) {
+				if (flying && playerDistance > 6 && !attacking && !landing && !takingFlight || !seesPlayer) {
 					targetPos.Y = yPosTarget;
 					movementTarget = targetPos;
 				}
@@ -235,12 +245,12 @@ public partial class EnemyBoss : CharacterBody3D
 					return;
 				}
 				// Jos boss on laskeutunut ja lähestyy pelaajaa
-				else if (!flying && playerDistance > 1.6f && !attacking) {
+				else if (!flying && playerDistance > 1.6f && !attacking && !landing) {
 					targetPos.Y = 0.25f;
 					movementTarget = targetPos;
 				}
 				// Jos boss on laskeutunut ja melee etäisyydellä
-				else if (!flying && playerDistance <= 1.6f && attackTimer >= 2 && !attacking) {
+				else if (!flying && playerDistance <= 1.6f && attackTimer >= 2 && !attacking && !landing) {
 					BossMeleeAttack();
 					attackTimer = 0;
 					return;
@@ -268,34 +278,38 @@ public partial class EnemyBoss : CharacterBody3D
 				else if (flying) {
 					// Movement animations in the air
 
-					if (wingFlapTimer <= 0) {
-						PlayAudioOnce(wingsFlapping, -10);
-						wingFlapTimer = 0.1f;
-					}
-					else {	wingFlapTimer -= delta;	}
+					
 				}
 				else {
 					// Movement animations on the ground
 					
 					if (skitterTimer <= 0) {
-						PlayAudioOnce(spiderSkitter, -10);
+						PlayAudioOnce(spiderSkitter, 1, -10);
 						skitterTimer = (float)GD.RandRange(0.1f, 0.3f);
 					}
 					else {	skitterTimer -= delta;	}
 				}
 			}
 			// Liike kun noustaan takaisin lentoon
-			if (takingFlight) {
-				Vector3 takeFlightDirection = -playerDirection * 1.5f;
-				takeFlightDirection.Y = 5f;
-				tempVelocity = GlobalPosition.DirectionTo(takeFlightDirection) * moveSpeed * delta;
+			else if (takingFlight) {
+				targetPos.Y = yPosTarget;
+				Vector3 takeFlightDirection = targetPos;
+				takeFlightDirection.Y = -3f;
+				tempVelocity = groundNode.GlobalPosition.DirectionTo(takeFlightDirection) * moveSpeed * -2 * delta;
 			}
 			// Kun ei lennetä niin painovoima vaikuttaa. Nostetaan maassaolo aikaa sekä lentoaikaa niiden ollessa päällä.
 			if (!flying) {
 				groundedTimer += delta;	
 				tempVelocity.Y -= gravity * delta * 10;
 			}
-			else {	flightTimer += delta;	}
+			else {	
+				flightTimer += delta;
+				if (wingFlapTimer <= 0) {
+					PlayAudioOnce(wingsFlapping, 1, -10);
+					wingFlapTimer = 0.1f;
+				}
+				else {	wingFlapTimer -= delta;	}
+			}
 
 			// Liikkeen toteutus
 			Velocity = tempVelocity;

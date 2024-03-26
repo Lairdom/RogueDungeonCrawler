@@ -10,6 +10,7 @@ public partial class Player : CharacterBody3D
 {
 	[Signal] public delegate void StanceChangedEventHandler(string newStance);
 	GameManager GM;
+	Camera camera;
 	public float moveSpeed = 75.0f;
 	float attackDuration = 3.0f;
 	const float JUMPVELOCITY = 4.5f;
@@ -163,7 +164,7 @@ public partial class Player : CharacterBody3D
 	}
 
 	//Funktio rotationin laskemiseksi
-	private void CalculateFacing() {
+	public void CalculateFacing() {
 		bool neg = false;
 		facing = RotationDegrees.Y;
 		if (facing < 0)
@@ -176,6 +177,7 @@ public partial class Player : CharacterBody3D
 	private async void DestroyWebbing() {
 		await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
 		// Audio effect?
+		//camera.ResetCamera();
 		webbed = false;
 	}
 
@@ -198,6 +200,7 @@ public partial class Player : CharacterBody3D
 
 	public override void _Ready() {
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
+		camera = GetNode<Camera>("CamRoot");
 		playerRange = GetNode<Area3D>("PlayerRange");
 		ukkeli = GetNode<Node3D>("ukkeli");
 		voiceAudioSource = GetNode<AudioStreamPlayer>("VoiceAudioPlayer");
@@ -240,7 +243,8 @@ public partial class Player : CharacterBody3D
 					_animTree.Set("parameters/Stance/blend_amount", 0.0);
 					_animTree.Set("parameters/lyonti/request", 1);
 					delay = 0.3f;
-					DestroyWebbing();
+					if (webbed)
+						DestroyWebbing();
 				}
 				else if (stanceIndex == 1) {
 					//Debug.Print("Poking Attack!");
@@ -285,7 +289,6 @@ public partial class Player : CharacterBody3D
 				moveSpeed = GM.movementSpeed/3;
 				_animTree.Set("parameters/kavelyNopeus/scale", 0.4);
 				playerShield.CollisionLayer = 32;
-				CalculateFacing();
 			}
 			else {
 				moveSpeed = GM.movementSpeed;
