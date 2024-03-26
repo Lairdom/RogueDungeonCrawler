@@ -73,7 +73,7 @@ public partial class EnemySkeleton : CharacterBody3D
 		_animTree.Set("parameters/die/blend_amount", 1.0);
 		PlayAudioOnce(deathSound, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
-		QueueFree();
+		
 	}
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea

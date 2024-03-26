@@ -30,6 +30,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 	AudioStreamOggVorbis footSteps = ResourceLoader.Load("res://Audio/SoundEffects/SkeletonFootsteps.ogg") as AudioStreamOggVorbis;
 	PackedScene arrowScene = ResourceLoader.Load("res://PrefabObjects/Enemy-RangedSkeleton/arrow.tscn") as PackedScene;
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+	private AnimationTree _animTree;
 
 	// Pathfinder set/get target position for movement
 	public Vector3 MovementTarget {
@@ -71,10 +72,10 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		coll.Disabled = true;
 		attackCollider.Disabled = true;
 		// Kuolema animaatio
-		
+		_animTree.Set("parameters/die/transition_request", "Die");
 		PlayAudioOnce(deathSound, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
-		QueueFree();
+		
 	}
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
@@ -86,10 +87,12 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		}
 	}
 
-	// Luurangon melee hyökkäys
+	// Luurangon range hyökkäys
 	private async void SkeletonRangedAttack(Vector3 direction) {
 		attacking = true;
 		// Luurangon ampumisanimaatiot
+		_animTree.Set("parameters/switchAttack/blend_amount", 0.0);
+		_animTree.Set("parameters/shoot/request", 1);
 		float animDuration = 1;
 		await ToSignal(GetTree().CreateTimer(animDuration/2), "timeout");
 		PlayAudioOnce(skeletonShoot, -20);
@@ -110,6 +113,8 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 	private async void SkeletonMeleeAttack() {
 		attacking = true;
 		// Luurangon lyömisanimaatiot
+		_animTree.Set("parameters/switchAttack/blend_amount", 1.0);
+		_animTree.Set("parameters/shoot/request", 1);
 		
 		float animDuration = 1;
 		PlayAudioOnce(skeletonAttack, -20);
@@ -189,6 +194,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		
 		if (GM == null || root == null || player == null) {
 			Debug.Print("Null value");
@@ -268,6 +274,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 					AxisLockLinearY = true;
 				if (MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations
+					//_animTree.Set("parameters/walk/blend_amount", 0,0);
 	
 				}
 				else {
