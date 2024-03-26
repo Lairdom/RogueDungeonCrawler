@@ -11,9 +11,12 @@
 [ext_resource type="Texture2D" uid="uid://r0kf0knudokw" path="res://Images/Exit (3).png" id="9_qopwx"]
 [ext_resource type="Texture2D" uid="uid://dwb2l81po5q1v" path="res://Images/Exit (2).png" id="10_0ol3k"]
 
-[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("start")]
+[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("start", "help", "exit", "helpLabel")]
 script = ExtResource("1_tb8y0")
 start = NodePath("Control/start")
+help = NodePath("Control/help")
+exit = NodePath("Control/exit")
+helpLabel = NodePath("Control/helpLabel")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -60,6 +63,20 @@ texture_normal = ExtResource("8_jly06")
 texture_pressed = ExtResource("9_qopwx")
 texture_hover = ExtResource("10_0ol3k")
 stretch_mode = 4
+
+[node name="helpLabel" type="Label" parent="Control"]
+visible = false
+layout_mode = 0
+offset_left = 654.0
+offset_top = 245.0
+offset_right = 867.0
+offset_bottom = 398.0
+text = "WASD - movement
+Mouse - camera
+Space - Jump
+Left mouse button - attack
+Right mouse button - shield
+Q - change stance"
 
 [connection signal="button_up" from="Control/start" to="." method="OnStartPressed"]
 [connection signal="button_up" from="Control/help" to="." method="OnHelpPressed"]

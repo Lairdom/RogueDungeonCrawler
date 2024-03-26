@@ -8,6 +8,7 @@ public partial class StartHelpExitMenu : CanvasLayer {
 	[Export] public TextureButton start;
 	[Export] public TextureButton help;
 	[Export] public TextureButton exit;
+	[Export] public Label helpLabel;
 
 	public override void _Ready() {
 		start.Connect("pressed", new Callable(this, nameof(OnStartPressed)));
@@ -22,7 +23,7 @@ public partial class StartHelpExitMenu : CanvasLayer {
 	}
 
 	private void OnHelpPressed() {
-		// Opens help -window
+		helpLabel.Visible = true;
 	}
 
 	private void OnExitPressed() {

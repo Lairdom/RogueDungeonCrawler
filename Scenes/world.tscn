@@ -95,6 +95,8 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.827, 0.25, -2.091)
 
 [node name="GameManager" parent="." instance=ExtResource("4_cnyn2")]
 
+[node name="PassiveSkillsManager" type="Node3D" parent="."]
+
 [node name="PathingMap" parent="." instance=ExtResource("10_ahl7g")]
 
 [node name="PatrolPositions" parent="." instance=ExtResource("11_8o7v6")]
