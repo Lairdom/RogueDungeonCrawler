@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtljro0wjuwea"]
+
+[ext_resource type="PackedScene" uid="uid://cufplt6dt2ric" path="res://3DObjects/Barrels/Barrel.glb" id="1_e1xkm"]
+
+[node name="Barrel" instance=ExtResource("1_e1xkm")]
+
+[node name="StaticBody3D" parent="Runko" index="0"]
+visible = false
+
+[node name="StaticBody3D" parent="Rengas" index="0"]
+visible = false
+
+[node name="StaticBody3D" parent="Kansi" index="0"]
+visible = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=21 format=3 uid="uid://vedxskexn6fl"]
 
 [ext_resource type="Script" path="res://Scripts/ScreenUI.cs" id="1_gin83"]
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://bhfp8cstw4bt6" path="res://3DObjects/Doors/tiili_rough.png" id="12_fyyaa"]
 [ext_resource type="PackedScene" uid="uid://dcarbmn8wpekj" path="res://3DObjects/Torch/torch.glb" id="13_5ghgs"]
 [ext_resource type="PackedScene" uid="uid://bgnhd4f18vs7a" path="res://3DObjects/Torch/flame.tscn" id="14_3yu7c"]
+[ext_resource type="PackedScene" uid="uid://dtljro0wjuwea" path="res://3DObjects/Barrels/barrel.tscn" id="15_7gg32"]
+[ext_resource type="PackedScene" uid="uid://mkryh3c2xiff" path="res://3DObjects/Barrels/barrels.tscn" id="16_ofnn7"]
 
 [sub_resource type="Environment" id="Environment_ibfwq"]
 
@@ -152,16 +154,18 @@ shape = SubResource("CylinderShape3D_ynbbi")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Paalut/Paalu4/StaticBody3D/CollisionShape3D"]
 mesh = SubResource("CylinderMesh_aycm5")
 
-[node name="Torches_Room1" type="Node3D" parent="."]
+[node name="Room1" type="Node3D" parent="."]
+
+[node name="Torches_Room1" type="Node3D" parent="Room1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34928, 0.411427, 0)
 
-[node name="torch" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, 0, 0.777535, -4.95359)
 
-[node name="Flame" parent="Torches_Room1/torch" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -169,13 +173,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch2" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch2" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, -5.48387, 0.777535, -4.95359)
 
-[node name="Flame" parent="Torches_Room1/torch2" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch2" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch2"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch2"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -183,13 +187,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch5" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch5" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0194392, 0.00469188, -0.000323791, -0.00469188, 0.0192522, -0.00270886, -0.000323796, 0.00270886, 0.0198131, -8.29557, 0.777535, -1.51741)
 
-[node name="Flame" parent="Torches_Room1/torch5" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch5" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch5"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch5"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -197,13 +201,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch6" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch6" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0194392, 0.00469188, -0.000323791, -0.00469188, 0.0192522, -0.00270886, -0.000323796, 0.00270886, 0.0198131, -8.29557, 0.777535, 1.37263)
 
-[node name="Flame" parent="Torches_Room1/torch6" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch6" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch6"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch6"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -211,13 +215,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch3" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch3" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.00687579, 0.000963396, 0.0187562, -0.00469188, 0.0192522, -0.00270886, -0.0181854, -0.00533138, -0.00639271, -5.48387, 0.777535, 5.9503)
 
-[node name="Flame" parent="Torches_Room1/torch3" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch3" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch3"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch3"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -225,13 +229,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch4" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch4" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.00687579, 0.000963396, 0.0187562, -0.00469188, 0.0192522, -0.00270886, -0.0181854, -0.00533138, -0.00639271, 0.105108, 0.777535, 5.9503)
 
-[node name="Flame" parent="Torches_Room1/torch4" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch4" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch4"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch4"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -239,13 +243,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch7" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch7" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0178163, -0.00537613, -0.00732651, -0.00469294, 0.0192512, -0.00271431, 0.00778184, -0.000698801, -0.0184107, 3.52711, 0.777535, 1.57663)
 
-[node name="Flame" parent="Torches_Room1/torch7" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch7" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch7"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch7"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -253,13 +257,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch8" parent="Torches_Room1" instance=ExtResource("13_5ghgs")]
+[node name="torch8" parent="Room1/Torches_Room1" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0178163, -0.00537613, -0.00732651, -0.00469294, 0.0192512, -0.00271431, 0.00778184, -0.000698801, -0.0184107, 3.52711, 0.777535, -2.1983)
 
-[node name="Flame" parent="Torches_Room1/torch8" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room1/Torches_Room1/torch8" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room1/torch8"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room1/Torches_Room1/torch8"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -267,16 +271,26 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="Torches_Room2" type="Node3D" parent="."]
+[node name="Barrels" type="Node3D" parent="Room1"]
+
+[node name="Barrel" parent="Room1/Barrels" instance=ExtResource("15_7gg32")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, -0.119543, 5.61132)
+
+[node name="Barrels" parent="Room1/Barrels" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.874993, 0.00214913, -5.17388)
+
+[node name="Room2" type="Node3D" parent="."]
+
+[node name="Torches_Room2" type="Node3D" parent="Room2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.1393, 0.411427, 0)
 
-[node name="torch" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, 3.27077, 0.777535, -6.95337)
 
-[node name="Flame" parent="Torches_Room2/torch" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -284,13 +298,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch2" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch2" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, -3.56858, 0.777535, -6.94578)
 
-[node name="Flame" parent="Torches_Room2/torch2" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch2" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch2"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch2"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -298,13 +312,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch5" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch5" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0177338, 0.00538316, 0.00751891, -0.00469294, 0.0192512, -0.00271431, -0.00796798, 0.000642464, 0.018333, -6.81092, 0.777535, -1.51741)
 
-[node name="Flame" parent="Torches_Room2/torch5" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch5" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch5"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch5"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -312,13 +326,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch6" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch6" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0177338, 0.00538316, 0.00751891, -0.00469294, 0.0192512, -0.00271431, -0.00796798, 0.000642464, 0.018333, -6.80855, 0.777535, 1.37263)
 
-[node name="Flame" parent="Torches_Room2/torch6" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch6" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch6"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch6"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -326,13 +340,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch3" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch3" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.00687579, 0.000963396, 0.0187562, -0.00469188, 0.0192522, -0.00270886, -0.0181854, -0.00533138, -0.00639271, -3.19083, 0.777535, 6.95076)
 
-[node name="Flame" parent="Torches_Room2/torch3" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch3" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch3"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch3"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -340,13 +354,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch4" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch4" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.00687579, 0.000963396, 0.0187562, -0.00469188, 0.0192522, -0.00270886, -0.0181854, -0.00533138, -0.00639271, 3.06839, 0.777535, 6.94095)
 
-[node name="Flame" parent="Torches_Room2/torch4" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch4" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch4"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch4"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -354,13 +368,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch7" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch7" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0178163, -0.00537613, -0.00732651, -0.00469294, 0.0192512, -0.00271431, 0.00778184, -0.000698801, -0.0184107, 8.06252, 0.777535, 1.17408)
 
-[node name="Flame" parent="Torches_Room2/torch7" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch7" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch7"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch7"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -368,13 +382,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch8" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch8" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0178163, -0.00537613, -0.00732651, -0.00469294, 0.0192512, -0.00271431, 0.00778184, -0.000698801, -0.0184107, 8.09301, 0.777535, -1.19921)
 
-[node name="Flame" parent="Torches_Room2/torch8" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch8" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch8"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch8"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -382,13 +396,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch9" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch9" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.00665106, -0.00421354, -0.018385, -0.00469294, 0.0192512, -0.00271431, 0.0182685, 0.00341134, -0.00739074, 3.08093, 0.777535, -2.28903)
 
-[node name="Flame" parent="Torches_Room2/torch9" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch9" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch9"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch9"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69254, 20.9009, 4.41923, 45.2064, 2.15947, 12.9243, 1.22491)
 light_size = 0.01
 shadow_enabled = true
@@ -396,13 +410,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch10" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch10" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0142406, 0.00150289, -0.0139623, -0.00469294, 0.0192512, -0.00271431, 0.0132356, 0.00520888, 0.0140601, -1.00862, 0.777535, -2.05732)
 
-[node name="Flame" parent="Torches_Room2/torch10" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch10" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch10"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch10"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15947, 12.9243, 1.22491)
 light_size = 0.01
 shadow_enabled = true
@@ -410,13 +424,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch11" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch11" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0124982, 0.00512618, 0.0147485, -0.00469294, 0.0192512, -0.00271431, -0.014892, -0.00176449, 0.0132331, -0.908506, 0.777535, 2.26639)
 
-[node name="Flame" parent="Torches_Room2/torch11" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch11" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch11"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch11"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15947, 12.9243, 1.22491)
 light_size = 0.01
 shadow_enabled = true
@@ -424,13 +438,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch12" parent="Torches_Room2" instance=ExtResource("13_5ghgs")]
+[node name="torch12" parent="Room2/Torches_Room2" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0175615, -0.00299967, 0.00908812, -0.00469294, 0.0192512, -0.00271431, -0.00834076, -0.00451587, -0.0176079, 3.19972, 0.777535, 2.16852)
 
-[node name="Flame" parent="Torches_Room2/torch12" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room2/Torches_Room2/torch12" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room2/torch12"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room2/Torches_Room2/torch12"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15947, 12.9243, 1.22491)
 light_size = 0.01
 shadow_enabled = true
@@ -438,16 +452,36 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="Torches_Room3" type="Node3D" parent="."]
+[node name="Barrels2" type="Node3D" parent="Room2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.0098, 0, 0)
+
+[node name="Barrel" parent="Room2/Barrels2" instance=ExtResource("15_7gg32")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 1.55636, -0.144416, 0.831252)
+
+[node name="Barrel3" parent="Room2/Barrels2" instance=ExtResource("15_7gg32")]
+transform = Transform3D(-0.126786, 0.271892, -1.31134e-08, 5.54197e-09, -1.18848e-08, -0.3, -0.271892, -0.126786, 5.73206e-16, 1.08888, 0.379208, 0.1591)
+
+[node name="Barrel2" parent="Room2/Barrels2" instance=ExtResource("15_7gg32")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 2.02535, -0.0955332, 0.409145)
+
+[node name="Barrels" parent="Room2/Barrels2" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.662914, 0, -7.131)
+
+[node name="Barrels2" parent="Room2/Barrels2" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -2.328, 0, -7.131)
+
+[node name="Room3" type="Node3D" parent="."]
+
+[node name="Torches_Room3" type="Node3D" parent="Room3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.3263, 0.411427, 0)
 
-[node name="torch" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, 4.66819, 0.777535, -6.94716)
 
-[node name="Flame" parent="Torches_Room3/torch" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -455,13 +489,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch10" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch10" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, 6.03409, 0.777535, -13.9523)
 
-[node name="Flame" parent="Torches_Room3/torch10" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch10" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch10"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch10"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -469,13 +503,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch2" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch2" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, 0.968288, 0.777535, -6.95674)
 
-[node name="Flame" parent="Torches_Room3/torch2" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch2" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch2"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch2"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -483,13 +517,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch11" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch11" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.01, 0, -0.0173205, -0.00469188, 0.0192522, -0.00270886, 0.0166729, 0.00541772, 0.00962611, -0.569252, 0.777535, -13.953)
 
-[node name="Flame" parent="Torches_Room3/torch11" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch11" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch11"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch11"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -497,13 +531,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch5" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch5" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0194392, 0.00469188, -0.000323791, -0.00469188, 0.0192522, -0.00270886, -0.000323796, 0.00270886, 0.0198131, -8.29557, 0.777535, -4.07635)
 
-[node name="Flame" parent="Torches_Room3/torch5" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch5" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch5"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch5"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -511,13 +545,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch6" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch6" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0194392, 0.00469188, -0.000323791, -0.00469188, 0.0192522, -0.00270886, -0.000323796, 0.00270886, 0.0198131, -8.29557, 0.777535, 3.64532)
 
-[node name="Flame" parent="Torches_Room3/torch6" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch6" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch6"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch6"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -525,13 +559,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch9" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch9" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(0.0194392, 0.00469188, -0.000323791, -0.00469188, 0.0192522, -0.00270886, -0.000323796, 0.00270886, 0.0198131, -8.29557, 0.777535, -0.831254)
 
-[node name="Flame" parent="Torches_Room3/torch9" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch9" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch9"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch9"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -539,13 +573,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch3" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch3" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0102722, -8.45976e-05, 0.0171603, -0.00469294, 0.0192512, -0.00271431, -0.0165063, -0.0054207, -0.00990748, 0.724701, 0.777535, 6.95361)
 
-[node name="Flame" parent="Torches_Room3/torch3" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch3" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch3"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch3"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -553,13 +587,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch12" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch12" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0102722, -8.45976e-05, 0.0171603, -0.00469294, 0.0192512, -0.00271431, -0.0165063, -0.0054207, -0.00990748, -0.597397, 0.777535, 13.9541)
 
-[node name="Flame" parent="Torches_Room3/torch12" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch12" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch12"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch12"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -567,13 +601,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch4" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch4" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0103872, -0.000122439, 0.0170907, -0.00469294, 0.0192512, -0.00271431, -0.0164342, -0.00541998, -0.010027, 4.81707, 0.777535, 6.95229)
 
-[node name="Flame" parent="Torches_Room3/torch4" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch4" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch4"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch4"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -581,13 +615,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch13" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch13" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0103872, -0.000122439, 0.0170907, -0.00469294, 0.0192512, -0.00271431, -0.0164342, -0.00541998, -0.010027, 6.15913, 0.777535, 13.9531)
 
-[node name="Flame" parent="Torches_Room3/torch13" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch13" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch13"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch13"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -595,13 +629,13 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch7" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch7" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0178163, -0.00537613, -0.00732651, -0.00469294, 0.0192512, -0.00271431, 0.00778184, -0.000698801, -0.0184107, 10.2747, 0.777535, 2.13673)
 
-[node name="Flame" parent="Torches_Room3/torch7" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch7" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch7"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch7"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
@@ -609,16 +643,55 @@ omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
-[node name="torch8" parent="Torches_Room3" instance=ExtResource("13_5ghgs")]
+[node name="torch8" parent="Room3/Torches_Room3" instance=ExtResource("13_5ghgs")]
 transform = Transform3D(-0.0178163, -0.00537613, -0.00732651, -0.00469294, 0.0192512, -0.00271431, 0.00778184, -0.000698801, -0.0184107, 10.2806, 0.777535, -2.21956)
 
-[node name="Flame" parent="Torches_Room3/torch8" instance=ExtResource("14_3yu7c")]
+[node name="Flame" parent="Room3/Torches_Room3/torch8" instance=ExtResource("14_3yu7c")]
 transform = Transform3D(0.437932, -0.133891, 0.888982, 2.50151e-08, 0.988847, 0.148932, -0.899008, -0.0652221, 0.433048, -0.471914, 7.96443, -1.73364)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Torches_Room3/torch8"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/torch8"]
 transform = Transform3D(45.3856, -4.02171, -20.5906, 1.81625, 49.6417, -5.69253, 20.9009, 4.41923, 45.2064, 2.15945, 12.9244, 1.22485)
 light_size = 0.01
 shadow_enabled = true
 omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
+
+[node name="Barrels3" type="Node3D" parent="Room3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.0648, 0, 0)
+
+[node name="Barrels5" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(0.321394, 0, -0.383022, 0, 0.5, 0, 0.383022, 0, 0.321394, 0, 0, -2.98132)
+
+[node name="Barrels" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -4.06717, 0, -12.9862)
+
+[node name="Barrels4" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -4.06717, 0, -10.93)
+
+[node name="Barrels2" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -0.898785, 0, -12.9987)
+
+[node name="Barrels8" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 2.89885, 0, -10.4659)
+
+[node name="Barrels3" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -0.898785, 0, -10.9597)
+
+[node name="Barrel" parent="Room3/Barrels3" instance=ExtResource("15_7gg32")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 5.35238, 0, 2.19691)
+
+[node name="Barrel3" parent="Room3/Barrels3" instance=ExtResource("15_7gg32")]
+transform = Transform3D(0.192836, 0.229813, -1.00455e-08, 0, -1.31134e-08, -0.3, -0.229813, 0.192836, -8.42914e-09, 3.19742, 0.377629, -1.75242)
+
+[node name="Barrel4" parent="Room3/Barrels3" instance=ExtResource("15_7gg32")]
+transform = Transform3D(-0.0520944, 0.295442, -1.00455e-08, 1.00455e-08, -8.42914e-09, -0.3, -0.295442, -0.0520944, -8.42914e-09, 2.94645, 0.377629, -2.24658)
+
+[node name="Barrel2" parent="Room3/Barrels3" instance=ExtResource("15_7gg32")]
+transform = Transform3D(0.192836, 0.229813, -1.00455e-08, 0, -1.31134e-08, -0.3, -0.229813, 0.192836, -8.42914e-09, 5.18397, 0.397932, 1.07786)
+
+[node name="Barrels6" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 2.8889, 0, 10.7045)
+
+[node name="Barrels7" parent="Room3/Barrels3" instance=ExtResource("16_ofnn7")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -0.888439, 0, 10.7045)
