@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://vedxskexn6fl"]
+[gd_scene load_steps=22 format=3 uid="uid://vedxskexn6fl"]
 
 [ext_resource type="Script" path="res://Scripts/ScreenUI.cs" id="1_gin83"]
 [ext_resource type="PackedScene" uid="uid://i1qlsccl6rnj" path="res://PrefabObjects/Player/Player.tscn" id="1_oeyq3"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://bgnhd4f18vs7a" path="res://3DObjects/Torch/flame.tscn" id="14_3yu7c"]
 [ext_resource type="PackedScene" uid="uid://dtljro0wjuwea" path="res://3DObjects/Barrels/barrel.tscn" id="15_7gg32"]
 [ext_resource type="PackedScene" uid="uid://mkryh3c2xiff" path="res://3DObjects/Barrels/barrels.tscn" id="16_ofnn7"]
+[ext_resource type="PackedScene" uid="uid://b8rhxdcvmdkrb" path="res://3DObjects/Torch/torch_standing.tscn" id="17_knty6"]
 
 [sub_resource type="Environment" id="Environment_ibfwq"]
 
@@ -656,6 +657,24 @@ shadow_enabled = true
 omni_range = 4.0
 omni_attenuation = 0.574349
 omni_shadow_mode = 0
+
+[node name="Torch_stainding" parent="Room3/Torches_Room3" instance=ExtResource("17_knty6")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, 4.92867, -0.425483, -3.02)
+
+[node name="Flame" parent="Room3/Torches_Room3/Torch_stainding" instance=ExtResource("14_3yu7c")]
+transform = Transform3D(0.437931, -0.133891, 0.888982, 2.5015e-08, 0.988846, 0.148932, -0.899006, -0.0652219, 0.433046, -0.917816, 11.8896, -2.85942)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/Torch_stainding"]
+transform = Transform3D(12.5, 0, 0, 0, 12.5, 0, 0, 0, 12.5, 0, 11.2296, -1.81167)
+
+[node name="Torch_stainding2" parent="Room3/Torches_Room3" instance=ExtResource("17_knty6")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, -1.61772, -0.425483, -2.14736)
+
+[node name="Flame" parent="Room3/Torches_Room3/Torch_stainding2" instance=ExtResource("14_3yu7c")]
+transform = Transform3D(0.437931, -0.133891, 0.888982, 2.5015e-08, 0.988846, 0.148932, -0.899006, -0.0652219, 0.433046, -1.59366, 11.7692, -2.44561)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Room3/Torches_Room3/Torch_stainding2"]
+transform = Transform3D(12.5, 0, 0, 0, 12.5, 0, 0, 0, 12.5, 0, 11.2296, -1.81167)
 
 [node name="Barrels3" type="Node3D" parent="Room3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.0648, 0, 0)

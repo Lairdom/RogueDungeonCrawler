@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8rhxdcvmdkrb"]
+
+[ext_resource type="PackedScene" uid="uid://dw35megktlaam" path="res://3DObjects/Torch/Torch_stainding.glb" id="1_qllaq"]
+
+[node name="Torch_stainding" instance=ExtResource("1_qllaq")]
+
+[node name="StaticBody3D" parent="Torch" index="0"]
+visible = false
