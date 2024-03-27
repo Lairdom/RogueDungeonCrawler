@@ -183,7 +183,7 @@ public partial class Player : CharacterBody3D
 
 	// AttackCollider kytkeminen päälle ja pois
 	private async void AttackColliderOnOff(float secs) {
-		await ToSignal(GetTree().CreateTimer(secs), "timeout");			// vastaa Unityn yield WaitForSeconds()
+		await ToSignal(GetTree().CreateTimer(secs), "timeout");
 		atkCollShape.Disabled = false;
 		attackCollider.Show();
 		await ToSignal(GetTree().CreateTimer(0.1f), "timeout");

@@ -59,9 +59,12 @@ public partial class EnemySpider : CharacterBody3D
 			rng = GD.RandRange(11,18);												
 		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;				// Muutetaan path sen mukaisesti
 		movementTarget = GetNodeOrNull<Node3D>(path).GlobalPosition;				// Etsitään kyseisen pisteen positio ja laitetaan se kohteeksi
+		if (movementTarget == GlobalPosition)
+			RandomPatrolPosition(0);
 		movementTarget.Y = 0.5f;
 		if (!pathFinder.IsTargetReachable()) {
 			Debug.Print("Target unreachable");
+			RandomPatrolPosition(0);
 		}
 	}
 
@@ -232,16 +235,16 @@ public partial class EnemySpider : CharacterBody3D
 			else if (!idling) {
 				targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
 				// Mikäli ei olla saavuttu valittuun pisteeseen, niin katsotaan kohti kyseistä pistettä
-				if (!pathFinder.IsNavigationFinished()) {
+				if (!pathFinder.IsNavigationFinished() && GlobalPosition.X != targetPos.X && GlobalPosition.Z != targetPos.Z) {
 					// Add Lerp to looking direction
 					LookAt(targetPos);
 				}
 				// Jos ollaan saavuttu päätepisteeseen, haetaan uusi patrol piste
-				else if (pathFinder.IsNavigationFinished() && !idling) {
+				else if (pathFinder.IsNavigationFinished()) {
 					RandomPatrolPosition(2.5f);
 				}
 			}
-			if (!attacking) {
+			if (!attacking && !idling) {
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)

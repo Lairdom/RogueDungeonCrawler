@@ -14,6 +14,8 @@ public partial class EnemySkeleton : CharacterBody3D
 	AudioStreamPlayer3D audioSource;
 	float playerDistance;
 	NavigationAgent3D pathFinder;
+	Pathfinding nav;
+	Rid navMap;
 	Vector3 movementTarget;
 	Vector3 targetPos;
 	float moveSpeed;
@@ -57,9 +59,12 @@ public partial class EnemySkeleton : CharacterBody3D
 			rng = GD.RandRange(11,18);												
 		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;				// Muutetaan path sen mukaisesti
 		movementTarget = GetNodeOrNull<Node3D>(path).GlobalPosition;				// Etsitään kyseisen pisteen positio ja laitetaan se kohteeksi
+		if (movementTarget == GlobalPosition)
+			RandomPatrolPosition(0);
 		movementTarget.Y = 0.5f;
 		if (!pathFinder.IsTargetReachable()) {
 			Debug.Print("Target unreachable");
+			RandomPatrolPosition(0);
 		}
 	}
 
@@ -103,6 +108,7 @@ public partial class EnemySkeleton : CharacterBody3D
 	private void OnAttackColliderEntered(Node3D body) {
 		if (body.Name == "Player" || body.Name == "ShieldCollider") {
 			CalculateFacing();
+			player.CalculateFacing();
 			//Debug.Print("Difference: "+CalculateDifference());
 			if (player.shieldIsUp && CalculateDifference() < 55)
 				player.ShieldHit();
@@ -178,6 +184,10 @@ public partial class EnemySkeleton : CharacterBody3D
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
 		yPosTarget = 0.25f;
+		nav = GetNodeOrNull<Pathfinding>("/root/World/PathingMap");
+		navMap = nav.smallMap;
+		pathFinder.SetNavigationMap(navMap);
+		RandomPatrolPosition(0);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -215,10 +225,10 @@ public partial class EnemySkeleton : CharacterBody3D
 					attackTimer += delta;
 			}
 			// Kävelee satunnaisesti tai kulkee sovittua reittiä
-			else {
+			else if (!idling) {
 				targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
 				// Mikäli ei olla saavuttu valittuun pisteeseen, niin katsotaan kohti kyseistä pistettä
-				if (!pathFinder.IsNavigationFinished()) {
+				if (!pathFinder.IsNavigationFinished() && GlobalPosition.X != targetPos.X && GlobalPosition.Z != targetPos.Z) {
 					// Add Lerp to looking direction
 					LookAt(targetPos);
 				}
