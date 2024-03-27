@@ -15,6 +15,7 @@ public partial class EnemySpider : CharacterBody3D
 	NavigationAgent3D pathFinder;
 	Vector3 movementTarget;
 	Vector3 targetPos;
+	Rid navMap;
 	float moveSpeed;
 	bool seesPlayer, inSight;
 	bool playerDetected = false;
@@ -24,6 +25,7 @@ public partial class EnemySpider : CharacterBody3D
 	private AnimationTree _animTree;
 	float yPosTarget;
 	float facing;
+	Pathfinding nav;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/EnemyHit2.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/SpiderDeath1.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis spiderAttack = ResourceLoader.Load("res://Audio/SoundEffects/SpiderAttack1.ogg") as AudioStreamOggVorbis;
@@ -177,7 +179,15 @@ public partial class EnemySpider : CharacterBody3D
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
 		yPosTarget = Scale.Y/2;
-		RandomPatrolPosition(2.5f);
+		nav = GetNodeOrNull<Pathfinding>("/root/World/PathingMap");
+		if (Scale.Y == 0.5f)
+			navMap = nav.smallMap;
+		else if (Scale.Y == 1f)
+			navMap = nav.normalMap;
+		else if (Scale.Y == 1.5f)
+			navMap = nav.largeMap;
+		pathFinder.SetNavigationMap(navMap);
+		RandomPatrolPosition(0);
 		if (Scale.Y == 0.5f)
 			statHandler.immunities.Add("Slashing");						// Jos pieni hämis niin huitaisut menevät yli
 		if (GM.araknoPhobiaMode == true) {
@@ -219,7 +229,7 @@ public partial class EnemySpider : CharacterBody3D
 					attackTimer += delta;
 			}
 			// Moving around randomly or patrolling
-			else {
+			else if (!idling) {
 				targetPos = new Vector3(pathFinder.GetNextPathPosition().X, yPosTarget, pathFinder.GetNextPathPosition().Z);
 				// Mikäli ei olla saavuttu valittuun pisteeseen, niin katsotaan kohti kyseistä pistettä
 				if (!pathFinder.IsNavigationFinished()) {

@@ -14,6 +14,8 @@ public partial class EnemyBoss : CharacterBody3D
 	CollisionShape3D attackCollider;
 	AudioStreamPlayer3D audioSource, moveSFXSource;
 	float playerDistance;
+	Pathfinding nav;
+	Rid navMap;
 	NavigationAgent3D pathFinder;
 	Vector3 movementTarget;
 	Vector3 targetPos;
@@ -201,6 +203,7 @@ public partial class EnemyBoss : CharacterBody3D
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
+		nav = GetNodeOrNull<Pathfinding>("/root/World/PathingMap");
 		if (GM == null || root == null || player == null) {
 			Debug.Print("Null value");
 		}
@@ -211,7 +214,8 @@ public partial class EnemyBoss : CharacterBody3D
 		pathFinder.TargetDesiredDistance = 0.5f;
 		yPosTarget = 1.5f;
 		groundNode.GlobalPosition = new Vector3(GlobalPosition.X, 0.5f, GlobalPosition.Z);
-		Debug.Print(""+GlobalPosition.Y);
+		navMap = nav.largeMap;
+		pathFinder.SetNavigationMap(navMap);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -231,7 +235,7 @@ public partial class EnemyBoss : CharacterBody3D
 				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
 				var result = spaceState.IntersectRay(query);
 				Node3D hitNode = (Node3D) result["collider"];
-				seesPlayer = hitNode.Name == "Player";
+				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
 				
 				// Jos boss on ilmassa mutta liian kaukana tai ei näe pelaajaa
 				if (flying && playerDistance > 6 && !attacking && !landing && !takingFlight || !seesPlayer) {

@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://kjxheya6q35v"]
+[gd_scene load_steps=6 format=3 uid="uid://kjxheya6q35v"]
+
+[ext_resource type="Script" path="res://PrefabObjects/Pathfinding.cs" id="1_tb8a8"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ner3u"]
-vertices = PackedVector3Array(-39.5, 0.5, -8.25, -38.5, 0.5, -8.25, -37.5, 0.5, -8.5, -37.5, 0.5, -13.5, -40.5, 0.5, -13.5, -40.5, 0.5, -8.5, -39.5, 0.5, 6.75, -39.5, 0.5, 8.25, -38.5, 0.5, 8.25, -38.5, 0.5, 6.75, -38.5, 0.5, 8.25, -39.5, 0.5, 8.25, -40.5, 0.5, 8.5, -40.5, 0.5, 13.5, -37.5, 0.5, 13.5, -37.5, 0.5, 8.5, -39.5, 0.5, 6.75, -38.5, 0.5, 6.75, -36.25, 0.5, 6.5, -36.25, 0.5, -6.5, -38.5, 0.5, -6.75, -39.5, 0.5, -6.75, -36.25, 0.5, 6.5, -36.25, 0.5, -6.5, -39.5, 0.5, -6.75, -46.5, 0.5, -6.5, -46.5, 0.5, 6.5, -39.5, 0.5, 6.75, -38.5, 0.5, -6.75, -38.5, 0.5, -8.25, -39.5, 0.5, -8.25, -39.5, 0.5, -6.75, -28.5, 0.5, 0.75, -26.5, 0.5, 0.5, -26.5, 0.5, -0.5, -28.5, 0.5, -0.75, -32.5, 0.5, -8.25, -32.5, 0.5, -6.75, -31.5, 0.5, -6.75, -31.5, 0.5, -8.25, -31.5, 0.5, 8.25, -32.5, 0.5, 8.25, -33.5, 0.5, 8.5, -33.5, 0.5, 13.5, -30.5, 0.5, 13.5, -30.5, 0.5, 8.5, -28.5, 0.5, -6.5, -31.5, 0.5, -6.75, -32.5, 0.5, -6.75, -28.5, 0.5, -0.75, -32.5, 0.5, -8.25, -31.5, 0.5, -8.25, -30.5, 0.5, -8.5, -30.5, 0.5, -13.5, -33.5, 0.5, -13.5, -33.5, 0.5, -8.5, -31.5, 0.5, 8.25, -31.5, 0.5, 6.75, -32.5, 0.5, 6.75, -32.5, 0.5, 8.25, -28.5, 0.5, 6.5, -28.5, 0.5, 0.75, -32.5, 0.5, 6.75, -31.5, 0.5, 6.75, -32.5, 0.5, 6.75, -28.5, 0.5, 0.75, -28.5, 0.5, -0.75, -32.5, 0.5, -6.75, -36.25, 0.5, -6.5, -36.25, 0.5, 6.5, -23.5, 0.5, -3.75, -24.5, 0.5, -3.5, -24.5, 0.5, -3, -20.5, 0.5, -3, -13.75, 0.5, 3.5, -12.5, 0.5, 4, -12.25, 0.5, 3.5, -11.5, 0.5, 1.75, -13.5, 0.5, 1.75, -11.5, 0.5, 1.75, -10.5, 0.5, 1.5, -10.25, 0.5, 0.5, -10.25, 0.5, -0.5, -10.25, 0.5, -0.5, -10.5, 0.5, -1.5, -11.5, 0.5, -1.75, -12.25, 0.5, 3.5, -11.5, 0.5, 3.5, -11.5, 0.5, 1.75, -22.75, 0.5, -5.5, -23.5, 0.5, -5.5, -23.5, 0.5, -3.75, -20.5, 0.5, -3, -20.25, 0.5, -3.5, -10.25, 0.5, 0.5, -8.5, 0.5, 0.5, -8.5, 0.5, -0.5, -10.25, 0.5, -0.5, -13.5, 0.5, -1.75, -14.5, 0.5, -1.5, -14.5, 0.5, 1.5, -11.5, 0.5, 1.75, -10.25, 0.5, -0.5, -11.5, 0.5, -1.75, -18.75, 0.5, -3.5, -18.5, 0.5, -2.5, -15.5, 0.5, -2.5, -15.25, 0.5, -3.5, -22.5, 0.5, -6.5, -22.75, 0.5, -5.5, -20.25, 0.5, -3.5, -18.75, 0.5, -3.5, -13.5, 0.5, -1.75, -11.5, 0.5, -1.75, -11.5, 0.5, -3.5, -12.5, 0.5, -3.75, -13.75, 0.5, -3.5, -12.5, 0.5, -3.75, -12.5, 0.5, -5.5, -13.5, 0.5, -5.75, -15.25, 0.5, -3.5, -13.75, 0.5, -3.5, -15.25, 0.5, -3.5, -13.5, 0.5, -5.75, -13.5, 0.5, -6.5, -22.5, 0.5, -6.5, -18.75, 0.5, -3.5, -14.5, 0.5, 1.5, -13.5, 0.5, 1.75, -11.5, 0.5, 1.75, -8.5, 0.5, -0.5, -8.5, 0.5, 0.5, -6.5, 0.5, 0.75, -6.5, 0.5, -0.75, -6.5, 0.5, 0.75, 4.5, 0.5, 5.5, 4.5, 0.5, -4.5, -6.5, 0.5, -0.75, 4.5, 0.5, -4.5, -6.5, 0.5, -4.5, -6.5, 0.5, -0.75, -6.5, 0.5, 0.75, -6.5, 0.5, 5.5, 4.5, 0.5, 5.5, -23.5, 0.5, 3.75, -23.5, 0.5, 5.5, -22.75, 0.5, 5.5, -20.5, 0.5, 3.25, -20.5, 0.5, 1.75, -26.5, 0.5, -0.5, -26.5, 0.5, 0.5, -24.5, 0.5, 0.75, -24.5, 0.5, -0.75, -20.5, 0.5, 1.75, -19.5, 0.5, 1.5, -19.5, 0.5, -1.5, -24.5, 0.5, 0.75, -24.5, 0.5, 3.5, -23.5, 0.5, 3.75, -20.5, 0.5, 3.25, -22.75, 0.5, 5.5, -22.5, 0.5, 6.5, -19.5, 0.5, 6.5, -19.5, 0.5, 3.5, -20.5, 0.5, 1.75, -19.5, 0.5, -1.5, -20.5, 0.5, -1.75, -24.5, 0.5, -0.75, -24.5, 0.5, 0.75, -23.5, 0.5, 3.75, -20.5, 0.5, -1.75, -20.5, 0.5, -3, -24.5, 0.5, -3, -24.5, 0.5, -0.75, -13.5, 0.5, 5.75, -12.5, 0.5, 5.5, -12.5, 0.5, 4, -13.75, 0.5, 3.5, -18.5, 0.5, 3.25, -19.5, 0.5, 3.5, -19.5, 0.5, 6.5, -13.5, 0.5, 6.5, -13.75, 0.5, 3.5, -15.5, 0.5, 3.25, -13.5, 0.5, 6.5, -13.5, 0.5, 5.75, -13.75, 0.5, 3.5, -15.5, 0.5, -1.75, -15.5, 0.5, -2.5, -18.5, 0.5, -2.5, -18.75, 0.5, -1.5, -18.75, 0.5, -1.5, -19.5, 0.5, -1.5, -19.5, 0.5, 1.5, -18.5, 0.5, 1.75, -15.5, 0.5, 3.25, -15.5, 0.5, 1.75, -18.5, 0.5, 1.75, -18.5, 0.5, 3.25, -15.5, 0.5, 1.75, -14.5, 0.5, 1.5, -14.5, 0.5, -1.5, -15.5, 0.5, -1.75, -18.75, 0.5, -1.5, -18.5, 0.5, 1.75)
-polygons = [PackedInt32Array(0, 5, 1), PackedInt32Array(1, 5, 2), PackedInt32Array(2, 5, 4), PackedInt32Array(2, 4, 3), PackedInt32Array(9, 8, 6), PackedInt32Array(6, 8, 7), PackedInt32Array(10, 15, 11), PackedInt32Array(11, 15, 12), PackedInt32Array(12, 15, 14), PackedInt32Array(12, 14, 13), PackedInt32Array(18, 17, 16), PackedInt32Array(21, 20, 19), PackedInt32Array(27, 26, 22), PackedInt32Array(22, 26, 25), PackedInt32Array(22, 25, 24), PackedInt32Array(22, 24, 23), PackedInt32Array(31, 30, 28), PackedInt32Array(28, 30, 29), PackedInt32Array(33, 32, 34), PackedInt32Array(34, 32, 35), PackedInt32Array(39, 38, 36), PackedInt32Array(36, 38, 37), PackedInt32Array(40, 45, 41), PackedInt32Array(41, 45, 42), PackedInt32Array(42, 45, 44), PackedInt32Array(42, 44, 43), PackedInt32Array(47, 46, 48), PackedInt32Array(48, 46, 49), PackedInt32Array(50, 55, 51), PackedInt32Array(51, 55, 52), PackedInt32Array(52, 55, 54), PackedInt32Array(52, 54, 53), PackedInt32Array(59, 58, 56), PackedInt32Array(56, 58, 57), PackedInt32Array(63, 62, 60), PackedInt32Array(60, 62, 61), PackedInt32Array(65, 64, 66), PackedInt32Array(66, 64, 69), PackedInt32Array(66, 69, 67), PackedInt32Array(67, 69, 68), PackedInt32Array(71, 70, 72), PackedInt32Array(72, 70, 73), PackedInt32Array(75, 74, 76), PackedInt32Array(76, 74, 78), PackedInt32Array(76, 78, 77), PackedInt32Array(80, 79, 81), PackedInt32Array(81, 79, 82), PackedInt32Array(84, 83, 85), PackedInt32Array(88, 87, 86), PackedInt32Array(90, 89, 91), PackedInt32Array(91, 89, 92), PackedInt32Array(92, 89, 93), PackedInt32Array(97, 96, 94), PackedInt32Array(94, 96, 95), PackedInt32Array(98, 103, 99), PackedInt32Array(99, 103, 102), PackedInt32Array(99, 102, 101), PackedInt32Array(99, 101, 100), PackedInt32Array(105, 104, 106), PackedInt32Array(106, 104, 107), PackedInt32Array(109, 108, 110), PackedInt32Array(110, 108, 111), PackedInt32Array(115, 114, 116), PackedInt32Array(116, 114, 112), PackedInt32Array(112, 114, 113), PackedInt32Array(118, 117, 119), PackedInt32Array(119, 117, 121), PackedInt32Array(119, 121, 120), PackedInt32Array(123, 122, 124), PackedInt32Array(124, 122, 126), PackedInt32Array(124, 126, 125), PackedInt32Array(127, 129, 128), PackedInt32Array(130, 133, 131), PackedInt32Array(131, 133, 132), PackedInt32Array(137, 136, 134), PackedInt32Array(134, 136, 135), PackedInt32Array(140, 139, 138), PackedInt32Array(143, 142, 141), PackedInt32Array(145, 144, 146), PackedInt32Array(146, 144, 147), PackedInt32Array(147, 144, 148), PackedInt32Array(149, 152, 150), PackedInt32Array(150, 152, 151), PackedInt32Array(155, 154, 153), PackedInt32Array(158, 157, 156), PackedInt32Array(163, 162, 159), PackedInt32Array(159, 162, 160), PackedInt32Array(160, 162, 161), PackedInt32Array(165, 164, 166), PackedInt32Array(166, 164, 167), PackedInt32Array(167, 164, 168), PackedInt32Array(168, 164, 169), PackedInt32Array(171, 170, 172), PackedInt32Array(172, 170, 173), PackedInt32Array(175, 174, 176), PackedInt32Array(176, 174, 177), PackedInt32Array(179, 178, 180), PackedInt32Array(180, 178, 183), PackedInt32Array(180, 183, 182), PackedInt32Array(180, 182, 181), PackedInt32Array(186, 185, 184), PackedInt32Array(188, 187, 189), PackedInt32Array(189, 187, 190), PackedInt32Array(192, 191, 193), PackedInt32Array(193, 191, 194), PackedInt32Array(198, 197, 195), PackedInt32Array(195, 197, 196), PackedInt32Array(200, 199, 201), PackedInt32Array(201, 199, 202), PackedInt32Array(202, 199, 204), PackedInt32Array(202, 204, 203)]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_615mo"]
 
@@ -14,123 +14,192 @@ size = Vector2(1, 1)
 [node name="PathingMap" type="NavigationRegion3D"]
 visible = false
 navigation_mesh = SubResource("NavigationMesh_ner3u")
+script = ExtResource("1_tb8a8")
 
 [node name="Mesh1" type="MeshInstance3D" parent="."]
-transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 5.5, -1, 0, 0.5)
-visible = false
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 4.75359, -1, 0, 0.5)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh2" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.4809, 0, 0, 0, 1, 0, 0, 0, 0.352956, 2.50074, 0, -4.61272)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh3" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.4809, 0, 0, 0, 1, 0, 0, 0, 0.352956, -4.50845, 0, -4.61272)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh27" type="MeshInstance3D" parent="."]
+transform = Transform3D(3.30113, 0, 0, 0, 1, 0, 0, 0, 0.352956, -3.6802, 0, 5.60223)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh28" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.29688, 0, 0, 0, 1, 0, 0, 0, 0.352956, 2.67778, 0, 5.60223)
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh4" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.50483, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 0, 0)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh5" type="MeshInstance3D" parent="."]
-transform = Transform3D(7, 0, 0, 0, 1, 0, 0, 0, 2, -17, 0, 0)
-visible = false
+transform = Transform3D(4.02405, 0, 0, 0, 1, 0, 0, 0, 0.952161, -19.9888, 0, 0.309822)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh31" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.40344, 0, 0, 0, 1, 0, 0, 0, 0.952161, -12.4086, 0, 0.309822)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh29" type="MeshInstance3D" parent="."]
+transform = Transform3D(7.02128, 0, 0, 0, 1, 0, 0, 0, 0.692954, -17.0334, 0, -1.3064)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh30" type="MeshInstance3D" parent="."]
+transform = Transform3D(7.05232, 0, 0, 0, 1, 0, 0, 0, 0.378362, -17.0856, 0, 1.6442)
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh6" type="MeshInstance3D" parent="."]
-transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, -18, 0, -6.5)
-visible = false
+transform = Transform3D(1.33333, 0, 0, 0, 1, 0, 0, 0, 0.5, -21.6516, 0, -6.5)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh32" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.08332, 0, 0, 0, 1, 0, 0, 0, 0.5, -14.0833, 0, -6.5)
+mesh = SubResource("PlaneMesh_615mo")
+
+[node name="Mesh33" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.502734, 0, 0, 0, 1, 0, 0, 0, 0.5, -17.8143, 0, -6.5)
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh7" type="MeshInstance3D" parent="."]
 transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1.5, -18, 0, -4.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh8" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 0, -3)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh9" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 0.5, -17, 0, -2.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh10" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 0.5, -22, 0, -2.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh11" type="MeshInstance3D" parent="."]
 transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1.5, -18, 0, 4.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh12" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 0, 2.99997)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh13" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 0.5, -17, 0, 2.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh14" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 0.5, -22, 0, 2.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh15" type="MeshInstance3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, -18, 0, 6.5)
-visible = false
 mesh = SubResource("PlaneMesh_615mo")
 
 [node name="Mesh16" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 4, -24.5, 0, 0)
-visible = false
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh17" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.50483, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, 0, 0)
-visible = false
+transform = Transform3D(1.71768, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, 0, 0)
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh18" type="MeshInstance3D" parent="."]
-transform = Transform3D(19, 0, 0, 0, 1, 0, 0, 0, 14, -37.5, 0, 0)
-visible = false
+transform = Transform3D(6.66789, 0, 0, 0, 1, 0, 0, 0, 14, -43.6623, 0, 0)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh34" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.90359, 0, 0, 0, 1, 0, 0, 0, 14, -29.5017, 0, 0)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh35" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 1, 0, 0, 0, 4.5, -31.5, 0, 4.74618)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh37" type="MeshInstance3D" parent="."]
+transform = Transform3D(8.44996, 0, 0, 0, 1, 0, 0, 0, 7.84364, -36.3127, 0, 2.9558)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh41" type="MeshInstance3D" parent="."]
+transform = Transform3D(4.08373, 0, 0, 0, 1, 0, 0, 0, 0.82661, -38.3875, -2.38419e-07, -1.31283)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh43" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.09537, 0, 0, 0, 1, 0, 0, 0, 0.389942, -39.9912, 0, -1.90362)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh44" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.871281, 0, 0, 0, 1, 0, 0, 0, 0.778593, -39.9912, 0, -2.79946)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh45" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.501261, 0, 0, 0, 1, 0, 0, 0, 0.483697, -39.6012, 0, -2.27007)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh46" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.691196, 0, 0, 0, 1, 0, 0, 0, 0.929576, -38.8214, 0, -3.46773)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh42" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.70137, 0, -0.953442, 0, 1, 0, 3.06259, 0, 0.840986, -39.0134, -2.38419e-07, -2.65181)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh47" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.70137, 0, -0.953442, 0, 1, 0, 3.06259, 0, 0.840986, -37.07, -2.38419e-07, -3.85528)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh36" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 7.826, -31.9391, 0, -3.11748)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh38" type="MeshInstance3D" parent="."]
+transform = Transform3D(3.5826, 0, 0, 0, 1, 0, 0, 0, 3.81434, -34.7068, 0, -5.07803)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh40" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.49095, 0, 0, 0, 1, 0, 0, 0, 2.93459, -35.2436, 0, -1.76879)
+mesh = SubResource("PlaneMesh_spqqg")
+
+[node name="Mesh39" type="MeshInstance3D" parent="."]
+transform = Transform3D(4.22771, 0, 0, 0, 1, 0, 0, 0, 3.20983, -38.4142, 0, -5.37513)
 mesh = SubResource("PlaneMesh_spqqg")
 
 [node name="Mesh19" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -32, 0, -7.5)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.587557, -32, 0, -7.5)
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh20" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 3, -32, 0, -11)
-visible = false
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh21" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -39, 0, -7.5)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.584402, -39, 0, -7.5)
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh22" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 3, -39, 0, -11)
-visible = false
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh23" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -32, 0, 7.50046)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.63562, -32, 0, 7.50046)
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh24" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 3, -32, 0, 11)
-visible = false
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh25" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -39, 0, 7.5)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.580616, -39, 0, 7.5)
 mesh = SubResource("PlaneMesh_1v63a")
 
 [node name="Mesh26" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 3, -39, 0, 11)
-visible = false
 mesh = SubResource("PlaneMesh_1v63a")
