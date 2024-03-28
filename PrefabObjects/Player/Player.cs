@@ -214,6 +214,9 @@ public partial class Player : CharacterBody3D
 		_animTree = GetNode<AnimationTree>("AnimationTree");
 		ChangeWeapon(curWeaponType);
 		moveSpeed = GM.movementSpeed;
+
+		// Lukitaan hiiri näyttöön ja piilotetaan se
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
 	public override void _PhysicsProcess(double dDelta) {
@@ -282,6 +285,9 @@ public partial class Player : CharacterBody3D
 			}
 			else if (Input.IsActionJustReleased("Block") && !attacking || webbed) {
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 0.0);
+				_animTree.Set("parameters/kavelyNopeus/scale", 1.0);
+				playerShield.CollisionLayer = 0;
+				moveSpeed = GM.movementSpeed;
 				shieldIsUp = false;
 			}
 			
@@ -289,11 +295,6 @@ public partial class Player : CharacterBody3D
 				moveSpeed = GM.movementSpeed/3;
 				_animTree.Set("parameters/kavelyNopeus/scale", 0.4);
 				playerShield.CollisionLayer = 32;
-			}
-			else {
-				moveSpeed = GM.movementSpeed;
-				_animTree.Set("parameters/kavelyNopeus/scale", 1.0);
-				playerShield.CollisionLayer = 0;
 			}
 
 			// StanceChange ('Q')
@@ -306,7 +307,7 @@ public partial class Player : CharacterBody3D
 			// Jump (Space)
 			// Input.IsActionPressed() jos nappia painaa tai se on pohjassa antaa true
 			// Input.IsActionJustPressed() jos nappia painaa, pohjassa pitäminen ei tee mitään otetaan true vain kerran
-			if (Input.IsActionJustPressed("Jump") && IsOnFloor() && !attacking && !webbed) {
+			if (Input.IsActionJustPressed("Jump") && IsOnFloor() && !attacking && !webbed && !alive) {
 				_animTree.Set("parameters/Jump/request", 1);
 				tempVelocity.Y = JUMPVELOCITY;
 			}
@@ -320,10 +321,7 @@ public partial class Player : CharacterBody3D
 			// Movement ('W'A'S'D')
 			// Input.GetVector() ottaa 4 syöttöarvoa ja luo niistä vectorin. Käytetään Project Settings -> Input Map nimiä
 			Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveBackwards", "MoveForwards");
-
-			// Lukitaan hiiri ja piilotetaan se
-			Input.MouseMode = Input.MouseModeEnum.Captured;
-			
+		
 			// Muutetaan input suunta vektoriksi
 			// Huomaa: 3D maailmassa Y-vektori on ylöspäin ja X ja Z vektorit luovat Y ja X suunnan. Kameran paikka ja pelaajan rotaatio vaikeuttavat asioita
 			Vector3 direction = Transform.Basis * new Vector3(inputDir.Y, 0, inputDir.X);

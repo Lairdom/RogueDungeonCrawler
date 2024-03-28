@@ -20,7 +20,7 @@ public partial class Pathfinding : NavigationRegion3D
 		root = GetNode<Node3D>("/root/World");
 		smallMesh.AgentRadius = 0.25f;
 		normalMesh.AgentRadius = 0.5f;
-		largeMesh.AgentRadius = 1f;
+		largeMesh.AgentRadius = 0.75f;
 		smallMesh.AgentHeight = 1.5f; normalMesh.AgentHeight = 1.5f; largeMesh.AgentHeight = 1.5f;
 		NavigationServer3D.ParseSourceGeometryData(smallMesh, geometry, root);
 		NavigationServer3D.BakeFromSourceGeometryData(smallMesh, geometry);

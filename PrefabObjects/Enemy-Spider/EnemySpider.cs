@@ -60,11 +60,11 @@ public partial class EnemySpider : CharacterBody3D
 		string path = "/root/World/PatrolPositions/PatrolPoint"+rng;				// Muutetaan path sen mukaisesti
 		movementTarget = GetNodeOrNull<Node3D>(path).GlobalPosition;				// Etsitään kyseisen pisteen positio ja laitetaan se kohteeksi
 		if (movementTarget == GlobalPosition)
-			RandomPatrolPosition(0);
+			RandomPatrolPosition(0.01f);
 		movementTarget.Y = 0.5f;
 		if (!pathFinder.IsTargetReachable()) {
 			Debug.Print("Target unreachable");
-			RandomPatrolPosition(0);
+			RandomPatrolPosition(0.01f);
 		}
 	}
 
