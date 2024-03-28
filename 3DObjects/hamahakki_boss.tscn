@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkuxnf28qqedn"]
+
+[ext_resource type="PackedScene" uid="uid://eqw4r5a2xtjv" path="res://3DObjects/HamahakkiBoss.glb" id="1_snwao"]
+
+[node name="HamahakkiBoss" instance=ExtResource("1_snwao")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
