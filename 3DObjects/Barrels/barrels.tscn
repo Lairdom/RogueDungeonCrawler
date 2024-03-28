@@ -1,47 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://mkryh3c2xiff"]
+[gd_scene load_steps=4 format=3 uid="uid://mkryh3c2xiff"]
 
 [ext_resource type="PackedScene" uid="uid://ckgxmohljmgts" path="res://3DObjects/Barrels/Barrels.glb" id="1_whkfu"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_p63js"]
+size = Vector3(4.13105, 1.48389, 1.84436)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d0psg"]
+size = Vector3(2.81366, 1.19873, 1.68744)
+
 [node name="Barrels" instance=ExtResource("1_whkfu")]
 
-[node name="StaticBody3D" parent="Runko" index="0"]
-visible = false
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="14"]
 
-[node name="StaticBody3D" parent="Runko2" index="0"]
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0208111, 0.628537, 1.21106)
+shape = SubResource("BoxShape3D_p63js")
 
-[node name="StaticBody3D" parent="Rengas2" index="0"]
-visible = false
+[node name="StaticBody3D2" type="StaticBody3D" parent="." index="15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.09396, 1.20888)
 
-[node name="StaticBody3D" parent="Kansi2" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Runko3" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Rengas3" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Kansi3" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Runko4" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Rengas" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Kansi" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Runko5" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Rengas4" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Rengas5" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="Runko6" index="0"]
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00918579, -0.110352, -0.105499)
+shape = SubResource("BoxShape3D_d0psg")
