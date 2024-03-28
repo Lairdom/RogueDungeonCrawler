@@ -22,7 +22,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 	bool seesPlayer, inSight, playerDetected = false;
 	float attackTimer, footStepsTimer;
 	float aggrRange;
-	bool idling, attacking;
+	bool idling, attacking, reviving;
 	float yPosTarget;
 	float facing;
 	int lives = 3;
@@ -73,7 +73,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
-		
+		attacking = false;
 		statHandler.isAlive = false;
 		lives --;
 		coll.Disabled = true;
@@ -82,21 +82,19 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		_animTree.Set("parameters/die/transition_request", "Die");
 		PlayAudioOnce(deathSound, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
-		if (lives > 0) 
-		{
+		if (lives > 0) {
+			reviving = true;
 			float deathDuration = 2;
 			await ToSignal(GetTree().CreateTimer(deathDuration), "timeout");
 			_animTree.Set("parameters/die/transition_request", "revive");
 			await ToSignal(GetTree().CreateTimer(deathDuration/2), "timeout");
 			statHandler.isAlive = true;
-			attackCollider.Disabled = false;
 			coll.Disabled = false;
 			_animTree.Set("parameters/die/transition_request", "Alive");
-
+			attackTimer = 0;
+			reviving = false;
 		}
-		else
-		{
-			statHandler.isAlive = false;
+		else {
 			_animTree.Set("parameters/die/transition_request", "Die");
 			GM.CheckAllEnemiesDefeated();
 		}
@@ -235,6 +233,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		navMap = nav.smallMap;
 		pathFinder.SetNavigationMap(navMap);
 		RandomPatrolPosition(0);
+		attackTimer = 0;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -242,28 +241,36 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		float delta = (float) dDelta;
 		if (statHandler.isAlive) {
 			Vector3 tempVelocity;
-			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
+			if (playerDistance <= aggrRange) {
+				// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
+				var spaceState = GetWorld3D().DirectSpaceState;
+				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+				var result = spaceState.IntersectRay(query);
+				Node3D hitNode = (Node3D) result["collider"];
+				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
 
-			// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
-			var spaceState = GetWorld3D().DirectSpaceState;
-			var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
-			var result = spaceState.IntersectRay(query);
-			Node3D hitNode = (Node3D) result["collider"];
-			bool seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
-
-			if (playerDistance < aggrRange && seesPlayer && inSight) {
-				playerDetected = true;
+				// Pelaaja havaitaan kun pelaaja on tarpeeksi lähellä, vision colliderin sisällä ja on suora näköyhteys
+				if (seesPlayer && inSight) {
+					playerDetected = true;
+				}
 			}
+			
 			// Pelaaja havaitaan
 			if (playerDetected == true && GM.playerAlive) {
+				movementTarget = GlobalPosition;
 				targetPos = player.GlobalPosition;
 				targetPos.Y = yPosTarget;
 				LookAt(targetPos);
-				movementTarget = targetPos;
+				if (RotationDegrees.X != 0 || RotationDegrees.Z != 0)
+					RotationDegrees = new Vector3(0, RotationDegrees.Y, 0);
+
+				// Jos pelaaja on liian kaukana liikutaan lähemmäs
+				if (playerDistance > aggrRange || !seesPlayer)
+					movementTarget = targetPos;
 
 				// Jos ollaan ampumaetäisyydellä niin tehdään ampumahyökkäys
-				if (playerDistance < statHandler.aggroRange && playerDistance > 0.5 && seesPlayer && !attacking && attackTimer >= statHandler.attackSpeed) {
+				else if (playerDistance > 0.5 && seesPlayer && !attacking && attackTimer >= statHandler.attackSpeed) {
 					SkeletonRangedAttack(player.GlobalPosition);
 					attackTimer = 0;
 					return;
@@ -285,13 +292,15 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 				if (!pathFinder.IsNavigationFinished() && GlobalPosition.X != targetPos.X && GlobalPosition.Z != targetPos.Z) {
 					// Add Lerp to looking direction
 					LookAt(targetPos);
+					if (RotationDegrees.X != 0 || RotationDegrees.Z != 0)
+						RotationDegrees = new Vector3(0, RotationDegrees.Y, 0);
 				}
 				// Jos ollaan saavuttu päätepisteeseen, haetaan uusi patrol piste
 				else if (pathFinder.IsNavigationFinished() && !idling) {
 					RandomPatrolPosition(2.5f);
 				}
 			}
-			if (!attacking && playerDistance > 0.5f) {
+			if (!attacking) {
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
@@ -304,12 +313,12 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 					AxisLockLinearY = true;
 				if (MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations
-					//_animTree.Set("parameters/walk/blend_amount", 0,0);
+					_animTree.Set("parameters/walk/blend_amount", 0.0);
 	
 				}
 				else {
 					// Movement animations
-					
+					_animTree.Set("parameters/walk/blend_amount", 1.0);
 					if (footStepsTimer <= 0) {
 						PlayAudioOnce(footSteps, -20);
 						footStepsTimer = (float)GD.RandRange(0.1f, 0.3f);

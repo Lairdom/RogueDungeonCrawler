@@ -63,8 +63,7 @@ public partial class EnemySpider : CharacterBody3D
 			RandomPatrolPosition(0.01f);
 		movementTarget.Y = 0.5f;
 		if (!pathFinder.IsTargetReachable()) {
-			Debug.Print("Target unreachable");
-			RandomPatrolPosition(0.01f);
+			Debug.Print("Target unreachable: "+this);
 		}
 	}
 
@@ -186,9 +185,9 @@ public partial class EnemySpider : CharacterBody3D
 		if (Scale.Y == 0.5f)
 			navMap = nav.smallMap;
 		else if (Scale.Y == 1f)
-			navMap = nav.normalMap;
+			navMap = nav.smallMap;
 		else if (Scale.Y == 1.5f)
-			navMap = nav.largeMap;
+			navMap = nav.normalMap;
 		pathFinder.SetNavigationMap(navMap);
 		RandomPatrolPosition(0);
 		if (Scale.Y == 0.5f)
@@ -207,8 +206,8 @@ public partial class EnemySpider : CharacterBody3D
 			Vector3 tempVelocity;
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
-			if (playerDistance < aggrRange) {
-				// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
+			if (playerDistance < aggrRange && !playerDetected) {
+				// Raycast pelaajaa kohti niin tiedetään onko näköyhteys pelaajaan
 				var spaceState = GetWorld3D().DirectSpaceState;
 				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
 				var result = spaceState.IntersectRay(query);
@@ -244,7 +243,7 @@ public partial class EnemySpider : CharacterBody3D
 					RandomPatrolPosition(2.5f);
 				}
 			}
-			if (!attacking && !idling) {
+			if (!attacking) {
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
@@ -253,8 +252,8 @@ public partial class EnemySpider : CharacterBody3D
 					AxisLockLinearY = false;
 					tempVelocity.Y -= gravity * delta;
 				}
-				else
-					AxisLockLinearY = true;
+				else	AxisLockLinearY = true;
+
 				if (MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations
 					_animTree.Set("parameters/Walk/blend_amount", 1.0);

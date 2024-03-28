@@ -283,7 +283,7 @@ public partial class Player : CharacterBody3D
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 1.0);
 				shieldIsUp = true;
 			}
-			else if (Input.IsActionJustReleased("Block") && !attacking || webbed) {
+			else if (Input.IsActionJustReleased("Block") || attacking || webbed) {
 				_animTree.Set("parameters/KilpiBlock/blend_amount", 0.0);
 				_animTree.Set("parameters/kavelyNopeus/scale", 1.0);
 				playerShield.CollisionLayer = 0;

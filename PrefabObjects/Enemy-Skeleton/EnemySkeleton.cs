@@ -198,21 +198,23 @@ public partial class EnemySkeleton : CharacterBody3D
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
 			if (playerDistance < aggrRange) {
-				// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
+				// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
 				var spaceState = GetWorld3D().DirectSpaceState;
 				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
 				var result = spaceState.IntersectRay(query);
 				Node3D hitNode = (Node3D) result["collider"];
 				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
-				if (seesPlayer && inSight)
+				if (inSight && seesPlayer)
 					playerDetected = true;
 			}
 			// Pelaaja havaitaan
 			if (playerDetected == true && GM.playerAlive) {
 				targetPos = player.GlobalPosition;
 				targetPos.Y = yPosTarget;
-				LookAt(targetPos);
 				movementTarget = targetPos;
+				LookAt(targetPos);
+				if (RotationDegrees.X != 0 || RotationDegrees.Z != 0)
+					RotationDegrees = new Vector3(0, RotationDegrees.Y, 0);
 								
 				// Kun ollaan tarpeeksi lähellä tehdään melee hyökkäys
 				if (playerDistance <= 0.5 && attackTimer >= 2 && !attacking) {
@@ -231,6 +233,8 @@ public partial class EnemySkeleton : CharacterBody3D
 				if (!pathFinder.IsNavigationFinished() && GlobalPosition.X != targetPos.X && GlobalPosition.Z != targetPos.Z) {
 					// Add Lerp to looking direction
 					LookAt(targetPos);
+					if (RotationDegrees.X != 0 || RotationDegrees.Z != 0)
+						RotationDegrees = new Vector3(0, RotationDegrees.Y, 0);
 				}
 				// Jos ollaan saavuttu päätepisteeseen, haetaan uusi patrol piste
 				else if (pathFinder.IsNavigationFinished() && !idling) {
