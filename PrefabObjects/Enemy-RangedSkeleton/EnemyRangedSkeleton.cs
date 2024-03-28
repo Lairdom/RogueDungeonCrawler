@@ -25,6 +25,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 	bool idling, attacking;
 	float yPosTarget;
 	float facing;
+	int lives = 3;
 	AudioStreamOggVorbis hitSound = ResourceLoader.Load("res://Audio/SoundEffects/SkeletonHit.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis deathSound = ResourceLoader.Load("res://Audio/SoundEffects/UndeadDie.ogg") as AudioStreamOggVorbis;
 	AudioStreamOggVorbis skeletonShoot = ResourceLoader.Load("res://Audio/SoundEffects/WeaponSwing.ogg") as AudioStreamOggVorbis;
@@ -72,14 +73,33 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 
 	// Signaali joka saadaan kun health putoaa alle 0
 	public async void OnDeath(float deathDelayTime) {
+		
 		statHandler.isAlive = false;
-		GM.CheckAllEnemiesDefeated();
+		lives --;
 		coll.Disabled = true;
 		attackCollider.Disabled = true;
 		// Kuolema animaatio
 		_animTree.Set("parameters/die/transition_request", "Die");
 		PlayAudioOnce(deathSound, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
+		if (lives > 0) 
+		{
+			float deathDuration = 2;
+			await ToSignal(GetTree().CreateTimer(deathDuration), "timeout");
+			_animTree.Set("parameters/die/transition_request", "revive");
+			await ToSignal(GetTree().CreateTimer(deathDuration/2), "timeout");
+			statHandler.isAlive = true;
+			attackCollider.Disabled = false;
+			coll.Disabled = false;
+			_animTree.Set("parameters/die/transition_request", "Alive");
+
+		}
+		else
+		{
+			statHandler.isAlive = false;
+			_animTree.Set("parameters/die/transition_request", "Die");
+			GM.CheckAllEnemiesDefeated();
+		}
 		
 	}
 
