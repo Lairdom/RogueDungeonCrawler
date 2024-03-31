@@ -70,10 +70,11 @@ public partial class EnemyBoss : CharacterBody3D
 		coll.Disabled = true;
 		attackCollider.Disabled = true;
 		// Kuolema animaatio
+		_animTree.Set("parameters/die/blend_amount", 1.0);
 
 		PlayAudioOnce(deathSound, 0, -20);
 		await ToSignal(GetTree().CreateTimer(deathDelayTime), "timeout");
-		QueueFree();
+		
 	}
 
 	// Signaali joka saadaan kun vihollinen ottaa damagea
@@ -91,6 +92,8 @@ public partial class EnemyBoss : CharacterBody3D
 	private async void BossMeleeAttack() {
 		attacking = true;
 		// Melee hyökkäys animaatio
+		_animTree.Set("parameters/hVaihto/blend_amount", 0.0);
+		_animTree.Set("parameters/OneShot/request", 1);
 		
 		Debug.Print("Melee Attack");
 		float animDuration = 1;
@@ -106,6 +109,8 @@ public partial class EnemyBoss : CharacterBody3D
 	private async void BossWebAttack() {
 		attacking = true;
 		// Seitti hyökkäys animaatio
+		_animTree.Set("parameters/hVaihto/blend_amount", 1.0);
+		_animTree.Set("parameters/OneShot/request", 1);
 
 		SpawnWebShot();
 		float animDuration = 2;
@@ -134,6 +139,8 @@ public partial class EnemyBoss : CharacterBody3D
 		Debug.Print("Landing");
 		groundedTimer = 0;
 		// laskeutumis animaatio?
+		_animTree.Set("parameters/OneShot2/request", 1);
+		_animTree.Set("parameters/nousu/blend_amount", 1.0);
 		await ToSignal(GetTree().CreateTimer(2), "timeout");
 		landing = false;
 	}
@@ -145,6 +152,8 @@ public partial class EnemyBoss : CharacterBody3D
 		flying = true;
 		flightTimer = 0;
 		// lentoon lähtö animaatio?
+		_animTree.Set("parameters/OneShot2/request", 1);
+		_animTree.Set("parameters/nousu/blend_amount", 0.0);
 		await ToSignal(GetTree().CreateTimer(2), "timeout");
 		takingFlight = false;
 		caughtPlayer = false;
@@ -201,6 +210,7 @@ public partial class EnemyBoss : CharacterBody3D
 		attackCollider = GetNode<CollisionShape3D>("AttackCollider/Collider");
 		// Ulkoiset muuttujat
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
 		nav = GetNodeOrNull<Pathfinding>("/root/World/PathingMap");
@@ -273,19 +283,23 @@ public partial class EnemyBoss : CharacterBody3D
 				
 				if (flying && MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations in the air
-					
+					_animTree.Set("parameters/liike/blend_amount", 1.0);
 				}
 				else if (!flying && MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations on the ground
+					_animTree.Set("parameters/liike/blend_amount", 0.0);
 					
 				}
 				else if (flying) {
 					// Movement animations in the air
+					_animTree.Set("parameters/liike/blend_amount", 1.0);
 
 					
 				}
 				else {
 					// Movement animations on the ground
+					_animTree.Set("parameters/liike/blend_amount", -1.0);
+					
 					
 					if (skitterTimer <= 0) {
 						PlayAudioOnce(spiderSkitter, 1, -10);
