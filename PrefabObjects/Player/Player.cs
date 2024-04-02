@@ -22,7 +22,7 @@ public partial class Player : CharacterBody3D
 	AudioStreamPlayer sfxAudioSource = default;
 	[ExportGroup ("Audio Clips")]
 	[Export] AudioStreamOggVorbis playerHit;
-	[Export] AudioStreamOggVorbis playerDeath, playerRaiseShield, footSteps, shieldHit, weaponSwing;						// insert clips via the inspector
+	[Export] AudioStreamOggVorbis playerDeath, playerRaiseShield, footSteps, shieldHit, weaponSwing, webDestroyed;						// insert clips via the inspector
 	bool voicePlaying, sfxPlaying;
 	bool examine = false;
 	Node3D target = default;
@@ -48,11 +48,14 @@ public partial class Player : CharacterBody3D
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	// Funktio jota kutsutaan kun pelaajan health laskee alle 0
-	public void PlayerDeath() {
+	public async void PlayerDeath() {
 		alive = false;
 		PlayAudioOnce(playerDeath, "Voice", -10);
 		_animTree.Set("parameters/death/blend_amount", 1.0);
 		Debug.Print("You died");
+		await ToSignal(GetTree().CreateTimer(2f), "timeout");
+		var mainmenu = (PackedScene)ResourceLoader.Load("res://Scenes/start menu.tscn");
+		GetTree().ChangeSceneToPacked(mainmenu);
 	}
 
 	// Funktio jota kutsutaan vihollisten osuttua Playeriin
@@ -177,7 +180,7 @@ public partial class Player : CharacterBody3D
 	private async void DestroyWebbing() {
 		await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
 		// Audio effect?
-		//camera.ResetCamera();
+		PlayAudioOnce(webDestroyed, "SFX", -10);
 		webbed = false;
 	}
 

@@ -119,7 +119,7 @@ public partial class EnemyBoss : CharacterBody3D
 		// Instantiate web
 		attacking = false;
 		// Boss lands after a set duration if it has not landed yet
-		if (flightTimer > 30 || caughtPlayer == true)
+		if (flightTimer > 20 || caughtPlayer == true)
 			BossLanding();
 	}
 
@@ -138,6 +138,7 @@ public partial class EnemyBoss : CharacterBody3D
 		flying = false;
 		Debug.Print("Landing");
 		groundedTimer = 0;
+		coll.Position = new Vector3(coll.Position.X, 0.25f, coll.Position.Z);
 		// laskeutumis animaatio?
 		_animTree.Set("parameters/nousu/blend_amount", 1.0);
 		_animTree.Set("parameters/OneShot2/request", 1);
@@ -151,6 +152,7 @@ public partial class EnemyBoss : CharacterBody3D
 		Debug.Print("Taking flight");
 		flying = true;
 		flightTimer = 0;
+		coll.Position = new Vector3(coll.Position.X, 0, coll.Position.Z);
 		// lentoon lähtö animaatio?
 		_animTree.Set("parameters/nousu/blend_amount", 0.0);
 		_animTree.Set("parameters/OneShot2/request", 1);
@@ -208,9 +210,9 @@ public partial class EnemyBoss : CharacterBody3D
 		moveSFXSource = GetNode<AudioStreamPlayer3D>("MoveSFXAudioPlayer");
 		groundNode = GetNode<Node3D>("GroundPathingNode");
 		attackCollider = GetNode<CollisionShape3D>("AttackCollider/Collider");
+		_animTree = GetNode<AnimationTree>("AnimationTree");
 		// Ulkoiset muuttujat
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
-		_animTree = GetNode<AnimationTree>("AnimationTree");
 		root = GetNodeOrNull<Node3D>("/root/World");
 		player = GetNodeOrNull<Player>("/root/World/Player");
 		nav = GetNodeOrNull<Pathfinding>("/root/World/PathingMap");
@@ -238,7 +240,7 @@ public partial class EnemyBoss : CharacterBody3D
 			// Koska boss, niin pelaaja havaitaan automaattisesti
 			if (GM.playerAlive) {
 				targetPos = player.GlobalPosition;
-				LookAt(player.GlobalPosition);
+				
 
 				// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
 				var spaceState = GetWorld3D().DirectSpaceState;
@@ -270,6 +272,10 @@ public partial class EnemyBoss : CharacterBody3D
 					return;
 				}
 				if (attackTimer < 2) {	attackTimer += delta;	}
+				if (flying)
+					LookAt(player.GlobalPosition);
+				else
+					LookAt(targetPos);
 			}
 			// Liikkuminen
 			if (!attacking && !landing && !takingFlight) {
@@ -281,21 +287,15 @@ public partial class EnemyBoss : CharacterBody3D
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
 				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
 				
-				if (flying && MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
-					// Idling animations in the air
-					
+				
+				if (flying) {
+					// Movement animations in the air
+					_animTree.Set("parameters/liike/blend_amount", 1.0);
+					_animTree.Set("parameters/idle/blend_amount", 0.0);
 				}
 				else if (!flying && MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations on the ground
 					_animTree.Set("parameters/idle/blend_amount", 1.0);
-					
-				}
-				else if (flying) {
-					// Movement animations in the air
-					_animTree.Set("parameters/liike/blend_amount", 1.0);
-					_animTree.Set("parameters/idle/blend_amount", 0.0);
-
-					
 				}
 				else {
 					// Movement animations on the ground
@@ -312,6 +312,8 @@ public partial class EnemyBoss : CharacterBody3D
 			}
 			// Liike kun noustaan takaisin lentoon
 			else if (takingFlight) {
+				_animTree.Set("parameters/liike/blend_amount", 1.0);
+				_animTree.Set("parameters/idle/blend_amount", 0.0);
 				targetPos.Y = yPosTarget;
 				Vector3 takeFlightDirection = targetPos;
 				takeFlightDirection.Y = -3f;
@@ -319,6 +321,8 @@ public partial class EnemyBoss : CharacterBody3D
 			}
 			// Kun ei lennetä niin painovoima vaikuttaa. Nostetaan maassaolo aikaa sekä lentoaikaa niiden ollessa päällä.
 			if (!flying) {
+				if (landing && IsOnFloor())
+					_animTree.Set("parameters/liike/blend_amount", 0.0);
 				groundedTimer += delta;	
 				tempVelocity.Y -= gravity * delta * 10;
 			}

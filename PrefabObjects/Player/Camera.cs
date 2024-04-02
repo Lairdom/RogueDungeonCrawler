@@ -5,8 +5,8 @@ using System.Diagnostics;
 public partial class Camera : Node3D
 {
 	GameManager GM;
-	float camRotH = 0;				// CameraRotationHorizontal
-	float camRotV = 0;				// CameraRotationVertical
+	float camRotH;				// CameraRotationHorizontal
+	float camRotV;				// CameraRotationVertical
 	Node3D H = default;
 	Node3D V = default;
 	Player player = default;
@@ -34,6 +34,10 @@ public partial class Camera : Node3D
 		}
 	}
 
+	private void GetPlayerRotation() {
+		camRotH = player.RotationDegrees.Y;
+	}
+
 	public override void _Ready() {
 		GM = GetNodeOrNull<GameManager>("/root/World/GameManager");
 		player = GetParent<Player>();
@@ -42,6 +46,7 @@ public partial class Camera : Node3D
 		cameraCollider = GetNode<RayCast3D>("Horizontal/Vertical/CollisionDetection");
 		cam = GetNode<Camera3D>("Horizontal/Vertical/Camera");
 		camPos = GetNode<Node3D>("Horizontal/Vertical/CameraPos");
+		GetPlayerRotation();
 	}
 
 	public override void _Process(double delta) {

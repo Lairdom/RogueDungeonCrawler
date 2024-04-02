@@ -10,16 +10,13 @@ public partial class StartHelpExitMenu : CanvasLayer {
 	[Export] public TextureButton exit;
 	[Export] public Label helpLabel;
 
-	public override void _Ready() {
-		start.Connect("pressed", new Callable(this, nameof(OnStartPressed)));
-		help.Connect("pressed", new Callable(this, nameof(OnHelpPressed)));
-		exit.Connect("pressed", new Callable(this, nameof(OnExitPressed)));
-	}
 
 	private void OnStartPressed() {
-		// Starts the game
-		var nextScene = (PackedScene)ResourceLoader.Load("res://Scenes/world.tscn");
-		GetTree().ChangeSceneToPacked(nextScene);
+		if (GetTree() != null) {
+			// Starts the game
+			var nextScene = (PackedScene)ResourceLoader.Load("res://Scenes/world.tscn");
+			GetTree().ChangeSceneToPacked(nextScene);
+		}
 	}
 
 	private void OnHelpPressed() {
@@ -27,11 +24,14 @@ public partial class StartHelpExitMenu : CanvasLayer {
 	}
 
 	private void OnExitPressed() {
-		// Closes the game
-		GetTree().Quit();
-	}
+        // Closes the game
+        GetTree()?.Quit();
+    }
 	
-	public override void _Process(double delta)
-	{
+	public override void _Ready() {
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+		start.Connect("pressed", new Callable(this, nameof(OnStartPressed)));
+		help.Connect("pressed", new Callable(this, nameof(OnHelpPressed)));
+		exit.Connect("pressed", new Callable(this, nameof(OnExitPressed)));
 	}
 }
