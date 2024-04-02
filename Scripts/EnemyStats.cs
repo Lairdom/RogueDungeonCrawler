@@ -67,10 +67,4 @@ public partial class EnemyStats : Node3D
 	public override void _Ready() {
 		SetStats();
 	}
-
-	// Updates every frame
-	public override void _Process(double dDelta) {
-		float delta = (float) dDelta;
-
-	}
 }

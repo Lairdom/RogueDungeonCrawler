@@ -20,7 +20,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 	Vector3 targetPos;
 	float moveSpeed;
 	bool seesPlayer, inSight, playerDetected = false;
-	float attackTimer, footStepsTimer;
+	float attackTimer, footStepsTimer, rayCastTimer;
 	float aggrRange;
 	bool idling, attacking, reviving;
 	float yPosTarget;
@@ -242,16 +242,21 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 		if (statHandler.isAlive) {
 			Vector3 tempVelocity;
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
-			if (playerDistance <= aggrRange) {
-				// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
-				var spaceState = GetWorld3D().DirectSpaceState;
-				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
-				var result = spaceState.IntersectRay(query);
-				Node3D hitNode = (Node3D) result["collider"];
-				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+			if (playerDistance <= aggrRange && inSight) {
+				// Joka sekunti tehdään raycast
+				if (rayCastTimer > 0.5f) {
+					// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
+					var spaceState = GetWorld3D().DirectSpaceState;
+					var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+					var result = spaceState.IntersectRay(query);
+					Node3D hitNode = (Node3D) result["collider"];
+					seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+					rayCastTimer = 0;
+				}
+				else { rayCastTimer += delta; }
 
 				// Pelaaja havaitaan kun pelaaja on tarpeeksi lähellä, vision colliderin sisällä ja on suora näköyhteys
-				if (seesPlayer && inSight) {
+				if (seesPlayer) {
 					playerDetected = true;
 				}
 			}

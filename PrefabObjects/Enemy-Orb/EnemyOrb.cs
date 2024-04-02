@@ -8,8 +8,9 @@ public partial class EnemyOrb : CharacterBody3D
 	Player player = default;
 	Vector3 playerDirection;
 	float playerDistance;
-	float shootTimer = 0;
+	float shootTimer = 0, rayCastTimer;
 	float firingDelay;
+	bool seesPlayer;
 	Node3D root = default;
 	public EnemyStats statHandler = default;
 	AudioStreamPlayer3D audioSource = default;
@@ -74,12 +75,17 @@ public partial class EnemyOrb : CharacterBody3D
 			playerDistance = Position.DistanceTo(player.GlobalPosition);
 			LookAt(player.GlobalPosition);
 
-			// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
-			var spaceState = GetWorld3D().DirectSpaceState;
-			var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
-			var result = spaceState.IntersectRay(query);
-			Node3D hitNode = (Node3D) result["collider"];
-			bool seesPlayer = hitNode.Name == "Player";
+			// Joka sekunti tehdään raycast
+				if (rayCastTimer > 0.5f) {
+					// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
+					var spaceState = GetWorld3D().DirectSpaceState;
+					var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+					var result = spaceState.IntersectRay(query);
+					Node3D hitNode = (Node3D) result["collider"];
+					seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+					rayCastTimer = 0;
+				}
+				else { rayCastTimer += delta; }
 
 			if (playerDistance < statHandler.aggroRange && seesPlayer && shootTimer > firingDelay) {
 				SpawnBullet();

@@ -21,7 +21,7 @@ public partial class EnemyBoss : CharacterBody3D
 	Vector3 targetPos;
 	float moveSpeed;
 	bool playerDetected = false;
-	float attackTimer, skitterTimer, wingFlapTimer, flightTimer, groundedTimer;
+	float attackTimer, skitterTimer, wingFlapTimer, flightTimer, groundedTimer, rayCastTimer;
 	private AnimationTree _animTree;
 	bool flying, idling, attacking, landing, takingFlight;
 	bool seesPlayer;
@@ -221,7 +221,6 @@ public partial class EnemyBoss : CharacterBody3D
 		}
 		// Pathfinding alustuksia
 		flying = true;
-		moveSpeed = statHandler.movementSpeed;
 		pathFinder.PathDesiredDistance = 0.5f;
 		pathFinder.TargetDesiredDistance = 0.5f;
 		yPosTarget = 1.5f;
@@ -241,13 +240,17 @@ public partial class EnemyBoss : CharacterBody3D
 			if (GM.playerAlive) {
 				targetPos = player.GlobalPosition;
 				
-
-				// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
-				var spaceState = GetWorld3D().DirectSpaceState;
-				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
-				var result = spaceState.IntersectRay(query);
-				Node3D hitNode = (Node3D) result["collider"];
-				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+				// Joka sekunti tehdään raycast
+				if (rayCastTimer > 0.5f) {
+					// Raycast pelaajaa kohti jotta tiedetään onko bossilla näköyhteys pelaajaan
+					var spaceState = GetWorld3D().DirectSpaceState;
+					var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+					var result = spaceState.IntersectRay(query);
+					Node3D hitNode = (Node3D) result["collider"];
+					seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+					rayCastTimer = 0;
+				}
+				else { rayCastTimer += delta; }
 				
 				// Jos boss on ilmassa mutta liian kaukana tai ei näe pelaajaa
 				if (flying && playerDistance > 6 && !attacking && !landing && !takingFlight || !seesPlayer) {
@@ -282,8 +285,14 @@ public partial class EnemyBoss : CharacterBody3D
 				groundNode.GlobalPosition = new Vector3(groundNode.GlobalPosition.X, 0.5f, groundNode.GlobalPosition.Z);
 				Vector3 currentPosition;
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
-				if (flying) {	currentPosition = groundNode.GlobalPosition;	}					// Otetaan oma positio groundNoden positiosta									
-				else {	currentPosition = GlobalPosition;	}										// Otetaan oma positio itsestä							
+				if (flying) {
+					currentPosition = groundNode.GlobalPosition;									// Otetaan oma positio groundNoden positiosta
+					moveSpeed = 1.5f;
+				}																													
+				else {
+					currentPosition = GlobalPosition;												// Otetaan oma positio itsestä
+					moveSpeed = 1.0f;
+				}																
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
 				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed;			// tallennetaan suuntavectori velocitymuuttujaan
 				

@@ -19,7 +19,7 @@ public partial class EnemySpider : CharacterBody3D
 	float moveSpeed;
 	bool seesPlayer, inSight;
 	bool playerDetected = false;
-	float attackTimer, skitterTimer, lerpTimer;
+	float attackTimer, skitterTimer, lerpTimer, rayCastTimer;
 	float playerDistance, aggrRange;
 	bool idling, attacking;
 	private AnimationTree _animTree;
@@ -206,14 +206,19 @@ public partial class EnemySpider : CharacterBody3D
 			Vector3 tempVelocity;
 			playerDirection = (player.GlobalPosition - GlobalPosition).Normalized();
 			playerDistance = GlobalPosition.DistanceTo(player.GlobalPosition);
-			if (playerDistance < aggrRange && !playerDetected) {
-				// Raycast pelaajaa kohti niin tiedetään onko näköyhteys pelaajaan
-				var spaceState = GetWorld3D().DirectSpaceState;
-				var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
-				var result = spaceState.IntersectRay(query);
-				Node3D hitNode = (Node3D) result["collider"];
-				seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
-				if (seesPlayer && inSight)
+			if (!playerDetected && playerDistance < aggrRange && inSight) {
+				// Joka sekunti tehdään raycast
+				if (rayCastTimer > 0.5f) {
+					// Raycast pelaajaa kohti jotta tiedetään onko vihulla näköyhteys pelaajaan
+					var spaceState = GetWorld3D().DirectSpaceState;
+					var query = PhysicsRayQueryParameters3D.Create(GlobalPosition, player.GlobalPosition);
+					var result = spaceState.IntersectRay(query);
+					Node3D hitNode = (Node3D) result["collider"];
+					seesPlayer = hitNode.Name == "Player" || hitNode.Name == "ShieldCollider";
+					rayCastTimer = 0;
+				}
+				else { rayCastTimer += delta; }
+				if (seesPlayer)
 					playerDetected = true;
 			}
 			// Detects player
