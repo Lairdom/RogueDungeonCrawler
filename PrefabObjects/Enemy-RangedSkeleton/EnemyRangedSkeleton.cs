@@ -304,7 +304,7 @@ public partial class EnemyRangedSkeleton : CharacterBody3D
 				MovementSetup();																	// Pathfinding Setup - etsi seuraava piste johon liikutaan
 				Vector3 currentPosition = GlobalPosition;											// Otetaan oma positio
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
-				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
+				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed;			// tallennetaan suuntavectori velocitymuuttujaan
 				if (!IsOnFloor()) {
 					AxisLockLinearY = false;
 					tempVelocity.Y -= gravity * delta;

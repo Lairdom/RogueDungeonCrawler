@@ -26,8 +26,8 @@ public partial class Arrow : RigidBody3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double dDelta) {
 		float delta = (float) dDelta;
-		Vector3 direction = Transform.Basis * Vector3.Forward;
-		Vector3 tempVelocity = direction * 500 * delta;
+		Vector3 direction = (Transform.Basis * Vector3.Forward).Normalized();
+		Vector3 tempVelocity = direction * 5;
 		LinearVelocity = tempVelocity;
 		timer -= delta;
 		if (timer <= 0)

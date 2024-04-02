@@ -285,7 +285,7 @@ public partial class EnemyBoss : CharacterBody3D
 				if (flying) {	currentPosition = groundNode.GlobalPosition;	}					// Otetaan oma positio groundNoden positiosta									
 				else {	currentPosition = GlobalPosition;	}										// Otetaan oma positio itsestä							
 				Vector3 nextPathPosition = pathFinder.GetNextPathPosition();						// positio johon seuraavaksi siirrytään (pathfinding etsii pisteen)
-				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed * delta;	// tallennetaan suuntavectori velocitymuuttujaan
+				tempVelocity = currentPosition.DirectionTo(nextPathPosition) * moveSpeed;			// tallennetaan suuntavectori velocitymuuttujaan
 				
 				
 				if (flying) {
@@ -317,7 +317,7 @@ public partial class EnemyBoss : CharacterBody3D
 				targetPos.Y = yPosTarget;
 				Vector3 takeFlightDirection = targetPos;
 				takeFlightDirection.Y = -3f;
-				tempVelocity = groundNode.GlobalPosition.DirectionTo(takeFlightDirection) * moveSpeed * -2 * delta;
+				tempVelocity = groundNode.GlobalPosition.DirectionTo(takeFlightDirection) * moveSpeed * -2;
 			}
 			// Kun ei lennetä niin painovoima vaikuttaa. Nostetaan maassaolo aikaa sekä lentoaikaa niiden ollessa päällä.
 			if (!flying) {
