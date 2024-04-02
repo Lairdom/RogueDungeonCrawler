@@ -139,8 +139,8 @@ public partial class EnemyBoss : CharacterBody3D
 		Debug.Print("Landing");
 		groundedTimer = 0;
 		// laskeutumis animaatio?
-		_animTree.Set("parameters/OneShot2/request", 1);
 		_animTree.Set("parameters/nousu/blend_amount", 1.0);
+		_animTree.Set("parameters/OneShot2/request", 1);
 		await ToSignal(GetTree().CreateTimer(2), "timeout");
 		landing = false;
 	}
@@ -152,8 +152,8 @@ public partial class EnemyBoss : CharacterBody3D
 		flying = true;
 		flightTimer = 0;
 		// lentoon lähtö animaatio?
-		_animTree.Set("parameters/OneShot2/request", 1);
 		_animTree.Set("parameters/nousu/blend_amount", 0.0);
+		_animTree.Set("parameters/OneShot2/request", 1);
 		await ToSignal(GetTree().CreateTimer(2), "timeout");
 		takingFlight = false;
 		caughtPlayer = false;
@@ -283,22 +283,24 @@ public partial class EnemyBoss : CharacterBody3D
 				
 				if (flying && MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations in the air
-					_animTree.Set("parameters/liike/blend_amount", 1.0);
+					
 				}
 				else if (!flying && MathF.Abs(Velocity.Z) < 0.2 && MathF.Abs(Velocity.X) < 0.2) {
 					// Idling animations on the ground
-					_animTree.Set("parameters/liike/blend_amount", 0.0);
+					_animTree.Set("parameters/idle/blend_amount", 1.0);
 					
 				}
 				else if (flying) {
 					// Movement animations in the air
 					_animTree.Set("parameters/liike/blend_amount", 1.0);
+					_animTree.Set("parameters/idle/blend_amount", 0.0);
 
 					
 				}
 				else {
 					// Movement animations on the ground
-					_animTree.Set("parameters/liike/blend_amount", -1.0);
+					_animTree.Set("parameters/liike/blend_amount", 0.0);
+					_animTree.Set("parameters/idle/blend_amount", 0.0);
 					
 					
 					if (skitterTimer <= 0) {
