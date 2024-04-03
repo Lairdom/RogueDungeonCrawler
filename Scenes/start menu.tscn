@@ -65,18 +65,30 @@ texture_hover = ExtResource("10_0ol3k")
 stretch_mode = 4
 
 [node name="helpLabel" type="Label" parent="Control"]
-visible = false
-layout_mode = 0
-offset_left = 654.0
-offset_top = 245.0
-offset_right = 867.0
-offset_bottom = 398.0
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -410.0
+offset_top = -154.5
+offset_right = -123.0
+offset_bottom = 154.5
+grow_horizontal = 0
+grow_vertical = 2
 text = "WASD - movement
 Mouse - camera
 Space - Jump
 Left mouse button - attack
 Right mouse button - shield
-Q - change stance"
+Q - change stance
+(Changes between making Slashing,
+Piercing or Bludgeoning damage)
+
+Some damage types may be effective
+against certain enemy types while
+being ineffective against others"
 
 [connection signal="button_up" from="Control/start" to="." method="OnStartPressed"]
 [connection signal="button_up" from="Control/help" to="." method="OnHelpPressed"]

@@ -58,13 +58,26 @@ public partial class PassiveSkills : Node3D
 			Button button = new Button();
 			button.Text = skill.Name; // Set the button text to the skill name
 			button.Name = skill.Name; // Set the button name to the skill name
-			button.Connect("pressed", new Callable (this, nameof(OnSkillButtonPressed)));
+			button.Pressed += () => OnSkillButtonPressed(skill.Name);
 			hbox.AddChild(button); // Add the button to the HBoxContainer
 		}
 
 		// Display the popup
 		popup.PopupCentered();
 	}
+
+	private void ApplySkillEffects(PassiveSkill skill)
+	{
+	if (skill.Name == "Movement Speed Up")
+		 player.moveSpeed += 10;
+	else if (skill.Name == "Critical Rate Up")
+		{
+		// Assuming critChance is an exported float in the GameManager script
+		GameManager gameManager = GetNode<GameManager>("/root/World/GameManager");
+		gameManager.critChance += 0.05f;
+		}
+	}
+
 
 	private void OnSkillButtonPressed(string skillName)
 	{
@@ -86,18 +99,6 @@ public partial class PassiveSkills : Node3D
 		GetNode<Popup>("Popup").QueueFree(); // Close the popup
 		// Update UI to display information about the selected skill
 		GetNode<ScreenUI>("/root/ScreenUI").UpdatePassiveSkills(selectedSkill.Name);
-	}
-
-		private void ApplySkillEffects(PassiveSkill skill)
-	{
-		if (skill.Name == "Movement Speed Up")
-			 player.moveSpeed += 10;
-		else if (skill.Name == "Critical Rate Up")
-		{
-			// Assuming critChance is an exported float in the GameManager script
-			GameManager gameManager = GetNode<GameManager>("/root/World/GameManager");
-			gameManager.critChance += 0.05f;
-		}
 	}
 
 	private void Shuffle<T>(T[] array)
